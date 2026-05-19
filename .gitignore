@@ -1,0 +1,11 @@
+.agents
+.claude
+.claude-*
+.claude-*/.agents
+.claude-*/.claude
+.claude-*/.claude-*
+.claude-*/.claude-*/.agents
+.claude-*/.claude-*/.claude
+.claude-*/.claude-*/.claude-*
+.claude-*/.claude-*/.claude-*/.agents
+skills-lock.json
