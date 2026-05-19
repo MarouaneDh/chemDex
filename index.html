@@ -4,6 +4,9 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Chemdex — Molecule Discovery Lab</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
@@ -11,15 +14,22 @@
   <header class="topbar">
     <div class="brand">
       <span class="logo">⚗️</span>
-      <h1>Chem<span>dex</span></h1>
+      <div class="brand-text">
+        <h1>Chem<span>dex</span></h1>
+        <p class="tagline" data-i18n="tagline">Molecule Discovery Lab</p>
+      </div>
     </div>
     <nav class="tabs">
-      <button class="tab active" data-tab="lab">🧪 Lab</button>
-      <button class="tab" data-tab="dex">📖 Dex</button>
+      <button class="tab active" data-tab="lab" data-i18n="tabLab">🧪 Lab</button>
+      <button class="tab" data-tab="dex" data-i18n="tabDex">📖 Dex</button>
     </nav>
     <div class="progress">
-      <span id="progressLabel">0 / 10</span>
+      <span id="progressLabel">0 / 20</span>
       <div class="progress-bar"><div id="progressFill"></div></div>
+    </div>
+    <div class="lang-switch">
+      <button class="lang" data-lang="en">EN</button>
+      <button class="lang" data-lang="fr">FR</button>
     </div>
   </header>
 
@@ -30,23 +40,23 @@
 
         <!-- Atom palette -->
         <div class="panel">
-          <h2>Atoms</h2>
-          <p class="hint">Drag an atom onto the workbench — or just click it.</p>
+          <h2 data-i18n="atoms">Atoms</h2>
+          <p class="hint" data-i18n="atomsHint">Drag an atom onto the workbench — or just click it.</p>
           <div id="palette" class="palette"></div>
         </div>
 
         <!-- Workbench -->
         <div class="panel workbench-panel">
-          <h2>Workbench</h2>
+          <h2 data-i18n="workbench">Workbench</h2>
           <div id="workbench" class="workbench">
-            <p class="workbench-empty">Drop atoms here to build a molecule</p>
+            <p class="workbench-empty" data-i18n="workbenchEmpty">Drop atoms here to build a molecule</p>
           </div>
           <div class="formula-line">
-            Formula: <strong id="liveFormula">—</strong>
+            <span data-i18n="formula">Formula:</span> <strong id="liveFormula">—</strong>
           </div>
           <div class="lab-actions">
-            <button id="combineBtn" class="btn btn-primary">⚡ Combine</button>
-            <button id="clearBtn" class="btn">Clear</button>
+            <button id="combineBtn" class="btn btn-primary" data-i18n="combine">⚡ Combine</button>
+            <button id="clearBtn" class="btn" data-i18n="clear">Clear</button>
           </div>
           <p id="labMessage" class="lab-message"></p>
         </div>
@@ -58,7 +68,7 @@
     <section id="dex" class="view">
       <div class="dex-controls">
         <div id="filters" class="filters"></div>
-        <button id="resetBtn" class="btn btn-danger">Reset progress</button>
+        <button id="resetBtn" class="btn btn-danger" data-i18n="resetProgress">Reset progress</button>
       </div>
       <div id="dexGrid" class="dex-grid"></div>
     </section>
@@ -73,7 +83,7 @@
   <div id="lightbox" class="lightbox" hidden>
     <div class="lightbox-toolbar">
       <button id="lbOut"   title="Zoom out">−</button>
-      <button id="lbReset" title="Reset">Reset</button>
+      <button id="lbReset" title="Reset" data-i18n="lbReset">Reset</button>
       <button id="lbIn"    title="Zoom in">+</button>
       <span id="lbLabel" class="lb-label"></span>
       <button id="lbClose" title="Close" class="lb-close">✕</button>
@@ -81,10 +91,11 @@
     <div class="lightbox-stage" id="lbStage">
       <img id="lbImg" alt="structure" draggable="false" />
     </div>
-    <p class="lb-hint">Scroll to zoom · drag to pan</p>
+    <p class="lb-hint" data-i18n="lbHint">Scroll to zoom · drag to pan</p>
   </div>
 
   <script src="data.js"></script>
+  <script src="i18n.js"></script>
   <script src="app.js"></script>
 </body>
 </html>

@@ -81,6 +81,29 @@ function structureURL(cid, view, size) {
   return base + "?image_size=" + (size || "large");
 }
 
+/* ---------- Internationalization (en / fr) ---------- */
+const LANG_KEY = "chemdex.lang";
+let lang = localStorage.getItem(LANG_KEY) || "en";
+
+// UI string by key; some entries are functions taking interpolated args.
+function t(key, ...args) {
+  const v = (I18N[lang] && I18N[lang][key]) ?? I18N.en[key] ?? key;
+  return typeof v === "function" ? v(...args) : v;
+}
+
+// Translate a category / type / rarity term.
+function term(key) {
+  return lang === "fr" ? (TERMS_FR[key] || key) : key;
+}
+
+// Pull a molecule field in the active language (falls back to English).
+function molField(m, field) {
+  if (lang === "fr" && MOL_FR[m.id] && MOL_FR[m.id][field] != null) {
+    return MOL_FR[m.id][field];
+  }
+  return m[field];
+}
+
 /* ============================================================
    LAB
    ============================================================ */
@@ -99,10 +122,11 @@ function renderPalette() {
     el.style.background = atom.color;
     el.style.color = atom.text;
     el.draggable = true;
+    const atomName = lang === "fr" ? (ATOM_NAMES_FR[atom.symbol] || atom.name) : atom.name;
     el.innerHTML = `
       <span class="num">${atom.number}</span>
       <span class="sym">${atom.symbol}</span>
-      <span class="nm">${atom.name}</span>`;
+      <span class="nm">${atomName}</span>`;
     el.addEventListener("click", () => addAtom(atom.symbol));
     el.addEventListener("dragstart", e => {
       e.dataTransfer.setData("text/plain", atom.symbol);
@@ -125,7 +149,7 @@ function renderWorkbench() {
   workbenchEl.innerHTML = "";
   if (workbench.length === 0) {
     workbenchEl.innerHTML =
-      '<p class="workbench-empty">Drop atoms here to build a molecule</p>';
+      `<p class="workbench-empty">${t("workbenchEmpty")}</p>`;
   } else {
     workbench.forEach((sym, i) => {
       const atom = atomBySymbol(sym);
@@ -134,7 +158,7 @@ function renderWorkbench() {
       el.style.background = atom.color;
       el.style.color = atom.text;
       el.textContent = sym;
-      el.title = "Click to remove";
+      el.title = t("removeAtom");
       el.addEventListener("click", () => removeAtom(i));
       workbenchEl.appendChild(el);
     });
@@ -162,17 +186,14 @@ workbenchEl.addEventListener("drop", e => {
 // Combine button — the validation engine
 function combine() {
   if (workbench.length === 0) {
-    setMessage("Add some atoms first.", "info");
+    setMessage(t("addAtomsFirst"), "info");
     return;
   }
   const counts = countAtoms(workbench);
   const match = MOLECULES.find(m => countsEqual(m.atoms, counts));
 
   if (!match) {
-    setMessage(
-      `No stable molecule has the formula ${hillFormula(counts)}. Try a different mix.`,
-      "bad"
-    );
+    setMessage(t("noMatch", hillFormula(counts)), "bad");
     return;
   }
 
@@ -184,10 +205,7 @@ function combine() {
     renderDex();
     openMoleculeModal(match, true);
   } else {
-    setMessage(
-      `That's ${match.commonName} — already in your Dex. Built it again anyway!`,
-      "ok"
-    );
+    setMessage(t("alreadyKnown", molField(match, "commonName")), "ok");
     openMoleculeModal(match, false);
   }
   workbench = [];
@@ -231,7 +249,7 @@ function renderFilters() {
   cats.forEach(cat => {
     const el = document.createElement("button");
     el.className = "filter" + (cat === dexFilter ? " active" : "");
-    el.textContent = cat;
+    el.textContent = cat === "all" ? t("filterAll") : term(cat);
     el.addEventListener("click", () => {
       dexFilter = cat;
       renderFilters();
@@ -259,14 +277,14 @@ function renderDex() {
       card.innerHTML = `
         <span class="id">${m.id.replace("mol_", "#")}</span>
         <div class="img-wrap">
-          <img src="${structureURL(m.pubchemCid, "2d")}" alt="${m.commonName}"
+          <img src="${structureURL(m.pubchemCid, "2d")}" alt="${molField(m, "commonName")}"
                onerror="this.replaceWith(document.createTextNode('🧬'))" />
         </div>
-        <div class="name">${m.commonName}</div>
+        <div class="name">${molField(m, "commonName")}</div>
         <div class="formula">${fmtFormula(m.formula)}</div>
         <div class="badges">
-          <span class="badge rarity-${m.rarity}">${m.rarity}</span>
-          <span class="badge badge-type">${m.type}</span>
+          <span class="badge rarity-${m.rarity}">${term(m.rarity)}</span>
+          <span class="badge badge-type">${term(m.type)}</span>
         </div>`;
       card.addEventListener("click", () => openMoleculeModal(m, false));
     } else {
@@ -274,19 +292,19 @@ function renderDex() {
       card.innerHTML = `
         <span class="id">${m.id.replace("mol_", "#")}</span>
         <div class="img-wrap">?</div>
-        <div class="name">??? </div>
-        <div class="formula">Hint: ${fmtFormula(m.formula)}</div>
+        <div class="name">${t("locked")}</div>
+        <div class="formula">${t("hint")} ${fmtFormula(m.formula)}</div>
         <div class="badges">
-          <span class="badge rarity-common">undiscovered</span>
+          <span class="badge rarity-common">${t("undiscovered")}</span>
         </div>`;
-      card.title = "Build this formula in the Lab to discover it";
+      card.title = t("lockedTitle");
     }
     dexGrid.appendChild(card);
   });
 }
 
 document.getElementById("resetBtn").addEventListener("click", () => {
-  if (confirm("Reset all discoveries? This cannot be undone.")) {
+  if (confirm(t("resetConfirm"))) {
     discoveries = {};
     saveDiscoveries(discoveries);
     updateProgress();
@@ -306,40 +324,41 @@ function openMoleculeModal(m, isNew) {
     ? new Date(discoveries[m.id]).toLocaleString()
     : null;
 
+  const name = molField(m, "commonName");
   modalCard.innerHTML = `
-    ${isNew ? '<span class="discovery-tag">✨ NEW DISCOVERY</span>' : ""}
-    <h2>${m.commonName}</h2>
-    <div class="sub">${m.iupacName} &nbsp;·&nbsp; ${fmtFormula(m.formula)}</div>
-    <div class="struct" id="structBox" title="Click to zoom">
-      <img id="structImg" src="${structureURL(m.pubchemCid, "2d")}" alt="${m.commonName}" />
+    ${isNew ? `<span class="discovery-tag">${t("newDiscovery")}</span>` : ""}
+    <h2>${name}</h2>
+    <div class="sub">${molField(m, "iupacName")} &nbsp;·&nbsp; ${fmtFormula(m.formula)}</div>
+    <div class="struct" id="structBox" title="${t("clickZoom")}">
+      <img id="structImg" src="${structureURL(m.pubchemCid, "2d")}" alt="${name}" />
     </div>
     <div class="struct-tools">
       <button class="seg active" data-view="2d">2D</button>
       <button class="seg" data-view="3d">3D</button>
-      <span class="zoom-hint">🔍 click image to zoom</span>
+      <span class="zoom-hint">${t("zoomHint")}</span>
     </div>
-    <p class="desc">${m.description}</p>
+    <p class="desc">${molField(m, "description")}</p>
 
     <div class="badges">
-      <span class="badge rarity-${m.rarity}">${m.rarity}</span>
-      <span class="badge badge-type">${m.type}</span>
-      <span class="badge badge-type">${m.category}</span>
-      <span class="badge badge-type">tier ${m.tier}</span>
+      <span class="badge rarity-${m.rarity}">${term(m.rarity)}</span>
+      <span class="badge badge-type">${term(m.type)}</span>
+      <span class="badge badge-type">${term(m.category)}</span>
+      <span class="badge badge-type">${t("tier")} ${m.tier}</span>
     </div>
 
-    <div class="section-title">Real-world uses</div>
-    <ul>${m.uses.map(u => `<li>${u}</li>`).join("")}</ul>
+    <div class="section-title">${t("uses")}</div>
+    <ul>${molField(m, "uses").map(u => `<li>${u}</li>`).join("")}</ul>
 
     <div class="stats">
-      <span>Molar mass: <strong>${m.molarMass} g/mol</strong></span>
-      <span>PubChem CID: <strong>${m.pubchemCid}</strong></span>
-      <span style="grid-column:1/-1">InChIKey: <strong>${m.inchiKey}</strong></span>
+      <span>${t("molarMass")} <strong>${m.molarMass} g/mol</strong></span>
+      <span>${t("pubchemCid")} <strong>${m.pubchemCid}</strong></span>
+      <span style="grid-column:1/-1">${t("inchiKey")} <strong>${m.inchiKey}</strong></span>
     </div>
 
-    <div class="funfact">💡 ${m.funFact}</div>
-    ${date ? `<div class="discovered-on">Discovered: ${date}</div>` : ""}
+    <div class="funfact">💡 ${molField(m, "funFact")}</div>
+    ${date ? `<div class="discovered-on">${t("discoveredOn")} ${date}</div>` : ""}
 
-    <button class="btn modal-close">Close</button>
+    <button class="btn modal-close">${t("close")}</button>
   `;
   modalCard.querySelector(".modal-close")
     .addEventListener("click", closeModal);
@@ -359,6 +378,8 @@ function setupStructureViewer(m) {
   const box = document.getElementById("structBox");
   const img = document.getElementById("structImg");
   let view = "2d";
+
+  box.dataset.fallback = t("imgUnavailable");
 
   // keep the <img> element alive on failure so toggling still works
   img.addEventListener("error", () => box.classList.add("img-error"));
@@ -407,7 +428,7 @@ function openLightbox(m, view) {
   // request makes the image fail to load, so leave 3D unsized.
   const size = view === "3d" ? null : "500x500";
   lbImg.src = structureURL(m.pubchemCid, view, size);
-  lbLabel.textContent = `${m.commonName} · ${view.toUpperCase()}`;
+  lbLabel.textContent = `${molField(m, "commonName")} · ${view.toUpperCase()}`;
   lbApply();
   lightbox.hidden = false;
 }
@@ -427,26 +448,52 @@ lbStage.addEventListener("wheel", e => {
   lbSetZoom(lbZoom + (e.deltaY < 0 ? 0.3 : -0.3));
 }, { passive: false });
 
-// drag to pan (only meaningful when zoomed in)
+// pointer handling: 1 pointer pans (when zoomed in), 2 pointers pinch-zoom.
+// Works for both mouse and touch.
+const lbPointers = new Map();
 let lbDragging = false, lbStartX = 0, lbStartY = 0;
+let lbPinchStart = 0, lbPinchZoom = 1;
+
+function lbPointerDist() {
+  const p = [...lbPointers.values()];
+  return Math.hypot(p[0].clientX - p[1].clientX, p[0].clientY - p[1].clientY);
+}
+
 lbStage.addEventListener("pointerdown", e => {
-  if (lbZoom === 1) return;
-  lbDragging = true;
-  lbStartX = e.clientX - lbX;
-  lbStartY = e.clientY - lbY;
-  lbStage.classList.add("panning");
-  lbStage.setPointerCapture(e.pointerId);
+  lbPointers.set(e.pointerId, e);
+  if (lbPointers.size === 2) {
+    lbDragging = false;
+    lbStage.classList.remove("panning");
+    lbPinchStart = lbPointerDist();
+    lbPinchZoom = lbZoom;
+  } else if (lbZoom > 1) {
+    lbDragging = true;
+    lbStartX = e.clientX - lbX;
+    lbStartY = e.clientY - lbY;
+    lbStage.classList.add("panning");
+  }
 });
 lbStage.addEventListener("pointermove", e => {
-  if (!lbDragging) return;
-  lbX = e.clientX - lbStartX;
-  lbY = e.clientY - lbStartY;
-  lbApply();
+  if (!lbPointers.has(e.pointerId)) return;
+  lbPointers.set(e.pointerId, e);
+  if (lbPointers.size >= 2) {
+    if (lbPinchStart > 0) lbSetZoom(lbPinchZoom * (lbPointerDist() / lbPinchStart));
+  } else if (lbDragging) {
+    lbX = e.clientX - lbStartX;
+    lbY = e.clientY - lbStartY;
+    lbApply();
+  }
 });
-lbStage.addEventListener("pointerup", () => {
-  lbDragging = false;
-  lbStage.classList.remove("panning");
-});
+function lbEndPointer(e) {
+  lbPointers.delete(e.pointerId);
+  if (lbPointers.size < 2) lbPinchStart = 0;
+  if (lbPointers.size === 0) {
+    lbDragging = false;
+    lbStage.classList.remove("panning");
+  }
+}
+lbStage.addEventListener("pointerup", lbEndPointer);
+lbStage.addEventListener("pointercancel", lbEndPointer);
 
 // Escape closes the lightbox first, then the modal
 document.addEventListener("keydown", e => {
@@ -469,11 +516,39 @@ document.querySelectorAll(".tab").forEach(tab => {
 });
 
 /* ============================================================
+   LANGUAGE
+   ============================================================ */
+
+function applyLanguage() {
+  localStorage.setItem(LANG_KEY, lang);
+  document.documentElement.lang = lang;
+
+  // translate static elements tagged with data-i18n
+  document.querySelectorAll("[data-i18n]").forEach(el => {
+    el.textContent = t(el.dataset.i18n);
+  });
+  // highlight the active language button
+  document.querySelectorAll(".lang").forEach(b =>
+    b.classList.toggle("active", b.dataset.lang === lang));
+
+  // re-render everything that contains translated content
+  renderPalette();
+  renderWorkbench();
+  renderFilters();
+  renderDex();
+  updateProgress();
+}
+
+document.querySelectorAll(".lang").forEach(btn => {
+  btn.addEventListener("click", () => {
+    if (lang === btn.dataset.lang) return;
+    lang = btn.dataset.lang;
+    applyLanguage();
+  });
+});
+
+/* ============================================================
    INIT
    ============================================================ */
 
-renderPalette();
-renderWorkbench();
-renderFilters();
-renderDex();
-updateProgress();
+applyLanguage();   // renders palette, workbench, filters, dex + progress
