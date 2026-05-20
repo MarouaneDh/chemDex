@@ -3,7 +3,8 @@
     "allow": [
       "Bash(node --check data.js)",
       "Bash(node --check app.js)",
-      "Bash(start index.html)"
+      "Bash(start index.html)",
+      "Bash(node *)"
     ]
   }
 }

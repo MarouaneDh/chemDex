@@ -10,13 +10,16 @@
 const STORAGE_KEY = "chemdex.discoveries";
 
 /* ---------- Persistence ---------- */
-// discoveries = { [moleculeId]: ISODateString }
+// discoveries = { [moleculeId]: { date: ISOString, shiny: boolean } }
 function loadDiscoveries() {
-  try {
-    return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {};
-  } catch {
-    return {};
+  let raw;
+  try { raw = JSON.parse(localStorage.getItem(STORAGE_KEY)) || {}; }
+  catch { return {}; }
+  // migrate the old format (id -> ISO string) to (id -> {date, shiny})
+  for (const id in raw) {
+    if (typeof raw[id] === "string") raw[id] = { date: raw[id], shiny: false };
   }
+  return raw;
 }
 function saveDiscoveries(d) {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(d));
@@ -137,11 +140,13 @@ function renderPalette() {
 
 function addAtom(symbol) {
   workbench.push(symbol);
+  SFX.pop();
   renderWorkbench();
 }
 
 function removeAtom(index) {
   workbench.splice(index, 1);
+  SFX.place();
   renderWorkbench();
 }
 
@@ -194,20 +199,19 @@ function combine() {
 
   if (!match) {
     setMessage(t("noMatch", hillFormula(counts)), "bad");
+    SFX.fail();
+    mascotSay(mascotLine("fail"), 4000);
     return;
   }
 
-  const alreadyKnown = !!discoveries[match.id];
-  if (!alreadyKnown) {
-    discoveries[match.id] = new Date().toISOString();
-    saveDiscoveries(discoveries);
-    updateProgress();
-    renderDex();
-    openMoleculeModal(match, true);
+  if (!discoveries[match.id]) {
+    gameDiscover(match);            // game.js: shiny roll, XP, fx, modal
   } else {
     setMessage(t("alreadyKnown", molField(match, "commonName")), "ok");
+    SFX.click();
     openMoleculeModal(match, false);
   }
+  checkDailyPuzzleSolved(match);    // no-op unless this matches today's prompt
   workbench = [];
   renderWorkbench();
 }
@@ -220,6 +224,7 @@ function setMessage(text, kind) {
 document.getElementById("combineBtn").addEventListener("click", combine);
 document.getElementById("clearBtn").addEventListener("click", () => {
   workbench = [];
+  SFX.click();
   renderWorkbench();
 });
 
@@ -266,47 +271,58 @@ function renderDex() {
       ? MOLECULES
       : MOLECULES.filter(m => m.category === dexFilter);
 
-  list.forEach(m => {
-    const found = !!discoveries[m.id];
-    const card = document.createElement("div");
-    card.className =
-      "dex-card " +
-      (found ? "discovered r-" + m.rarity : "locked");
+  // sort by tier so the difficulty curve reads top-to-bottom
+  list.slice().sort((a, b) => a.tier - b.tier || a.id.localeCompare(b.id))
+    .forEach(m => {
+      const found = !!discoveries[m.id];
+      const shiny = found && isShiny(m.id);
+      const card = document.createElement("div");
+      card.className = "dex-card " +
+        (found ? "discovered r-" + m.rarity + (shiny ? " shiny" : "") : "locked");
 
-    if (found) {
-      card.innerHTML = `
-        <span class="id">${m.id.replace("mol_", "#")}</span>
-        <div class="img-wrap">
-          <img src="${structureURL(m.pubchemCid, "2d")}" alt="${molField(m, "commonName")}"
-               onerror="this.replaceWith(document.createTextNode('🧬'))" />
-        </div>
-        <div class="name">${molField(m, "commonName")}</div>
-        <div class="formula">${fmtFormula(m.formula)}</div>
-        <div class="badges">
-          <span class="badge rarity-${m.rarity}">${term(m.rarity)}</span>
-          <span class="badge badge-type">${term(m.type)}</span>
-        </div>`;
-      card.addEventListener("click", () => openMoleculeModal(m, false));
-    } else {
-      // Locked: name hidden, but formula shown as a build hint
-      card.innerHTML = `
-        <span class="id">${m.id.replace("mol_", "#")}</span>
-        <div class="img-wrap">?</div>
-        <div class="name">${t("locked")}</div>
-        <div class="formula">${t("hint")} ${fmtFormula(m.formula)}</div>
-        <div class="badges">
-          <span class="badge rarity-common">${t("undiscovered")}</span>
-        </div>`;
-      card.title = t("lockedTitle");
-    }
-    dexGrid.appendChild(card);
-  });
+      const idTag = `<span class="id">${m.id.replace("mol_", "#")}</span>`;
+
+      if (found) {
+        card.innerHTML = `
+          ${idTag}
+          ${shiny ? '<span class="shiny-star">✨</span>' : ""}
+          <div class="img-wrap">
+            <img src="${structureURL(m.pubchemCid, "2d")}" alt="${molField(m, "commonName")}"
+                 onerror="this.replaceWith(document.createTextNode('🧬'))" />
+          </div>
+          <div class="name">${molField(m, "commonName")}</div>
+          <div class="formula">${fmtFormula(m.formula)}</div>
+          <div class="badges">
+            <span class="badge rarity-${m.rarity}">${term(m.rarity)}</span>
+            <span class="badge badge-type">${term(m.type)}</span>
+          </div>`;
+        card.addEventListener("click", () => openMoleculeModal(m, false));
+      } else if (tierUnlocked(m.tier)) {
+        // discoverable — show a riddle clue instead of the answer
+        card.innerHTML = `
+          ${idTag}
+          <div class="img-wrap">?</div>
+          <div class="name">${t("locked")}</div>
+          <div class="clue">${t("clueLabel")} ${clueFor(m)}</div>`;
+        card.title = t("lockedTitle");
+      } else {
+        // tier not yet unlocked
+        card.classList.add("tier-locked");
+        card.innerHTML = `
+          ${idTag}
+          <div class="img-wrap">🔒</div>
+          <div class="name">${t("locked")}</div>
+          <div class="clue">${t("tierLocked", TIER_UNLOCK[m.tier])}</div>`;
+      }
+      dexGrid.appendChild(card);
+    });
 }
 
 document.getElementById("resetBtn").addEventListener("click", () => {
   if (confirm(t("resetConfirm"))) {
     discoveries = {};
     saveDiscoveries(discoveries);
+    gameReset();        // also wipe XP / badges / missions
     updateProgress();
     renderDex();
   }
@@ -319,14 +335,68 @@ document.getElementById("resetBtn").addEventListener("click", () => {
 const modalOverlay = document.getElementById("modal");
 const modalCard    = document.getElementById("modalCard");
 
+// Build the "Related discoveries" row that lives at the bottom of the
+// detail modal. Discovered neighbors render as clickable thumbnails;
+// undiscovered ones in unlocked tiers show their riddle clue to entice
+// the player; tier-locked ones show 🔒. Returns "" when there's nothing
+// to show, so we don't render an empty heading.
+function renderRelatedSection(m) {
+  const ids = (typeof RELATED !== "undefined" && RELATED[m.id]) || [];
+  if (ids.length === 0) return "";
+  const neighbors = ids
+    .map(id => MOLECULES.find(x => x.id === id))
+    .filter(Boolean);
+  if (neighbors.length === 0) return "";
+
+  const chips = neighbors.map(r => {
+    const found = !!discoveries[r.id];
+    if (found) {
+      return `
+        <button class="related-chip found" data-id="${r.id}" type="button">
+          <span class="rc-img"><img src="${structureURL(r.pubchemCid, "2d")}" alt=""
+              onerror="this.replaceWith(document.createTextNode('🧬'))" /></span>
+          <span class="rc-text">
+            <span class="rc-name">${molField(r, "commonName")}</span>
+            <span class="rc-formula">${fmtFormula(r.formula)}</span>
+          </span>
+        </button>`;
+    }
+    if (tierUnlocked(r.tier)) {
+      return `
+        <button class="related-chip locked" data-id="${r.id}" type="button" title="${t("lockedTitle")}">
+          <span class="rc-img rc-q">?</span>
+          <span class="rc-text">
+            <span class="rc-name">${t("locked")}</span>
+            <span class="rc-clue">${clueFor(r)}</span>
+          </span>
+        </button>`;
+    }
+    return `
+      <div class="related-chip tier-locked">
+        <span class="rc-img">🔒</span>
+        <span class="rc-text">
+          <span class="rc-name">${t("locked")}</span>
+          <span class="rc-clue">${t("tierLocked", TIER_UNLOCK[r.tier])}</span>
+        </span>
+      </div>`;
+  }).join("");
+
+  return `
+    <div class="section-title">${t("relatedTitle")}</div>
+    <div class="related-grid">${chips}</div>`;
+}
+
 function openMoleculeModal(m, isNew) {
-  const date = discoveries[m.id]
-    ? new Date(discoveries[m.id]).toLocaleString()
-    : null;
+  const rec = discoveries[m.id];
+  const date = rec ? new Date(rec.date).toLocaleString() : null;
+  const shiny = !!(rec && rec.shiny);
+  const tag = shiny ? t("shinyDiscovery") : (isNew ? t("newDiscovery") : "");
+
+  modalCard.className = "modal" + (shiny ? " shiny" : "") + (isNew ? " reveal" : "");
 
   const name = molField(m, "commonName");
   modalCard.innerHTML = `
-    ${isNew ? `<span class="discovery-tag">${t("newDiscovery")}</span>` : ""}
+    ${tag ? `<span class="discovery-tag">${tag}</span>` : ""}
     <h2>${name}</h2>
     <div class="sub">${molField(m, "iupacName")} &nbsp;·&nbsp; ${fmtFormula(m.formula)}</div>
     <div class="struct" id="structBox" title="${t("clickZoom")}">
@@ -356,12 +426,28 @@ function openMoleculeModal(m, isNew) {
     </div>
 
     <div class="funfact">💡 ${molField(m, "funFact")}</div>
+
+    ${renderRelatedSection(m)}
+
     ${date ? `<div class="discovered-on">${t("discoveredOn")} ${date}</div>` : ""}
 
     <button class="btn modal-close">${t("close")}</button>
   `;
   modalCard.querySelector(".modal-close")
     .addEventListener("click", closeModal);
+  modalCard.querySelectorAll(".related-chip.found").forEach(chip => {
+    chip.addEventListener("click", () => {
+      const target = MOLECULES.find(x => x.id === chip.dataset.id);
+      if (target) openMoleculeModal(target, false);
+    });
+  });
+  modalCard.querySelectorAll(".related-chip.locked").forEach(chip => {
+    chip.addEventListener("click", () => {
+      // Close so the player can hop to the Lab and try to build it.
+      closeModal();
+      document.querySelector('.tab[data-tab="lab"]').click();
+    });
+  });
   setupStructureViewer(m);
   modalOverlay.hidden = false;
 }
@@ -537,6 +623,10 @@ function applyLanguage() {
   renderFilters();
   renderDex();
   updateProgress();
+  renderQuests();
+  updateTopbarLevel();
+  updateMuteButton();
+  renderDailyPuzzle();
 }
 
 document.querySelectorAll(".lang").forEach(btn => {
@@ -551,4 +641,5 @@ document.querySelectorAll(".lang").forEach(btn => {
    INIT
    ============================================================ */
 
-applyLanguage();   // renders palette, workbench, filters, dex + progress
+applyLanguage();   // renders palette, workbench, filters, dex, quests + progress
+initGame();        // game.js: badges/missions sync, mascot, listeners

@@ -22,11 +22,14 @@
     <nav class="tabs">
       <button class="tab active" data-tab="lab" data-i18n="tabLab">🧪 Lab</button>
       <button class="tab" data-tab="dex" data-i18n="tabDex">📖 Dex</button>
+      <button class="tab" data-tab="quests" data-i18n="tabQuests">🏅 Quests</button>
     </nav>
+    <button id="levelChip" class="level-chip" title="Level"></button>
     <div class="progress">
       <span id="progressLabel">0 / 20</span>
       <div class="progress-bar"><div id="progressFill"></div></div>
     </div>
+    <button id="muteBtn" class="icon-btn" title="Sound">🔊</button>
     <div class="lang-switch">
       <button class="lang" data-lang="en">EN</button>
       <button class="lang" data-lang="fr">FR</button>
@@ -36,6 +39,20 @@
   <main>
     <!-- ============ LAB ============ -->
     <section id="lab" class="view active">
+
+      <!-- Daily puzzle banner — one per day, no streak -->
+      <div id="dailyPanel" class="daily-panel">
+        <div class="daily-main">
+          <span class="daily-emoji">🧩</span>
+          <div class="daily-body">
+            <div id="dailyTitle" class="daily-title">🧩 Today's puzzle</div>
+            <p id="dailyPrompt" class="daily-prompt"></p>
+            <div id="dailyHintBox" class="daily-hintbox" hidden></div>
+          </div>
+          <button id="dailyHintBtn" class="btn daily-hint-btn" hidden></button>
+        </div>
+      </div>
+
       <div class="lab-grid">
 
         <!-- Atom palette -->
@@ -72,7 +89,18 @@
       </div>
       <div id="dexGrid" class="dex-grid"></div>
     </section>
+
+    <!-- ============ QUESTS ============ -->
+    <section id="quests" class="view">
+      <div id="questsContent"></div>
+    </section>
   </main>
+
+  <!-- Mascot -->
+  <div id="mascot" class="mascot" title="Hint">
+    <div id="mascotBubble" class="mascot-bubble" hidden></div>
+    <div id="mascotAvatar" class="mascot-avatar">⚛️</div>
+  </div>
 
   <!-- Modal (discovery + detail) -->
   <div id="modal" class="modal-overlay" hidden>
@@ -96,6 +124,7 @@
 
   <script src="data.js"></script>
   <script src="i18n.js"></script>
+  <script src="game.js"></script>
   <script src="app.js"></script>
 </body>
 </html>

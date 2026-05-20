@@ -40,7 +40,30 @@ const I18N = {
     inchiKey:       "InChIKey:",
     discoveredOn:   "Discovered:",
     close:          "Close",
-    resetConfirm:   "Reset all discoveries? This cannot be undone."
+    resetConfirm:   "Reset all discoveries? This cannot be undone.",
+    tabQuests:      "🏅 Quests",
+    level:          "Level",
+    toNext:         "XP to next level",
+    maxLevel:       "Max level reached!",
+    discovered:     "Found",
+    badges:         "Badges",
+    missions:       "Missions",
+    levelUp:        "LEVEL UP!",
+    badgeEarned:    "Badge earned:",
+    missionDone:    "Mission complete:",
+    soundOn:        "Sound on",
+    soundOff:       "Sound off",
+    clueLabel:      "Clue:",
+    shinyDiscovery: "✨ SHINY DISCOVERY",
+    tierLocked:     n => `🔒 Unlocks at ${n} discoveries`,
+    atomHint:       parts => `You'll need: ${parts}`,
+    tapForMore:     "tap me for a bigger hint",
+    dailyTitle:     "Today's puzzle",
+    dailyHint:      "💡 Show atoms",
+    dailySolved:    name => `✅ Solved today: ${name}! Come back tomorrow for a new one.`,
+    dailySolvedToast: "Daily puzzle solved!",
+    dailyEmpty:     "Discover a few molecules to unlock today's puzzle.",
+    relatedTitle:   "Related discoveries"
   },
   fr: {
     tagline:        "Labo de découverte de molécules",
@@ -76,7 +99,30 @@ const I18N = {
     inchiKey:       "Clé InChI :",
     discoveredOn:   "Découvert :",
     close:          "Fermer",
-    resetConfirm:   "Réinitialiser toutes les découvertes ? Action irréversible."
+    resetConfirm:   "Réinitialiser toutes les découvertes ? Action irréversible.",
+    tabQuests:      "🏅 Quêtes",
+    level:          "Niveau",
+    toNext:         "XP avant le niveau suivant",
+    maxLevel:       "Niveau maximum atteint !",
+    discovered:     "Trouvées",
+    badges:         "Badges",
+    missions:       "Missions",
+    levelUp:        "NIVEAU SUPÉRIEUR !",
+    badgeEarned:    "Badge obtenu :",
+    missionDone:    "Mission accomplie :",
+    soundOn:        "Son activé",
+    soundOff:       "Son coupé",
+    clueLabel:      "Indice :",
+    shinyDiscovery: "✨ DÉCOUVERTE BRILLANTE",
+    tierLocked:     n => `🔒 Se débloque à ${n} découvertes`,
+    atomHint:       parts => `Il te faut : ${parts}`,
+    tapForMore:     "touche-moi pour un indice plus précis",
+    dailyTitle:     "Énigme du jour",
+    dailyHint:      "💡 Voir les atomes",
+    dailySolved:    name => `✅ Résolue : ${name} ! Reviens demain pour une nouvelle énigme.`,
+    dailySolvedToast: "Énigme du jour résolue !",
+    dailyEmpty:     "Découvre quelques molécules pour débloquer l'énigme du jour.",
+    relatedTitle:   "Découvertes liées"
   }
 };
 
@@ -84,6 +130,24 @@ const I18N = {
 const ATOM_NAMES_FR = {
   H: "Hydrogène", C: "Carbone", N: "Azote", O: "Oxygène",
   Na: "Sodium",   S: "Soufre",  Cl: "Chlore"
+};
+
+// Soft "level 1" hint copy, picked by molecule type. Reveals the family,
+// not the atoms — leaves the player room to puzzle it out.
+const TYPE_NUDGES = {
+  oxide:          { en: "I'm thinking of something with oxygen attached…",       fr: "Je pense à quelque chose avec de l'oxygène attaché…" },
+  salt:           { en: "How about a salt? You'd taste it in the sea.",          fr: "Et un sel ? Tu en goûterais dans la mer." },
+  hydrocarbon:    { en: "Try a fuel — just carbon and hydrogen.",                fr: "Essaie un combustible — du carbone et de l'hydrogène, c'est tout." },
+  alcohol:        { en: "An alcohol! Its name usually ends in -ol.",             fr: "Un alcool ! Son nom finit souvent par -ol." },
+  acid:           { en: "Let's build an acid — sharp and sour!",                 fr: "Construisons un acide — piquant et acide !" },
+  base:           { en: "A base — the opposite of an acid.",                     fr: "Une base — l'opposé d'un acide." },
+  sugar:          { en: "Something sweet — the fuel cells burn for energy.",     fr: "Quelque chose de sucré — le carburant des cellules." },
+  pharmaceutical: { en: "A medicine — check your pharmacy shelf!",               fr: "Un médicament — regarde dans la pharmacie !" },
+  alkaloid:       { en: "A plant chemical that wakes you up or calms you…",      fr: "Une molécule végétale qui réveille ou calme…" },
+  element:        { en: "Just one kind of atom — but how many of them?",         fr: "Un seul type d'atome — mais combien ?" },
+  peroxide:       { en: "A close cousin of water — but more reactive.",          fr: "Un proche cousin de l'eau — mais plus réactif." },
+  ketone:         { en: "A sharp-smelling solvent — handy in nail care.",        fr: "Un solvant à l'odeur piquante — utile pour les ongles." },
+  aldehyde:       { en: "Carbon meets oxygen with a double bond — sharp stuff.", fr: "Carbone et oxygène par double liaison — substance piquante." }
 };
 
 // Category / type / rarity terms — French only (English = the key itself).
@@ -94,6 +158,7 @@ const TERMS_FR = {
   oxide: "oxyde", salt: "sel", hydrocarbon: "hydrocarbure", alcohol: "alcool",
   base: "base", acid: "acide", sugar: "sucre", pharmaceutical: "médicament",
   alkaloid: "alcaloïde", element: "élément", peroxide: "peroxyde",
+  ketone: "cétone", aldehyde: "aldéhyde",
   // rarities
   common: "commun", uncommon: "peu commun", rare: "rare", epic: "épique"
 };
@@ -219,5 +284,65 @@ const MOL_FR = {
     description: "Un gaz toxique à l'odeur âcre et irritante, libéré par les volcans et la combustion de combustibles soufrés.",
     uses: ["Conservateur du vin et des fruits secs", "Agent de blanchiment", "Production d'acide sulfurique", "Réfrigérant"],
     funFact: "Le dioxyde de soufre projeté par les grandes éruptions volcaniques peut refroidir la planète entière en réfléchissant la lumière du soleil vers l'espace."
+  },
+  mol_021: {
+    commonName: "Hydrogène", iupacName: "Dihydrogène",
+    description: "Le gaz le plus simple et le plus léger de l'univers. Une molécule diatomique incolore et inodore qui brûle de façon explosive dans l'air pour former de l'eau pure.",
+    uses: ["Carburant pour fusées (moteurs principaux de la navette spatiale)", "Synthèse de l'ammoniac (procédé Haber)", "Piles à combustible pour énergie propre", "Hydrogénation des graisses dans l'alimentation"],
+    funFact: "L'hydrogène constitue environ 75 % de toute la matière ordinaire de l'univers — c'est ce dont sont principalement faites les étoiles."
+  },
+  mol_022: {
+    commonName: "Azote", iupacName: "Diazote",
+    description: "Le gaz incolore et inodore qui constitue environ 78 % de l'atmosphère terrestre. Ses deux atomes sont reliés par une triple liaison particulièrement forte.",
+    uses: ["Atmosphère inerte pour l'emballage alimentaire", "Azote liquide pour congélation rapide", "Gonflage des pneus en aéronautique", "Production d'ammoniac pour engrais"],
+    funFact: "La triple liaison N≡N est si forte que la foudre est l'une des rares forces naturelles capables de la rompre — c'est ainsi que les plantes obtiennent leur azote."
+  },
+  mol_023: {
+    commonName: "Méthanol", iupacName: "Méthanol",
+    description: "L'alcool le plus simple — incolore, inflammable et toxique en cas d'ingestion. Autrefois appelé alcool de bois car on le produisait en chauffant du bois.",
+    uses: ["Solvant en laboratoire", "Antigel pour lave-glace", "Carburant pour voitures de course (combustion propre et lumineuse)", "Production de biodiesel"],
+    funFact: "Boire même de petites quantités de méthanol peut rendre aveugle — le corps le transforme en formaldéhyde, qui endommage le nerf optique."
+  },
+  mol_024: {
+    commonName: "Sulfure d'hydrogène", iupacName: "Sulfure d'hydrogène",
+    description: "Un gaz incolore à l'odeur caractéristique d'œuf pourri. Très toxique à forte dose, mais produit par les bactéries des marécages — et même dans tes propres intestins.",
+    uses: ["Production de soufre élémentaire et d'acide sulfurique", "Production d'eau lourde pour réacteurs nucléaires", "Identification des minerais sulfurés", "Sous-produit de la géothermie"],
+    funFact: "Ton nez détecte le sulfure d'hydrogène à des concentrations extrêmement faibles — mais s'il devient assez fort pour anesthésier ton odorat, il est dangereusement proche du seuil mortel."
+  },
+  mol_025: {
+    commonName: "Acétone", iupacName: "Propan-2-one",
+    description: "Un solvant organique incolore à l'évaporation rapide et à l'odeur sucrée et piquante. Ton foie en produit naturellement de petites quantités.",
+    uses: ["Dissolvant pour vernis à ongles", "Nettoyage de la verrerie de laboratoire", "Production de plastiques et de médicaments", "Diluant à colle et dégraissant"],
+    funFact: "Les personnes suivant un régime très pauvre en glucides peuvent dégager une légère odeur d'acétone — leur corps brûle des graisses au lieu du sucre et fabrique des cétones."
+  },
+  mol_026: {
+    commonName: "Bicarbonate de soude", iupacName: "Hydrogénocarbonate de sodium",
+    description: "Une poudre cristalline blanche qui est à la fois une base douce et un sel. Effervesce vigoureusement au contact d'un acide en libérant du dioxyde de carbone.",
+    uses: ["Levure chimique pour pâtisseries", "Antiacide contre les troubles digestifs", "Extincteur (étouffe les flammes par CO2)", "Nettoyant abrasif doux"],
+    funFact: "Mélanger du bicarbonate avec du vinaigre crée la fameuse éruption volcanique mousseuse — c'est du CO2 gazeux qui jaillit d'une réaction acide-base."
+  },
+  mol_027: {
+    commonName: "Formaldéhyde", iupacName: "Méthanal",
+    description: "L'aldéhyde le plus simple — un gaz piquant soluble dans l'eau, surtout connu comme conservateur des spécimens biologiques.",
+    uses: ["Embaumement et conservation de spécimens", "Fabrication de contreplaqué et de résines", "Désinfectant en milieu médical", "Production de plastiques comme la Bakélite"],
+    funFact: "Les astronomes ont détecté du formaldéhyde dans des nuages de gaz interstellaires — l'une des premières molécules organiques complexes jamais trouvées dans l'espace lointain."
+  },
+  mol_028: {
+    commonName: "Acide formique", iupacName: "Acide méthanoïque",
+    description: "L'acide carboxylique le plus simple — et la substance responsable de la brûlure des piqûres de fourmi. Son nom vient du latin signifiant fourmi.",
+    uses: ["Conservation des fourrages (ensilage)", "Tannage du cuir", "Antibactérien dans l'alimentation animale", "Dégivrage des pistes d'aéroport"],
+    funFact: "Certaines fourmis projettent de l'acide formique depuis leur abdomen pour se défendre — assez puissant pour faire lâcher prise à un lézard attaquant."
+  },
+  mol_029: {
+    commonName: "Éthylène", iupacName: "Éthène",
+    description: "Un hydrocarbure incolore à l'odeur sucrée et le plus simple des alcènes. Les plantes le produisent comme hormone déclenchant le mûrissement des fruits.",
+    uses: ["Production du polyéthylène (le plastique le plus courant sur Terre)", "Mûrissement des fruits récoltés en entrepôt", "Carburant de soudage (chalumeaux oxyéthylène)", "Fabrication d'antigel (éthylène glycol)"],
+    funFact: "Mettre une banane mûre à côté d'autres fruits accélère leur mûrissement — les bananes libèrent beaucoup d'éthylène en mûrissant, signalant aux voisines de mûrir aussi."
+  },
+  mol_030: {
+    commonName: "Glycine", iupacName: "Acide 2-aminoacétique",
+    description: "Le plus petit des 20 acides aminés qui composent toutes les protéines de ton corps. Légèrement sucrée au goût — son nom vient du grec signifiant doux.",
+    uses: ["Brique élémentaire des protéines du vivant", "Édulcorant et exhausteur de goût alimentaire", "Neurotransmetteur inhibiteur dans la moelle épinière", "Tampon pharmaceutique"],
+    funFact: "La glycine a été détectée sur des comètes et dans des nuages interstellaires — soutenant l'idée que les briques élémentaires du vivant pourraient venir de l'espace."
   }
 };

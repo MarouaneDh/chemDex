@@ -238,5 +238,151 @@ const MOLECULES = [
     smiles: "O=S=O", inchiKey: "RAHZWNYVWXNFOC-UHFFFAOYSA-N", molarMass: 64.066,
     structureImage: "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/cid/1119/PNG",
     funFact: "Sulfur dioxide lofted by large volcanic eruptions can cool the entire planet by reflecting sunlight back into space."
+  },
+  {
+    id: "mol_021", pubchemCid: 783, formula: "H2",
+    commonName: "Hydrogen", iupacName: "Dihydrogen",
+    atoms: { H: 2 },
+    description: "The simplest and lightest gas in the universe. A colorless, odorless diatomic molecule that burns explosively in air to make pure water.",
+    uses: ["Rocket fuel (Space Shuttle main engines)", "Ammonia synthesis (Haber process)", "Hydrogen fuel cells for clean energy", "Hydrogenating fats in food production"],
+    category: "inorganic", type: "element", rarity: "common", tier: 1,
+    smiles: "[H][H]", inchiKey: "UFHFLCQGNIYNRP-UHFFFAOYSA-N", molarMass: 2.016,
+    structureImage: "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/cid/783/PNG",
+    funFact: "Hydrogen makes up about 75% of all the ordinary matter in the universe — it's what stars are mostly made of."
+  },
+  {
+    id: "mol_022", pubchemCid: 947, formula: "N2",
+    commonName: "Nitrogen", iupacName: "Dinitrogen",
+    atoms: { N: 2 },
+    description: "The colorless, odorless gas that makes up about 78% of Earth's atmosphere. Its two atoms are held together by an unusually strong triple bond.",
+    uses: ["Inert atmosphere for food packaging", "Liquid nitrogen for fast freezing", "Tire inflation in aviation", "Producing ammonia for fertilizer"],
+    category: "inorganic", type: "element", rarity: "common", tier: 1,
+    smiles: "N#N", inchiKey: "IJGRMHOSHXDMSA-UHFFFAOYSA-N", molarMass: 28.014,
+    structureImage: "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/cid/947/PNG",
+    funFact: "The N≡N triple bond is so strong that lightning is one of the few natural forces that can break it apart — which is how plants get their nitrogen."
+  },
+  {
+    id: "mol_023", pubchemCid: 887, formula: "CH4O",
+    commonName: "Methanol", iupacName: "Methanol",
+    atoms: { C: 1, H: 4, O: 1 },
+    description: "The simplest alcohol — colorless, flammable, and toxic if swallowed. Once called wood alcohol because it used to be made by heating wood.",
+    uses: ["Solvent in laboratories", "Antifreeze in windshield washer fluid", "Fuel for racing cars (burns clean and bright)", "Biodiesel production"],
+    category: "organic", type: "alcohol", rarity: "uncommon", tier: 2,
+    smiles: "CO", inchiKey: "OKKJLVBELUTLKV-UHFFFAOYSA-N", molarMass: 32.042,
+    structureImage: "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/cid/887/PNG",
+    funFact: "Drinking even small amounts of methanol can cause blindness — the body converts it into formaldehyde, which damages the optic nerve."
+  },
+  {
+    id: "mol_024", pubchemCid: 402, formula: "H2S",
+    commonName: "Hydrogen Sulfide", iupacName: "Hydrogen sulfide",
+    atoms: { H: 2, S: 1 },
+    description: "A colorless gas with the unmistakable smell of rotten eggs. Highly toxic in large doses but produced by bacteria in swamps — and in your own gut.",
+    uses: ["Production of elemental sulfur and sulfuric acid", "Heavy water production for nuclear reactors", "Identifying sulfide ores in mining", "Geothermal power by-product"],
+    category: "inorganic", type: "acid", rarity: "uncommon", tier: 2,
+    smiles: "S", inchiKey: "RWSOTUBLDIXVET-UHFFFAOYSA-N", molarMass: 34.08,
+    structureImage: "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/cid/402/PNG",
+    funFact: "Your nose can detect hydrogen sulfide at extremely low concentrations — but if it gets strong enough to numb your sense of smell, it's dangerously close to deadly."
+  },
+  {
+    id: "mol_025", pubchemCid: 180, formula: "C3H6O",
+    commonName: "Acetone", iupacName: "Propan-2-one",
+    atoms: { C: 3, H: 6, O: 1 },
+    description: "A colorless, fast-evaporating organic solvent with a sweet, sharp smell. Your liver naturally produces small amounts of it.",
+    uses: ["Nail polish remover", "Cleaning laboratory glassware", "Producing plastics and pharmaceuticals", "Adhesive thinner and degreaser"],
+    category: "organic", type: "ketone", rarity: "uncommon", tier: 2,
+    smiles: "CC(=O)C", inchiKey: "CSCPPACGZOOCGX-UHFFFAOYSA-N", molarMass: 58.08,
+    structureImage: "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/cid/180/PNG",
+    funFact: "People on extreme low-carb diets sometimes smell faintly of acetone — their bodies are burning fat instead of sugar and producing ketones."
+  },
+  {
+    id: "mol_026", pubchemCid: 516892, formula: "NaHCO3",
+    commonName: "Baking Soda", iupacName: "Sodium hydrogen carbonate",
+    atoms: { C: 1, H: 1, Na: 1, O: 3 },
+    description: "A white crystalline powder that is both a mild base and a salt. Fizzes vigorously when it meets an acid, releasing carbon dioxide.",
+    uses: ["Leavening agent in baked goods", "Antacid for indigestion", "Fire extinguisher (smothers flames with CO2)", "Mild abrasive cleaner"],
+    category: "inorganic", type: "base", rarity: "uncommon", tier: 2,
+    smiles: "C(=O)(O)[O-].[Na+]", inchiKey: "UIIMBOGNXHQVGW-UHFFFAOYSA-M", molarMass: 84.007,
+    structureImage: "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/cid/516892/PNG",
+    funFact: "Mixing baking soda with vinegar creates the classic volcano-eruption fizz — that's CO2 gas bursting out of an acid-base reaction."
+  },
+  {
+    id: "mol_027", pubchemCid: 712, formula: "CH2O",
+    commonName: "Formaldehyde", iupacName: "Methanal",
+    atoms: { C: 1, H: 2, O: 1 },
+    description: "The simplest aldehyde — a pungent, water-soluble gas best known as the preservative used to store biological specimens.",
+    uses: ["Embalming and preserving specimens", "Manufacturing plywood and resins", "Disinfectant in medical settings", "Producing plastics like Bakelite"],
+    category: "organic", type: "aldehyde", rarity: "rare", tier: 3,
+    smiles: "C=O", inchiKey: "WSFSSNUMVMOOMR-UHFFFAOYSA-N", molarMass: 30.026,
+    structureImage: "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/cid/712/PNG",
+    funFact: "Astronomers have detected formaldehyde in interstellar gas clouds — one of the first complex organic molecules ever found in deep space."
+  },
+  {
+    id: "mol_028", pubchemCid: 284, formula: "CH2O2",
+    commonName: "Formic Acid", iupacName: "Methanoic acid",
+    atoms: { C: 1, H: 2, O: 2 },
+    description: "The simplest carboxylic acid — and the chemical responsible for the burning sting of ant bites. Its name comes from the Latin word for ant.",
+    uses: ["Preserving livestock feed (silage)", "Leather tanning", "Antibacterial in poultry feed", "Runway de-icer at airports"],
+    category: "organic", type: "acid", rarity: "rare", tier: 3,
+    smiles: "C(=O)O", inchiKey: "BDAGIHXWWSANSR-UHFFFAOYSA-N", molarMass: 46.025,
+    structureImage: "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/cid/284/PNG",
+    funFact: "Some ant species spray formic acid from their abdomens as a defense — strong enough to make an attacking lizard let go fast."
+  },
+  {
+    id: "mol_029", pubchemCid: 6325, formula: "C2H4",
+    commonName: "Ethylene", iupacName: "Ethene",
+    atoms: { C: 2, H: 4 },
+    description: "A colorless, sweet-smelling hydrocarbon and the simplest alkene. Plants produce it as a hormone that triggers fruit to ripen.",
+    uses: ["Producing polyethylene plastic (the most common plastic on Earth)", "Ripening picked fruit in storage", "Welding fuel (oxyethylene torches)", "Making antifreeze (ethylene glycol)"],
+    category: "organic", type: "hydrocarbon", rarity: "rare", tier: 3,
+    smiles: "C=C", inchiKey: "VGGSQFUCUMXWEO-UHFFFAOYSA-N", molarMass: 28.054,
+    structureImage: "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/cid/6325/PNG",
+    funFact: "Putting a ripe banana next to other fruit speeds them up — bananas release a lot of ethylene as they ripen, telling neighbors to ripen too."
+  },
+  {
+    id: "mol_030", pubchemCid: 750, formula: "C2H5NO2",
+    commonName: "Glycine", iupacName: "2-Aminoacetic acid",
+    atoms: { C: 2, H: 5, N: 1, O: 2 },
+    description: "The smallest of the 20 amino acids that build every protein in your body. Slightly sweet to taste — its name comes from the Greek for sweet.",
+    uses: ["Protein building block in all living things", "Sweetener and flavor enhancer in food", "Inhibitory neurotransmitter in the spinal cord", "Buffer in pharmaceuticals"],
+    category: "organic", type: "acid", rarity: "epic", tier: 4,
+    smiles: "C(C(=O)O)N", inchiKey: "DHMQDGOQFOQNFH-UHFFFAOYSA-N", molarMass: 75.067,
+    structureImage: "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/cid/750/PNG",
+    funFact: "Glycine has been detected on comets and in interstellar dust clouds — supporting the idea that the building blocks of life could have arrived from space."
   }
 ];
+
+// Curated chemistry-meaningful neighbors per molecule. The relationships
+// are precursors / products / conjugate pairs / family members — they're
+// the chains a curious player would naturally want to follow.
+const RELATED = {
+  mol_001: ["mol_012", "mol_011"],   // water → peroxide (reactive cousin), O2 (electrolysis)
+  mol_002: ["mol_001", "mol_013"],   // CO2 → water (carbonic acid), CO (incomplete combustion)
+  mol_003: ["mol_014", "mol_015"],   // NaCl → HCl + NaOH (acid + base → salt + water)
+  mol_004: ["mol_029", "mol_002"],   // methane → ethylene (single vs double bond), CO2 (combustion)
+  mol_005: ["mol_017", "mol_008"],   // ethanol → acetic acid (oxidation = vinegar!), glucose (fermentation source)
+  mol_006: ["mol_019", "mol_022"],   // NH3 → HNO3 (Ostwald process), N2 (its source via Haber)
+  mol_007: ["mol_020", "mol_019"],   // H2SO4 → SO2 (precursor), HNO3 (sister strong acid)
+  mol_008: ["mol_002", "mol_030"],   // glucose → CO2 (respiration), glycine (fellow biomolecule)
+  mol_009: ["mol_017", "mol_010"],   // aspirin → acetic acid (acetyl source), caffeine (fellow OTC)
+  mol_010: ["mol_006", "mol_009"],   // caffeine → NH3 (N-containing kin), aspirin (fellow OTC)
+  mol_011: ["mol_021", "mol_012"],   // O2 → H2 (combine to make water!), peroxide
+  mol_012: ["mol_001", "mol_011"],   // H2O2 → water + O2 (decomposition products)
+  mol_013: ["mol_002", "mol_004"],   // CO → CO2 (full combustion), methane (fuel source)
+  mol_014: ["mol_003", "mol_015"],   // HCl → NaCl (salt), NaOH (neutralization partner)
+  mol_015: ["mol_014", "mol_006"],   // NaOH → HCl (neutralization partner), NH3 (fellow base)
+  mol_016: ["mol_004", "mol_018"],   // benzene → methane, propane (hydrocarbon family)
+  mol_017: ["mol_028", "mol_026"],   // acetic acid → formic acid (smaller cousin), baking soda (the vinegar+soda fizz!)
+  mol_018: ["mol_004", "mol_016"],   // propane → methane, benzene
+  mol_019: ["mol_007", "mol_006"],   // HNO3 → H2SO4 (sister acid), NH3 (precursor)
+  mol_020: ["mol_007", "mol_024"],   // SO2 → H2SO4 (oxidation), H2S (sulfur family)
+  mol_021: ["mol_001", "mol_011"],   // H2 → water (electrolysis), O2 (combine to make water)
+  mol_022: ["mol_006", "mol_019"],   // N2 → NH3 (Haber), HNO3 (lightning fixes N2)
+  mol_023: ["mol_005", "mol_027"],   // methanol → ethanol (sister alcohol), formaldehyde (oxidation product)
+  mol_024: ["mol_020", "mol_001"],   // H2S → SO2 (oxidation), water (sister hydride)
+  mol_025: ["mol_023", "mol_027"],   // acetone → methanol (common solvent), formaldehyde (sister carbonyl)
+  mol_026: ["mol_017", "mol_015"],   // baking soda → acetic acid (fizz!), NaOH (sister sodium base)
+  mol_027: ["mol_023", "mol_025"],   // formaldehyde → methanol (parent alcohol), acetone (sister carbonyl)
+  mol_028: ["mol_017", "mol_027"],   // formic acid → acetic acid (bigger cousin), formaldehyde (parent aldehyde)
+  mol_029: ["mol_004", "mol_016"],   // ethylene → methane (saturated cousin), benzene (aromatic step up)
+  mol_030: ["mol_017", "mol_006"]    // glycine → acetic acid (carboxylic root), NH3 (amine root)
+};
