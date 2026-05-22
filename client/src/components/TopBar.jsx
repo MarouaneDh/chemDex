@@ -2,6 +2,7 @@ import { MOLECULES } from "../data/gamedata.js";
 import { LEVELS, currentLevelIndex } from "../game/progression.js";
 import { SFX } from "../game/sfx.js";
 import { useGame } from "../context/GameContext.jsx";
+import { useAuth } from "../context/AuthContext.jsx";
 
 const TABS = [
   { id: "lab", i18n: "tabLab" },
@@ -10,8 +11,11 @@ const TABS = [
 ];
 
 export default function TopBar() {
-  const { t, L, lang, setLang, muted, toggleMute, discoveries, totalXP, activeTab, setActiveTab } =
-    useGame();
+  const {
+    t, L, lang, setLang, muted, toggleMute,
+    discoveries, totalXP, activeTab, setActiveTab, syncStatus, openAuth,
+  } = useGame();
+  const { isAuthed, user } = useAuth();
 
   const found = MOLECULES.filter((m) => discoveries[m.id]).length;
   const total = MOLECULES.length;
@@ -59,6 +63,21 @@ export default function TopBar() {
           <div id="progressFill" style={{ width: (found / total) * 100 + "%" }} />
         </div>
       </div>
+
+      <button
+        className="account-btn"
+        onClick={() => {
+          SFX.click();
+          openAuth();
+        }}
+        title={t("account")}
+      >
+        <span className="account-icon">👤</span>
+        <span className="account-label">
+          {isAuthed ? user.displayName : t("signIn")}
+        </span>
+        {isAuthed && <span className={"sync-dot sync-" + syncStatus} />}
+      </button>
 
       <button className="icon-btn" onClick={toggleMute} title="Sound">
         {muted ? "🔇" : "🔊"}

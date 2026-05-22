@@ -1644,3 +1644,345 @@ main { padding: 30px 26px 60px; max-width: 1180px; margin: 0 auto; }
     to   { opacity: 1; }
   }
 }
+
+/* ============================================================
+   ACCOUNTS & CLOUD SYNC  (Phase 4)
+   ============================================================ */
+
+/* topbar account button */
+.account-btn {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 0 12px;
+  height: 38px;
+  border-radius: 11px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text);
+  font-family: var(--font-display);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: border-color 160ms var(--ease-out), background 160ms var(--ease-out);
+}
+.account-btn:hover { border-color: var(--border-hi); background: var(--surface-2); }
+.account-btn:active { transform: translateY(1px); }
+.account-icon { font-size: 15px; }
+.account-label {
+  max-width: 120px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* sync state dot */
+.sync-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--muted);
+  flex: none;
+}
+.sync-dot.sync-synced  { background: var(--accent); box-shadow: 0 0 7px var(--glow); }
+.sync-dot.sync-syncing { background: var(--accent-2); animation: syncPulse 1s ease-in-out infinite; }
+.sync-dot.sync-error   { background: #fb7185; }
+.sync-dot.sync-offline { background: var(--faint); }
+
+@keyframes syncPulse {
+  0%, 100% { opacity: 0.35; }
+  50%      { opacity: 1; }
+}
+
+/* auth dialog */
+.auth-modal {
+  max-width: 400px;
+  text-align: center;
+  position: relative;
+}
+.auth-x {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+}
+.auth-modal h2 {
+  font-family: var(--font-display);
+  font-size: 22px;
+  margin: 6px 0 0;
+}
+.auth-sub {
+  color: var(--muted);
+  font-size: 13.5px;
+  margin: 8px 0 20px;
+}
+
+.auth-form { display: flex; flex-direction: column; gap: 14px; }
+.auth-field { display: flex; flex-direction: column; gap: 6px; text-align: left; }
+.auth-field label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--muted);
+}
+.auth-field input {
+  height: 42px;
+  padding: 0 13px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--bg-1);
+  color: var(--text);
+  font-size: 14px;
+  font-family: var(--font-body);
+  transition: border-color 150ms var(--ease-out);
+}
+.auth-field input:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+.auth-form .btn { margin-top: 4px; }
+.auth-form .btn[disabled] { opacity: 0.55; cursor: progress; }
+
+.auth-error {
+  color: #fb7185;
+  font-size: 13px;
+  margin: 0;
+  text-align: left;
+}
+.auth-switch {
+  margin-top: 16px;
+  background: none;
+  border: none;
+  color: var(--accent);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.auth-switch:hover { text-decoration: underline; }
+
+/* signed-in account panel */
+.auth-account { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+.auth-avatar {
+  font-size: 40px;
+  width: 74px; height: 74px;
+  display: grid; place-items: center;
+  border-radius: 50%;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  margin-bottom: 4px;
+}
+.auth-name { font-weight: 600; font-size: 15px; margin: 4px 0 0; }
+.auth-email { color: var(--muted); font-size: 13px; margin: 0; }
+.sync-line {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12.5px;
+  color: var(--muted);
+  margin: 16px 0;
+}
+.auth-account .btn { width: 100%; }
+
+/* ============================================================
+   THE CATCH MOMENT  (Priority 2 — discovery cinematic)
+   ============================================================ */
+
+/* discovery cinematic — colour comes from the rarity class on the root */
+.catch-moment {
+  position: fixed;
+  inset: 0;
+  z-index: 235;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  background:
+    radial-gradient(60vmax 60vmax at 50% 46%, rgba(8, 11, 16, 0.78), rgba(4, 6, 10, 0.97));
+  animation: catchVeil 220ms var(--ease-out) both;
+}
+.catch-moment.rarity-uncommon { color: var(--uncommon); }
+.catch-moment.rarity-rare     { color: var(--rare); }
+.catch-moment.rarity-epic     { color: var(--epic); }
+.catch-moment.rarity-common   { color: var(--common); }
+
+/* white light burst */
+.catch-flash {
+  position: absolute;
+  width: 240px; height: 240px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #fff 0%, currentColor 35%, transparent 70%);
+  animation: catchFlash 620ms var(--ease-out) both;
+}
+
+/* expanding shockwave rings — loop for the whole cinematic */
+.catch-ring {
+  position: absolute;
+  width: 200px; height: 200px;
+  border-radius: 50%;
+  border: 3px solid currentColor;
+  opacity: 0;
+  animation: catchRing 1100ms var(--ease-out) infinite;
+}
+.catch-ring-2 { animation-delay: 360ms; }
+.catch-ring-3 { animation-delay: 720ms; }
+.rarity-common .catch-ring-3,
+.rarity-uncommon .catch-ring-3 { display: none; }
+.catch-moment.rarity-epic .catch-ring { border-width: 4px; }
+.catch-moment.shiny .catch-flash { animation-duration: 760ms; }
+
+/* the containment core */
+.catch-core {
+  position: relative;
+  width: 132px; height: 132px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: radial-gradient(circle at 38% 32%, #1b2230, #0a0d13);
+  border: 2px solid currentColor;
+  box-shadow: 0 0 46px currentColor, inset 0 0 30px rgba(0, 0, 0, 0.6);
+  animation: catchPop 640ms var(--ease-spring) both;
+}
+.catch-moment.rarity-epic .catch-core { box-shadow: 0 0 80px currentColor, inset 0 0 30px rgba(0,0,0,.6); }
+.catch-core-glyph { font-size: 58px; animation: catchGlyph 2.4s var(--ease-in-out) infinite; }
+
+/* the discovery caption */
+.catch-label {
+  position: absolute;
+  top: calc(50% + 110px);
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  animation: catchRise 520ms var(--ease-out) 280ms both;
+}
+.catch-tag {
+  font-family: var(--font-display);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  color: currentColor;
+}
+.catch-name {
+  font-family: var(--font-display);
+  font-size: 30px;
+  font-weight: 700;
+  color: var(--text);
+}
+.catch-rarity {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.catch-skip {
+  position: absolute;
+  bottom: 34px;
+  font-size: 12px;
+  color: var(--faint);
+  letter-spacing: 0.08em;
+  animation: fadeOnly 600ms var(--ease-out) 900ms both;
+}
+
+@keyframes catchVeil { from { opacity: 0; } to { opacity: 1; } }
+@keyframes catchFlash {
+  0%   { transform: scale(0.2); opacity: 0.95; }
+  100% { transform: scale(3.2); opacity: 0; }
+}
+@keyframes catchRing {
+  0%   { transform: scale(0.3); opacity: 0; }
+  18%  { opacity: 0.7; }
+  100% { transform: scale(2.5); opacity: 0; }
+}
+@keyframes catchPop {
+  0%   { transform: scale(0) rotate(-40deg); }
+  62%  { transform: scale(1.16) rotate(6deg); }
+  100% { transform: scale(1) rotate(0); }
+}
+@keyframes catchGlyph {
+  0%, 100% { transform: translateY(0) rotate(-4deg); }
+  50%      { transform: translateY(-7px) rotate(4deg); }
+}
+@keyframes catchRise {
+  from { transform: translateY(22px); opacity: 0; }
+  to   { transform: translateY(0);    opacity: 1; }
+}
+
+/* screen shake — applied to <body> for the opening jolt */
+body.catch-shake { animation: catchShake 600ms var(--ease-out) both; }
+@keyframes catchShake {
+  0%, 100% { transform: translate(0, 0); }
+  15% { transform: translate(-7px, 4px); }
+  30% { transform: translate(6px, -5px); }
+  45% { transform: translate(-5px, -3px); }
+  60% { transform: translate(4px, 5px); }
+  78% { transform: translate(-3px, 2px); }
+}
+
+/* ============================================================
+   HOLO BRAG CARD  (Priority 2 — shareable trading card)
+   ============================================================ */
+
+.bragcard-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+.bragcard-frame {
+  position: relative;
+  border-radius: 22px;
+  line-height: 0;
+  animation: catchPop 480ms var(--ease-spring) both;
+}
+.bragcard-frame.holo {
+  box-shadow: 0 0 50px -10px var(--rare);
+}
+.bragcard-frame.rarity-epic.holo { box-shadow: 0 0 56px -8px var(--epic); }
+.bragcard-canvas {
+  display: block;
+  border-radius: 22px;
+  height: min(70vh, 560px);
+  width: auto;
+  max-width: 90vw;
+}
+
+/* the live holo shimmer — exported PNG stays static, this is screen-only */
+.holo-foil {
+  position: absolute;
+  inset: 0;
+  border-radius: 22px;
+  pointer-events: none;
+  background: linear-gradient(
+    115deg,
+    transparent 18%,
+    rgba(255, 255, 255, 0.16) 38%,
+    rgba(120, 220, 255, 0.38) 47%,
+    rgba(200, 140, 255, 0.34) 53%,
+    rgba(255, 255, 255, 0.16) 62%,
+    transparent 80%
+  );
+  background-size: 280% 280%;
+  mix-blend-mode: color-dodge;
+  animation: holoSweep 4.5s linear infinite;
+}
+@keyframes holoSweep {
+  0%   { background-position: 130% 0%; }
+  100% { background-position: -130% 100%; }
+}
+
+.bragcard-actions {
+  display: flex;
+  gap: 10px;
+}
+.bragcard-actions .btn { min-width: 130px; }
+
+/* discovery-modal action row */
+.modal-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 4px;
+}
+.modal-actions .btn { flex: 1; }
+
+@media (prefers-reduced-motion: reduce) {
+  .catch-ring, .catch-core-glyph, .holo-foil { animation: none; }
+  body.catch-shake { animation: none; }
+}

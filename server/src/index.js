@@ -3,6 +3,7 @@ import cors from "cors";
 import dotenv from "dotenv";
 import { connectDB } from "./db.js";
 import authRoutes from "./routes/auth.js";
+import progressRoutes from "./routes/progress.js";
 
 dotenv.config();
 
@@ -21,8 +22,9 @@ app.get("/api/health", (req, res) => {
   });
 });
 
-// Accounts (Phase 3). Cloud-sync of game progress lands in Phase 4.
+// Accounts (Phase 3) and cloud-sync of game progress (Phase 4).
 app.use("/api/auth", authRoutes);
+app.use("/api/progress", progressRoutes);
 
 const PORT = process.env.PORT || 4000;
 

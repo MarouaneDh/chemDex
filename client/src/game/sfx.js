@@ -52,4 +52,10 @@ export const SFX = {
   levelUp: () => chord([523, 659, 784, 1047], 0.4, "triangle", 0.2, 0.12),
   badge: () => chord([659, 988], 0.3, "sine", 0.16, 0.1),
   mission: () => chord([784, 1047], 0.26, "triangle", 0.15, 0.09),
+  // the Catch Moment sting — a low impact under a rising fanfare
+  discover: () => {
+    tone(70, 0.55, "sine", 0.24);
+    tone(110, 0.4, "triangle", 0.14, 0.05);
+    chord([392, 523, 659, 784], 0.5, "triangle", 0.16, 0.09);
+  },
 };

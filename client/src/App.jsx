@@ -6,6 +6,9 @@ import Quests from "./components/quests/Quests.jsx";
 import Modal from "./components/Modal.jsx";
 import Lightbox from "./components/Lightbox.jsx";
 import Mascot from "./components/Mascot.jsx";
+import AuthModal from "./components/auth/AuthModal.jsx";
+import CatchMoment from "./components/CatchMoment.jsx";
+import BragCard from "./components/BragCard.jsx";
 import ChoosePathModal from "./components/atom/ChoosePathModal.jsx";
 import AtomCinematic from "./components/atom/AtomCinematic.jsx";
 import { useGame } from "./context/GameContext.jsx";
@@ -14,18 +17,20 @@ import { useGame } from "./context/GameContext.jsx";
    `active` class — this preserves the CSS fade and keeps view-local
    state (e.g. the Lab workbench) alive across tab switches. */
 export default function App() {
-  const { activeTab, modal, lightbox, closeMolecule, closeLightbox } = useGame();
+  const { activeTab, modal, lightbox, bragCard, closeMolecule, closeLightbox, closeBragCard } =
+    useGame();
 
-  // Escape closes the lightbox first, then the modal
+  // Escape unwinds the overlays from the top: brag card, lightbox, modal
   useEffect(() => {
     const onKey = (e) => {
       if (e.key !== "Escape") return;
-      if (lightbox) closeLightbox();
+      if (bragCard) closeBragCard();
+      else if (lightbox) closeLightbox();
       else if (modal) closeMolecule();
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [lightbox, modal, closeLightbox, closeMolecule]);
+  }, [bragCard, lightbox, modal, closeBragCard, closeLightbox, closeMolecule]);
 
   return (
     <>
@@ -45,10 +50,13 @@ export default function App() {
       </main>
 
       <Mascot />
+      <AuthModal />
       <Modal />
+      <BragCard />
       <Lightbox />
       <ChoosePathModal />
       <AtomCinematic />
+      <CatchMoment />
     </>
   );
 }

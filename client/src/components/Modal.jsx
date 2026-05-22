@@ -7,7 +7,8 @@ import RelatedSection from "./RelatedSection.jsx";
 /* The molecule detail modal. Driven by context `modal` state; renders
    nothing when closed. Tap the structure to open the zoom lightbox. */
 export default function Modal() {
-  const { modal, closeMolecule, openLightbox, t, term, molField, discoveries } = useGame();
+  const { modal, closeMolecule, openLightbox, openBragCard, t, term, molField, discoveries } =
+    useGame();
   const [view, setView] = useState("2d");
 
   const m = modal?.molecule;
@@ -97,9 +98,14 @@ export default function Modal() {
           </div>
         )}
 
-        <button className="btn modal-close" onClick={closeMolecule}>
-          {t("close")}
-        </button>
+        <div className="modal-actions">
+          <button className="btn btn-primary" onClick={() => openBragCard(m)}>
+            {t("bragCard")}
+          </button>
+          <button className="btn modal-close" onClick={closeMolecule}>
+            {t("close")}
+          </button>
+        </div>
       </div>
     </div>
   );

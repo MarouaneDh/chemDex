@@ -34,6 +34,8 @@ import { CLUES } from "../game/clues.js";
 import { confettiBurst, xpPopup, toast } from "../game/fx.js";
 import { makeI18n } from "../i18n/t.js";
 import { setSfxMuted, SFX } from "../game/sfx.js";
+import { apiFetch } from "../api/client.js";
+import { useAuth } from "./AuthContext.jsx";
 
 const GameContext = createContext(null);
 
@@ -60,6 +62,8 @@ function usePersistentState(key, initial) {
 }
 
 export function GameProvider({ children }) {
+  const { token, user } = useAuth();
+
   const [lang, setLang] = usePersistentState("chemdex.lang", "en");
   const [muted, setMuted] = usePersistentState("chemdex.muted", false);
   const [discoveries, setDiscoveries] = usePersistentState("chemdex.discoveries", {});
@@ -80,6 +84,13 @@ export function GameProvider({ children }) {
   const [lightbox, setLightbox] = useState(null);
   // the mascot speech bubble — { text, nonce } | null  (nonce restarts the bounce)
   const [mascot, setMascot] = useState(null);
+  // the account dialog — rendered at the app root, not inside the topbar,
+  // because the topbar's backdrop-filter would trap a fixed overlay
+  const [authOpen, setAuthOpen] = useState(false);
+  // the discovery cinematic — { molecule, shiny, rarity, xp } | null
+  const [catchMoment, setCatchMoment] = useState(null);
+  // the shareable trading card — a molecule | null
+  const [bragCard, setBragCard] = useState(null);
   // Atom Tech Tree — the "Choose Your Path" picker and unlock cinematic
   const [pathModalOpen, setPathModalOpen] = useState(false);
   const [cinematic, setCinematic] = useState(null); // { symbol, branch } | null
@@ -239,11 +250,9 @@ export function GameProvider({ children }) {
     }
     setTotalXP(totalXP + xpGain);
 
-    /* --- presentation --- */
-    SFX.success();
-    if (shiny) setTimeout(() => SFX.sparkle(), 250);
-    confettiBurst(shiny);
-    xpPopup(baseXP, shiny);
+    /* --- presentation ---
+       the find itself plays as a Catch Moment cinematic; the reward
+       toasts fire now, the molecule modal opens once the cinematic ends */
     gotBadges.forEach((b) => {
       SFX.badge();
       toast(b.icon, t("badgeEarned") + " " + L(b));
@@ -262,12 +271,26 @@ export function GameProvider({ children }) {
       confettiBurst(true);
       toast("⬆️", t("levelUp") + " " + L(LEVELS[afterLevel]));
     }
-    openMolecule(m, true);
-    mascotSay(mascotLine(shiny ? "shiny" : "discover", lang));
+    setCatchMoment({ molecule: m, shiny, rarity: m.rarity, xp: baseXP });
     resetIdle();
 
     return { shiny };
   };
+
+  /* The Catch Moment cinematic finished (or was tapped through) — float
+     the XP, open the molecule modal, and let the mascot react. */
+  const finishCatch = () => {
+    if (!catchMoment) return;
+    const cm = catchMoment;
+    setCatchMoment(null);
+    xpPopup(cm.xp, cm.shiny);
+    openMolecule(cm.molecule, true);
+    mascotSay(mascotLine(cm.shiny ? "shiny" : "discover", lang));
+  };
+
+  /* --- Holo Brag Card (shareable trading card) --- */
+  const openBragCard = (m) => setBragCard(m);
+  const closeBragCard = () => setBragCard(null);
 
   /* ============================================================
      ATOM TECH TREE — milestone picks, unlock flow, cinematic
@@ -350,6 +373,86 @@ export function GameProvider({ children }) {
     setPathModalOpen(false);
     setCinematic(null);
   };
+
+  /* ============================================================
+     CLOUD SYNC — push/pull the progress snapshot to the account.
+     The server merges (unions), so PUT is idempotent and never
+     loses progress; the client only ever applies a merged result.
+     ============================================================ */
+  const [syncStatus, setSyncStatus] = useState("offline");
+  const syncReady = useRef(false); // true once the login pull has run
+  const syncedToken = useRef(null);
+  const pushTimer = useRef(null);
+
+  // every persistent slice, in the shape the API expects
+  const getProgressSnapshot = () => ({
+    discoveries,
+    xp: totalXP,
+    badges: earnedBadges,
+    missions: claimedMissions,
+    daily: dailyState,
+    atoms: unlockedAtoms,
+    lang,
+    muted,
+  });
+
+  // overwrite local state with a (merged) snapshot from the server
+  const applyProgress = (p) => {
+    if (!p) return;
+    if (p.discoveries) setDiscoveries(p.discoveries);
+    if (typeof p.xp === "number") setTotalXP(p.xp);
+    if (Array.isArray(p.badges)) setEarnedBadges(p.badges);
+    if (Array.isArray(p.missions)) setClaimedMissions(p.missions);
+    if (p.daily) setDailyState(p.daily);
+    if (Array.isArray(p.atoms) && p.atoms.length) setUnlockedAtoms(p.atoms);
+    if (p.lang) setLang(p.lang);
+    if (typeof p.muted === "boolean") setMuted(p.muted);
+  };
+
+  // on login: push local progress, get the merged result back, apply it
+  useEffect(() => {
+    if (!token || !user) {
+      syncedToken.current = null;
+      syncReady.current = false;
+      setSyncStatus("offline");
+      return;
+    }
+    if (syncedToken.current === token) return; // already synced this session
+    syncedToken.current = token;
+    setSyncStatus("syncing");
+    apiFetch("/progress", { method: "PUT", token, body: getProgressSnapshot() })
+      .then((data) => {
+        applyProgress(data.progress);
+        syncReady.current = true;
+        setSyncStatus("synced");
+      })
+      .catch(() => setSyncStatus("error"));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [token, user]);
+
+  // after that, debounce-push whenever any progress slice changes
+  useEffect(() => {
+    if (!token || !syncReady.current) return;
+    clearTimeout(pushTimer.current);
+    pushTimer.current = setTimeout(() => {
+      setSyncStatus("syncing");
+      apiFetch("/progress", { method: "PUT", token, body: getProgressSnapshot() })
+        .then(() => setSyncStatus("synced"))
+        .catch(() => setSyncStatus("error"));
+    }, 1500);
+    return () => clearTimeout(pushTimer.current);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [
+    token,
+    discoveries,
+    totalXP,
+    earnedBadges,
+    claimedMissions,
+    dailyState,
+    unlockedAtoms,
+    lang,
+    muted,
+  ]);
 
   /* ============================================================
      ONE-TIME INIT — silent badge/mission sync + daily puzzle.
@@ -445,6 +548,15 @@ export function GameProvider({ children }) {
     mascot,
     mascotSay,
     showHint,
+    authOpen,
+    openAuth: () => setAuthOpen(true),
+    closeAuth: () => setAuthOpen(false),
+    catchMoment,
+    finishCatch,
+    bragCard,
+    openBragCard,
+    closeBragCard,
+    syncStatus,
     pathModalOpen,
     lockedAtomList,
     atomPicksPending,

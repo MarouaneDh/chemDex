@@ -32,7 +32,10 @@
       "Bash(ls /c/Users/dabur/AppData/Local/Temp/chemdex-test)",
       "Read(//c/Users/dabur/AppData/Local/Temp/claude/C--Users-dabur-OneDrive-Desktop-chemdex/239f060c-2ee6-4fd4-9f14-d943b22fd442/tasks/**)",
       "Bash(break)",
-      "Bash(curl -s -m 2 http://localhost:4000/api/health)"
+      "Bash(curl -s -m 2 http://localhost:4000/api/health)",
+      "Bash(ls -la icon*.* apple-touch-icon.png)",
+      "Bash(ls client/public)",
+      "Bash(git rm *)"
     ]
   }
 }
