@@ -1,0 +1,54 @@
+import { useEffect } from "react";
+import TopBar from "./components/TopBar.jsx";
+import Lab from "./components/lab/Lab.jsx";
+import Dex from "./components/dex/Dex.jsx";
+import Quests from "./components/quests/Quests.jsx";
+import Modal from "./components/Modal.jsx";
+import Lightbox from "./components/Lightbox.jsx";
+import Mascot from "./components/Mascot.jsx";
+import ChoosePathModal from "./components/atom/ChoosePathModal.jsx";
+import AtomCinematic from "./components/atom/AtomCinematic.jsx";
+import { useGame } from "./context/GameContext.jsx";
+
+/* The app shell. Each tab's view is always mounted and toggled with the
+   `active` class — this preserves the CSS fade and keeps view-local
+   state (e.g. the Lab workbench) alive across tab switches. */
+export default function App() {
+  const { activeTab, modal, lightbox, closeMolecule, closeLightbox } = useGame();
+
+  // Escape closes the lightbox first, then the modal
+  useEffect(() => {
+    const onKey = (e) => {
+      if (e.key !== "Escape") return;
+      if (lightbox) closeLightbox();
+      else if (modal) closeMolecule();
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [lightbox, modal, closeLightbox, closeMolecule]);
+
+  return (
+    <>
+      <TopBar />
+      <main>
+        <section className={"view" + (activeTab === "lab" ? " active" : "")}>
+          <Lab />
+        </section>
+
+        <section className={"view" + (activeTab === "dex" ? " active" : "")}>
+          <Dex />
+        </section>
+
+        <section className={"view" + (activeTab === "quests" ? " active" : "")}>
+          <Quests />
+        </section>
+      </main>
+
+      <Mascot />
+      <Modal />
+      <Lightbox />
+      <ChoosePathModal />
+      <AtomCinematic />
+    </>
+  );
+}

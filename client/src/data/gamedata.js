@@ -6,7 +6,7 @@
 
 // The draggable atoms available in the Lab. `valence` is shown as
 // flavour info; matching is done purely on atom counts.
-const ATOMS = [
+export const ATOMS = [
   { symbol: "H",  name: "Hydrogen", number: 1,  valence: 1, color: "#e8edf2", text: "#1a1d22" },
   { symbol: "C",  name: "Carbon",   number: 6,  valence: 4, color: "#2b2f36", text: "#e8edf2" },
   { symbol: "N",  name: "Nitrogen", number: 7,  valence: 5, color: "#4f7bd6", text: "#ffffff" },
@@ -21,9 +21,9 @@ const ATOMS = [
    is earned through play: crossing a discovery milestone grants one
    "Choose Your Path" pick. Each atom opens a themed branch of chemistry.
    Adding a new element later = one ATOMS entry + one ATOM_BRANCHES entry. */
-const STARTER_ATOMS = ["H", "O", "C", "N"];
-const ATOM_MILESTONES = [4, 9, 14];   // total-discovery counts that grant a pick
-const ATOM_BRANCHES = {
+export const STARTER_ATOMS = ["H", "O", "C", "N"];
+export const ATOM_MILESTONES = [4, 9, 14];   // total-discovery counts that grant a pick
+export const ATOM_BRANCHES = {
   Na: { en: "Metals & Bases",    fr: "Métaux & bases" },
   S:  { en: "Pungent Chemistry", fr: "Chimie piquante" },
   Cl: { en: "Salts & Acids",     fr: "Sels & acides" }
@@ -31,7 +31,7 @@ const ATOM_BRANCHES = {
 
 // The molecule "Dex". Matching uses the `atoms` count map, so the
 // (non-Hill) formula strings are only ever shown to the player.
-const MOLECULES = [
+export const MOLECULES = [
   {
     id: "mol_001", pubchemCid: 962, formula: "H2O",
     commonName: "Water", iupacName: "Oxidane",
@@ -367,7 +367,7 @@ const MOLECULES = [
 // Curated chemistry-meaningful neighbors per molecule. The relationships
 // are precursors / products / conjugate pairs / family members — they're
 // the chains a curious player would naturally want to follow.
-const RELATED = {
+export const RELATED = {
   mol_001: ["mol_012", "mol_011"],   // water → peroxide (reactive cousin), O2 (electrolysis)
   mol_002: ["mol_001", "mol_013"],   // CO2 → water (carbonic acid), CO (incomplete combustion)
   mol_003: ["mol_014", "mol_015"],   // NaCl → HCl + NaOH (acid + base → salt + water)

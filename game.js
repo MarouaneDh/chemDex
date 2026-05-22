@@ -22,6 +22,21 @@ let muted = localStorage.getItem(MUTE_KEY) === "1";
 let dailyState = JSON.parse(localStorage.getItem(DAILY_KEY) || "{}");
 let gameSilent = false;   // true during init sync — suppresses fx
 
+/* ---------- Atom Tech Tree state ---------- */
+const ATOM_KEY = "chemdex.atoms";
+let unlockedAtoms = loadUnlockedAtoms();
+
+function loadUnlockedAtoms() {
+  let raw = null;
+  try { raw = JSON.parse(localStorage.getItem(ATOM_KEY)); } catch { raw = null; }
+  if (!Array.isArray(raw)) return STARTER_ATOMS.slice();
+  // the starter set is always guaranteed, even if storage was tampered with
+  return [...new Set([...STARTER_ATOMS, ...raw])];
+}
+function saveUnlockedAtoms() {
+  localStorage.setItem(ATOM_KEY, JSON.stringify(unlockedAtoms));
+}
+
 // pick the active-language string from a {en, fr} object
 function L(o) { return (o && o[lang]) || (o && o.en) || ""; }
 
@@ -89,6 +104,29 @@ function discByCategory(cat)    { return discoveredList().filter(m => m.category
 function totalByType(type)      { return MOLECULES.filter(m => m.type === type).length; }
 function totalByCategory(cat)   { return MOLECULES.filter(m => m.category === cat).length; }
 
+/* ---------- Atom Tech Tree helpers ---------- */
+function isAtomUnlocked(sym)    { return unlockedAtoms.includes(sym); }
+function lockedAtoms()          { return ATOMS.filter(a => !isAtomUnlocked(a.symbol)); }
+// True when every atom a molecule needs is already unlocked.
+function moleculeBuildable(m)   { return Object.keys(m.atoms).every(isAtomUnlocked); }
+function moleculesWithAtom(sym) { return MOLECULES.filter(m => m.atoms[sym]).length; }
+
+// Atom name in the active language.
+function atomDisplayName(sym) {
+  if (lang === "fr" && typeof ATOM_NAMES_FR !== "undefined" && ATOM_NAMES_FR[sym]) {
+    return ATOM_NAMES_FR[sym];
+  }
+  const a = ATOMS.find(x => x.symbol === sym);
+  return a ? a.name : sym;
+}
+
+// How many "Choose Your Path" picks the player has earned vs. spent.
+function atomPicksEarned()  { return ATOM_MILESTONES.filter(n => discoveredCount() >= n).length; }
+function atomPicksPending() {
+  const spent = unlockedAtoms.length - STARTER_ATOMS.length;
+  return Math.min(atomPicksEarned() - spent, lockedAtoms().length);
+}
+
 // Badges — earned once, checked after every discovery.
 const BADGES = [
   { id: "first",     icon: "🔬", en: "First Find",      fr: "Première trouvaille", check: () => discoveredCount() >= 1 },
@@ -100,7 +138,8 @@ const BADGES = [
   { id: "inorganic", icon: "🪨", en: "Mineral Expert",  fr: "Expert minéral",      check: () => discByCategory("inorganic") >= totalByCategory("inorganic") },
   { id: "shiny1",    icon: "✨", en: "Shiny Hunter",    fr: "Chasseur brillant",   check: () => shinyCount() >= 1 },
   { id: "shiny3",    icon: "⭐", en: "Star Collector",  fr: "Collectionneur",      check: () => shinyCount() >= 3 },
-  { id: "tier4",     icon: "🚀", en: "Master Builder",  fr: "Bâtisseur expert",    check: () => discoveredList().some(m => m.tier === 4) }
+  { id: "tier4",     icon: "🚀", en: "Master Builder",  fr: "Bâtisseur expert",    check: () => discoveredList().some(m => m.tier === 4) },
+  { id: "atoms_all", icon: "🧬", en: "Element Hunter",  fr: "Chasseur d'éléments", check: () => ATOMS.every(a => isAtomUnlocked(a.symbol)) }
 ];
 
 // Missions — a checklist; each grants XP once when first completed.
@@ -231,7 +270,7 @@ let idleTimer = null;
 let hintState = { targetId: null, level: 0 };
 
 function pickHintTarget() {
-  return MOLECULES.find(m => !discoveries[m.id] && tierUnlocked(m.tier));
+  return MOLECULES.find(m => !discoveries[m.id] && tierUnlocked(m.tier) && moleculeBuildable(m));
 }
 
 function vagueNudge(m) {
@@ -387,6 +426,125 @@ function gameDiscover(m) {
   openMoleculeModal(m, true);
   mascotSay(mascotLine(shiny ? "shiny" : "discover"));
   resetIdle();
+  // A milestone may now be due — offered once the discovery modal closes
+  // (see afterMoleculeModalClose, wired into app.js closeModal).
+  maybeOfferAtomPick();
+}
+
+/* ============================================================
+   ATOM TECH TREE — unlock flow, cinematic, Choose Your Path modal
+   ============================================================ */
+
+// Unlock an atom: persist it, refresh the UI, then run the cinematic.
+// `onDone` fires after the cinematic is dismissed (used to chain picks).
+function unlockAtom(sym, onDone) {
+  if (isAtomUnlocked(sym)) { if (onDone) onDone(); return; }
+  unlockedAtoms.push(sym);
+  saveUnlockedAtoms();
+  if (typeof renderPalette === "function") renderPalette();
+  if (typeof renderDex === "function") renderDex();
+  gameRefresh();                               // the Element Hunter badge may land
+  if (!gameSilent) {
+    const branch = L(ATOM_BRANCHES[sym]) || atomDisplayName(sym);
+    toast("⚛️", t("atomUnlockToast") + " · " + atomDisplayName(sym));
+    showAtomCinematic(sym, branch, onDone);
+  } else if (onDone) {
+    onDone();
+  }
+}
+
+// If the player has earned a pick and locked atoms remain, offer it.
+// Deferred while the discovery modal is open so cards never stack.
+function maybeOfferAtomPick() {
+  if (atomPicksPending() <= 0) return;
+  if (typeof modalOverlay !== "undefined" && !modalOverlay.hidden) return;
+  if (document.getElementById("pathOverlay")) return;     // a pick is already open
+  const locked = lockedAtoms();
+  if (locked.length <= 1) {
+    // nothing left to choose between — just grant the last element
+    unlockAtom(locked[0].symbol, maybeOfferAtomPick);
+  } else {
+    showChoosePathModal(locked);
+  }
+}
+
+// Called by app.js closeModal() — the moment to surface a pending pick.
+function afterMoleculeModalClose() { maybeOfferAtomPick(); }
+
+// Choose Your Path — pick one locked element to unlock now.
+function showChoosePathModal(locked) {
+  const ov = document.createElement("div");
+  ov.id = "pathOverlay";
+  ov.className = "path-overlay";
+
+  const cards = locked.map(a => {
+    const branch = L(ATOM_BRANCHES[a.symbol]) || a.name;
+    return `
+      <button class="path-card" type="button" data-sym="${a.symbol}">
+        <span class="path-atom" style="background:${a.color};color:${a.text}">
+          <span class="path-atom-num">${a.number}</span>
+          <span class="path-atom-sym">${a.symbol}</span>
+        </span>
+        <span class="path-name">${atomDisplayName(a.symbol)}</span>
+        <span class="path-branch">${t("atomOpensBranch", branch)}</span>
+        <span class="path-count">${t("atomFeaturedIn", moleculesWithAtom(a.symbol))}</span>
+        <span class="path-cta">${t("choosePathPick")}</span>
+      </button>`;
+  }).join("");
+
+  ov.innerHTML = `
+    <div class="path-modal" role="dialog" aria-modal="true" aria-label="${t("choosePathTitle")}">
+      <div class="path-spark">⚛️</div>
+      <h2>${t("choosePathTitle")}</h2>
+      <p class="path-sub">${t("choosePathSub")}</p>
+      <div class="path-grid">${cards}</div>
+    </div>`;
+  document.body.appendChild(ov);
+  if (!gameSilent) SFX.badge();
+
+  ov.querySelectorAll(".path-card").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const sym = btn.dataset.sym;
+      SFX.click();
+      ov.classList.add("closing");
+      setTimeout(() => ov.remove(), 200);
+      unlockAtom(sym, maybeOfferAtomPick);
+    });
+  });
+}
+
+// Fullscreen unlock cinematic — the element flies in with shockwave rings.
+function showAtomCinematic(sym, branch, onDone) {
+  const a = ATOMS.find(x => x.symbol === sym);
+  if (!a) { if (onDone) onDone(); return; }
+
+  const ov = document.createElement("div");
+  ov.className = "atom-cine";
+  ov.innerHTML = `
+    <div class="cine-ring"></div>
+    <div class="cine-ring cine-ring-2"></div>
+    <div class="cine-atom" style="background:${a.color};color:${a.text}">
+      <span class="cine-num">${a.number}</span>
+      <span class="cine-sym">${a.symbol}</span>
+    </div>
+    <div class="cine-tag">${t("atomUnlockedTag")}</div>
+    <div class="cine-name">${atomDisplayName(sym)}</div>
+    <div class="cine-branch">${t("atomOpensBranch", branch)}</div>
+    <div class="cine-hint">${t("tapContinue")}</div>`;
+  document.body.appendChild(ov);
+
+  SFX.levelUp();   // the shockwave rings carry the visual punch on their own
+
+  let done = false;
+  const finish = () => {
+    if (done) return;
+    done = true;
+    clearTimeout(autoTimer);
+    ov.classList.add("closing");
+    setTimeout(() => { ov.remove(); if (onDone) onDone(); }, 240);
+  };
+  const autoTimer = setTimeout(finish, 2800);
+  ov.addEventListener("click", finish);
 }
 
 /* ============================================================
@@ -471,7 +629,8 @@ function dailySeed(dateStr) {
 }
 
 function pickDailyPuzzle(dateStr) {
-  const pool = MOLECULES.filter(m => tierUnlocked(m.tier));
+  // Only molecules the player can actually build today — every atom unlocked.
+  const pool = MOLECULES.filter(m => tierUnlocked(m.tier) && moleculeBuildable(m));
   if (pool.length === 0) return null;
   return pool[dailySeed(dateStr) % pool.length];
 }
@@ -578,10 +737,13 @@ function gameReset() {
   earnedBadges = [];
   claimedMissions = [];
   dailyState = {};
+  unlockedAtoms = STARTER_ATOMS.slice();
   localStorage.removeItem(XP_KEY);
   localStorage.removeItem(BADGE_KEY);
   localStorage.removeItem(MISSION_KEY);
   localStorage.removeItem(DAILY_KEY);
+  localStorage.removeItem(ATOM_KEY);
+  if (typeof renderPalette === "function") renderPalette();
   renderQuests();
   updateTopbarLevel();
   renderDailyPuzzle();
@@ -611,6 +773,8 @@ function initGame() {
 
   // greeting + idle nudges
   setTimeout(() => mascotSay(mascotLine("greet"), 7000), 900);
+  // a returning player may already be owed an element pick
+  setTimeout(maybeOfferAtomPick, 1600);
   resetIdle();
   ["pointerdown", "keydown"].forEach(ev =>
     document.addEventListener(ev, resetIdle, { passive: true }));

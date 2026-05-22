@@ -5,7 +5,7 @@
 
 // UI chrome strings. Values may be plain strings or functions
 // (for strings that need to interpolate a value).
-const I18N = {
+export const I18N = {
   en: {
     tagline:        "Molecule Discovery Lab",
     tabLab:         "🧪 Lab",
@@ -149,14 +149,14 @@ const I18N = {
 };
 
 // Atom names in French (English names live in data.js).
-const ATOM_NAMES_FR = {
+export const ATOM_NAMES_FR = {
   H: "Hydrogène", C: "Carbone", N: "Azote", O: "Oxygène",
   Na: "Sodium",   S: "Soufre",  Cl: "Chlore"
 };
 
 // Soft "level 1" hint copy, picked by molecule type. Reveals the family,
 // not the atoms — leaves the player room to puzzle it out.
-const TYPE_NUDGES = {
+export const TYPE_NUDGES = {
   oxide:          { en: "I'm thinking of something with oxygen attached…",       fr: "Je pense à quelque chose avec de l'oxygène attaché…" },
   salt:           { en: "How about a salt? You'd taste it in the sea.",          fr: "Et un sel ? Tu en goûterais dans la mer." },
   hydrocarbon:    { en: "Try a fuel — just carbon and hydrogen.",                fr: "Essaie un combustible — du carbone et de l'hydrogène, c'est tout." },
@@ -173,7 +173,7 @@ const TYPE_NUDGES = {
 };
 
 // Category / type / rarity terms — French only (English = the key itself).
-const TERMS_FR = {
+export const TERMS_FR = {
   // categories
   inorganic: "inorganique", organic: "organique",
   // types
@@ -186,7 +186,7 @@ const TERMS_FR = {
 };
 
 // French translations of the molecule content, keyed by molecule id.
-const MOL_FR = {
+export const MOL_FR = {
   mol_001: {
     commonName: "Eau", iupacName: "Oxidane",
     description: "Un composé inorganique polaire qui est, à température ambiante, un liquide insipide et inodore. Il est essentiel à toutes les formes de vie connues.",

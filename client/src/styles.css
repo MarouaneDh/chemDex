@@ -1080,7 +1080,7 @@ main { padding: 30px 26px 60px; max-width: 1180px; margin: 0 auto; }
 }
 
 /* quests page */
-#questsContent { display: flex; flex-direction: column; }
+.quests-content { display: flex; flex-direction: column; }
 .profile-card {
   display: flex; align-items: center; gap: 16px;
   background: var(--surface);

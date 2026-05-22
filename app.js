@@ -116,29 +116,46 @@ const workbenchEl = document.getElementById("workbench");
 const liveFormula = document.getElementById("liveFormula");
 const labMessage  = document.getElementById("labMessage");
 
-// Render the atom palette
+// Render the atom palette. Locked atoms (the Atom Tech Tree) stay visible
+// but greyed with a 🔒 — the tease is the point — and can't be dragged.
 function renderPalette() {
   paletteEl.innerHTML = "";
   ATOMS.forEach(atom => {
     const el = document.createElement("div");
-    el.className = "atom";
-    el.style.background = atom.color;
-    el.style.color = atom.text;
-    el.draggable = true;
-    const atomName = lang === "fr" ? (ATOM_NAMES_FR[atom.symbol] || atom.name) : atom.name;
-    el.innerHTML = `
-      <span class="num">${atom.number}</span>
-      <span class="sym">${atom.symbol}</span>
-      <span class="nm">${atomName}</span>`;
-    el.addEventListener("click", () => addAtom(atom.symbol));
-    el.addEventListener("dragstart", e => {
-      e.dataTransfer.setData("text/plain", atom.symbol);
-    });
+    const locked = !isAtomUnlocked(atom.symbol);
+    const name = atomDisplayName(atom.symbol);
+
+    if (locked) {
+      el.className = "atom locked";
+      el.innerHTML = `
+        <span class="atom-lock">🔒</span>
+        <span class="sym">${atom.symbol}</span>
+        <span class="nm">${name}</span>`;
+      el.title = t("atomLockedTease", name);
+      el.addEventListener("click", () => {
+        SFX.fail();
+        mascotSay(t("atomLockedHint"), 5000);
+      });
+    } else {
+      el.className = "atom";
+      el.style.background = atom.color;
+      el.style.color = atom.text;
+      el.draggable = true;
+      el.innerHTML = `
+        <span class="num">${atom.number}</span>
+        <span class="sym">${atom.symbol}</span>
+        <span class="nm">${name}</span>`;
+      el.addEventListener("click", () => addAtom(atom.symbol));
+      el.addEventListener("dragstart", e => {
+        e.dataTransfer.setData("text/plain", atom.symbol);
+      });
+    }
     paletteEl.appendChild(el);
   });
 }
 
 function addAtom(symbol) {
+  if (!isAtomUnlocked(symbol)) return;   // locked atoms can't reach the bench
   workbench.push(symbol);
   SFX.pop();
   renderWorkbench();
@@ -297,15 +314,7 @@ function renderDex() {
             <span class="badge badge-type">${term(m.type)}</span>
           </div>`;
         card.addEventListener("click", () => openMoleculeModal(m, false));
-      } else if (tierUnlocked(m.tier)) {
-        // discoverable — show a riddle clue instead of the answer
-        card.innerHTML = `
-          ${idTag}
-          <div class="img-wrap">?</div>
-          <div class="name">${t("locked")}</div>
-          <div class="clue">${t("clueLabel")} ${clueFor(m)}</div>`;
-        card.title = t("lockedTitle");
-      } else {
+      } else if (!tierUnlocked(m.tier)) {
         // tier not yet unlocked
         card.classList.add("tier-locked");
         card.innerHTML = `
@@ -313,6 +322,27 @@ function renderDex() {
           <div class="img-wrap">🔒</div>
           <div class="name">${t("locked")}</div>
           <div class="clue">${t("tierLocked", TIER_UNLOCK[m.tier])}</div>`;
+      } else if (!moleculeBuildable(m)) {
+        // needs an atom still locked in the tech tree — tease what's missing
+        card.classList.add("atom-locked");
+        const missing = Object.keys(m.atoms)
+          .filter(s => !isAtomUnlocked(s))
+          .map(atomDisplayName)
+          .join(" + ");
+        card.innerHTML = `
+          ${idTag}
+          <div class="img-wrap">🔒</div>
+          <div class="name">${t("locked")}</div>
+          <div class="clue">${t("requiresAtoms", missing)}</div>`;
+        card.title = t("atomLockedHint");
+      } else {
+        // discoverable — show a riddle clue instead of the answer
+        card.innerHTML = `
+          ${idTag}
+          <div class="img-wrap">?</div>
+          <div class="name">${t("locked")}</div>
+          <div class="clue">${t("clueLabel")} ${clueFor(m)}</div>`;
+        card.title = t("lockedTitle");
       }
       dexGrid.appendChild(card);
     });
@@ -361,17 +391,8 @@ function renderRelatedSection(m) {
           </span>
         </button>`;
     }
-    if (tierUnlocked(r.tier)) {
+    if (!tierUnlocked(r.tier)) {
       return `
-        <button class="related-chip locked" data-id="${r.id}" type="button" title="${t("lockedTitle")}">
-          <span class="rc-img rc-q">?</span>
-          <span class="rc-text">
-            <span class="rc-name">${t("locked")}</span>
-            <span class="rc-clue">${clueFor(r)}</span>
-          </span>
-        </button>`;
-    }
-    return `
       <div class="related-chip tier-locked">
         <span class="rc-img">🔒</span>
         <span class="rc-text">
@@ -379,6 +400,30 @@ function renderRelatedSection(m) {
           <span class="rc-clue">${t("tierLocked", TIER_UNLOCK[r.tier])}</span>
         </span>
       </div>`;
+    }
+    if (!moleculeBuildable(r)) {
+      // needs an atom still locked in the tech tree
+      const missing = Object.keys(r.atoms)
+        .filter(s => !isAtomUnlocked(s))
+        .map(atomDisplayName)
+        .join(" + ");
+      return `
+      <div class="related-chip tier-locked">
+        <span class="rc-img">🔒</span>
+        <span class="rc-text">
+          <span class="rc-name">${t("locked")}</span>
+          <span class="rc-clue">${t("requiresAtoms", missing)}</span>
+        </span>
+      </div>`;
+    }
+    return `
+        <button class="related-chip locked" data-id="${r.id}" type="button" title="${t("lockedTitle")}">
+          <span class="rc-img rc-q">?</span>
+          <span class="rc-text">
+            <span class="rc-name">${t("locked")}</span>
+            <span class="rc-clue">${clueFor(r)}</span>
+          </span>
+        </button>`;
   }).join("");
 
   return `
@@ -454,6 +499,8 @@ function openMoleculeModal(m, isNew) {
 
 function closeModal() {
   modalOverlay.hidden = true;
+  // a discovery may have earned an element pick — offer it now the modal's gone
+  if (typeof afterMoleculeModalClose === "function") afterMoleculeModalClose();
 }
 modalOverlay.addEventListener("click", e => {
   if (e.target === modalOverlay) closeModal();

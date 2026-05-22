@@ -9,3 +9,16 @@
 .claude-*/.claude-*/.claude-*
 .claude-*/.claude-*/.claude-*/.agents
 skills-lock.json
+_bmad
+_bmad-*
+_bmad-*/.agents
+
+# MERN stack
+node_modules/
+**/node_modules/
+dist/
+client/dist/
+.env
+server/.env
+*.local
+npm-debug.log*
