@@ -28,6 +28,38 @@ function mergeDiscoveries(a = {}, b = {}) {
   return out;
 }
 
+/* Capsule — defensive: the longer cooldown and the smaller stockpile
+   win, so a claim on one device cannot be undone by a stale push. */
+function mergeCapsule(a = {}, b = {}) {
+  const da = a || {};
+  const db = b || {};
+  if (!da.nextReadyAt && !db.nextReadyAt) return da.stockpile !== undefined ? da : db;
+  const nA = Date.parse(da.nextReadyAt || 0) || 0;
+  const nB = Date.parse(db.nextReadyAt || 0) || 0;
+  const stockpile = Math.min(
+    da.stockpile !== undefined ? da.stockpile : 2,
+    db.stockpile !== undefined ? db.stockpile : 2
+  );
+  return {
+    stockpile,
+    nextReadyAt: new Date(Math.max(nA, nB)).toISOString(),
+  };
+}
+
+/* Buddy — keep the longest streak, the most recent activity, and the
+   most stabilizers earned (capped at 2 anyway by the client). */
+function mergeBuddy(a = {}, b = {}) {
+  const da = a || {};
+  const db = b || {};
+  const dateA = da.lastDiscoveryDate || "";
+  const dateB = db.lastDiscoveryDate || "";
+  return {
+    streak: Math.max(da.streak || 0, db.streak || 0),
+    lastDiscoveryDate: dateA > dateB ? dateA : dateB,
+    stabilizers: Math.min(2, Math.max(da.stabilizers || 0, db.stabilizers || 0)),
+  };
+}
+
 function mergeDaily(a = {}, b = {}) {
   const da = a || {};
   const db = b || {};
@@ -53,6 +85,8 @@ export function mergeProgress(stored = {}, incoming = {}) {
     missions: union(s.missions, i.missions),
     atoms: union(s.atoms, i.atoms),
     daily: mergeDaily(s.daily, i.daily),
+    capsule: mergeCapsule(s.capsule, i.capsule),
+    buddy: mergeBuddy(s.buddy, i.buddy),
     // preferences: the device that just pushed wins
     lang: i.lang || s.lang || "en",
     muted: typeof i.muted === "boolean" ? i.muted : !!s.muted,

@@ -2,6 +2,7 @@ import { MOLECULES } from "../../data/gamedata.js";
 import { LEVELS, currentLevelIndex } from "../../game/progression.js";
 import { BADGES, MISSIONS, buildStats } from "../../game/content.js";
 import { useGame } from "../../context/GameContext.jsx";
+import Buddy from "./Buddy.jsx";
 
 /* The Quests tab — player profile, mission checklist and badge case. */
 export default function Quests() {
@@ -52,6 +53,9 @@ export default function Quests() {
           </div>
         </div>
       </div>
+
+      {/* atom buddy */}
+      <Buddy />
 
       {/* missions */}
       <h2 className="quest-h">{t("missions")}</h2>

@@ -15,6 +15,8 @@ const progressSchema = new mongoose.Schema(
     missions: { type: [String], default: [] },
     daily: { type: mongoose.Schema.Types.Mixed, default: {} },
     atoms: { type: [String], default: [] },
+    capsule: { type: mongoose.Schema.Types.Mixed, default: {} },
+    buddy: { type: mongoose.Schema.Types.Mixed, default: {} },
     lang: { type: String, default: "en" },
     muted: { type: Boolean, default: false },
     updatedAt: { type: Date, default: Date.now },

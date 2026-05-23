@@ -99,7 +99,24 @@ export const I18N = {
     bragCard:       "📸 Brag card",
     cardShare:      "Share card",
     cardOwnerGuest: "Guest Chemist",
-    cardDiscoveredBy: "Discovered by"
+    cardDiscoveredBy: "Discovered by",
+    fictionalBanner: "✦ FICTIONAL",
+    originFrom:     "From",
+    realScience:    "Real science",
+    capsuleTitle:   "💊 Daily Capsule",
+    capsuleReady:   "Pinch & squeeze to crack it open",
+    capsuleNextIn:  ms => `Next capsule in ${ms}`,
+    capsuleStockpile: "2 ready — pop them today!",
+    capsuleEmpty:   "All popped — check back later",
+    lootXP:         amt => `+${amt} XP — keep cracking!`,
+    lootHint:       "🧩 Hint scroll — Atomo whispered a recipe",
+    lootStabilizer: "❄️ Cryo-Stabilizer saved for a missed day",
+    buddyTitle:     "Your Buddy",
+    buddyStreak:    n => n === 1 ? "1-day streak" : `${n}-day streak`,
+    buddyDormant:   "Find a molecule today to wake it up",
+    buddyStabilizers: "Stabilizers",
+    buddyNext:      n => `${n} more day${n === 1 ? "" : "s"} to evolve`,
+    stagePrefix:    "Stage"
   },
   fr: {
     tagline:        "Labo de découverte de molécules",
@@ -194,7 +211,24 @@ export const I18N = {
     bragCard:       "📸 Carte à frimer",
     cardShare:      "Partager la carte",
     cardOwnerGuest: "Chimiste invité",
-    cardDiscoveredBy: "Découvert par"
+    cardDiscoveredBy: "Découvert par",
+    fictionalBanner: "✦ FICTIF",
+    originFrom:     "Origine",
+    realScience:    "Vraie science",
+    capsuleTitle:   "💊 Capsule du jour",
+    capsuleReady:   "Pince et serre pour la faire éclater",
+    capsuleNextIn:  ms => `Prochaine capsule dans ${ms}`,
+    capsuleStockpile: "2 prêtes — éclate-les aujourd'hui !",
+    capsuleEmpty:   "Toutes éclatées — reviens plus tard",
+    lootXP:         amt => `+${amt} XP — continue !`,
+    lootHint:       "🧩 Parchemin — Atomo a soufflé une recette",
+    lootStabilizer: "❄️ Cryo-stabilisateur gardé pour un jour manqué",
+    buddyTitle:     "Ton compagnon",
+    buddyStreak:    n => n === 1 ? "1 jour d'affilée" : `${n} jours d'affilée`,
+    buddyDormant:   "Découvre une molécule aujourd'hui pour le réveiller",
+    buddyStabilizers: "Stabilisateurs",
+    buddyNext:      n => `Encore ${n} jour${n === 1 ? "" : "s"} pour évoluer`,
+    stagePrefix:    "Stade"
   }
 };
 
@@ -225,12 +259,12 @@ export const TYPE_NUDGES = {
 // Category / type / rarity terms — French only (English = the key itself).
 export const TERMS_FR = {
   // categories
-  inorganic: "inorganique", organic: "organique",
+  inorganic: "inorganique", organic: "organique", myth: "mythe",
   // types
   oxide: "oxyde", salt: "sel", hydrocarbon: "hydrocarbure", alcohol: "alcool",
   base: "base", acid: "acide", sugar: "sucre", pharmaceutical: "médicament",
   alkaloid: "alcaloïde", element: "élément", peroxide: "peroxyde",
-  ketone: "cétone", aldehyde: "aldéhyde",
+  ketone: "cétone", aldehyde: "aldéhyde", fictional: "fictionnel",
   // rarities
   common: "commun", uncommon: "peu commun", rare: "rare", epic: "épique"
 };
@@ -416,5 +450,67 @@ export const MOL_FR = {
     description: "Le plus petit des 20 acides aminés qui composent toutes les protéines de ton corps. Légèrement sucrée au goût — son nom vient du grec signifiant doux.",
     uses: ["Brique élémentaire des protéines du vivant", "Édulcorant et exhausteur de goût alimentaire", "Neurotransmetteur inhibiteur dans la moelle épinière", "Tampon pharmaceutique"],
     funFact: "La glycine a été détectée sur des comètes et dans des nuages interstellaires — soutenant l'idée que les briques élémentaires du vivant pourraient venir de l'espace."
+  },
+
+  /* ----- Myth Vault ----- */
+  mol_myth_001: {
+    commonName: "Kryptonite", iupacName: "Cristal luminescent à six sodiums",
+    description: "Un cristal vert fluorescent qui émet une fréquence alpha inconnue. Censé affaiblir les visiteurs d'une étoile mourante — sur notre paillasse, il se contente de briller.",
+    uses: ["Neutraliser les visiteurs super-puissants", "Le ressort dramatique fiable depuis 1943", "Pièce maîtresse de costume", "Caillou fluorescent d'Halloween"],
+    funFact: "La kryptonite est née dans un feuilleton radio Superman de 1943 — les scénaristes avaient besoin d'une excuse pour laisser partir le doubleur en vacances."
+  },
+  mol_myth_002: {
+    commonName: "Adamantium", iupacName: "Treize-carbone indomptable",
+    description: "Un alliage quasi indestructible de grappes de carbone très denses. De vrais alliages très durs existent — aucun n'est incassable, mais on a le droit de rêver.",
+    uses: ["Renforcement squelettique", "Griffes de légende", "Ressort scénaristique BD", "Blindage de science-fiction"],
+    funFact: "Lors des débuts de Wolverine en 1974, ses griffes étaient en os — l'adamantium a été ajouté plus tard pour transformer le personnage en celui que l'on connaît."
+  },
+  mol_myth_003: {
+    commonName: "Mithril", iupacName: "Filigrane sodium-soufre-chlore",
+    description: "Un métal argenté plus solide que l'acier et léger comme une plume — une seule cotte de mailles en mithril peut détourner la lance d'un troll des cavernes.",
+    uses: ["Cottes de mailles pour hobbits", "Bijoux elfiques", "Minerai légendaire des jeux", "Forge des lames mythiques"],
+    funFact: "Tolkien a inventé « mithril » dans sa langue sindarine ; le mot signifie en gros « gris-scintillant »."
+  },
+  mol_myth_004: {
+    commonName: "Vibranium", iupacName: "Tétracarbure de tétrasodium",
+    description: "Un métal d'origine météoritique qui boit l'énergie cinétique et la restitue en vibrations. Le minerai signature d'une nation africaine secrète.",
+    uses: ["Boucliers anti-énergie", "Insonorisation de cités fictives", "Vibrations héroïques", "Recettes du box-office Marvel"],
+    funFact: "Le vibranium apparaît dans Daredevil #13 (1966), trois ans avant la première apparition du Wakanda — le métal précède le pays qui le définit aujourd'hui."
+  },
+  mol_myth_005: {
+    commonName: "Unobtanium", iupacName: "Pierre-vœu tous-éléments",
+    description: "Un supraconducteur à température ambiante à masse négative et au réseau cristallin parfait. Les ingénieurs en rêvent depuis les années 1950. Ils attendent encore.",
+    uses: ["Cités flottantes", "Moteurs antigravité", "Résoudre l'intrigue", "Le Graal des matériaux"],
+    funFact: "« Unobtanium » était de l'argot d'ingénieur des années 1950 pour tout matériau dont rêve l'équipe. James Cameron a appuyé le clin d'œil dans Avatar (2009)."
+  },
+  mol_myth_006: {
+    commonName: "Dilithium", iupacName: "Treillis warp à deux sodiums",
+    description: "Un cristal qui régule la réaction matière-antimatière d'un moteur warp. Un dilithium fendu laisse un vaisseau à la dérive.",
+    uses: ["Régulation du cœur warp", "Voyage supraluminique", "Épisodes huis-clos de Star Trek", "Monnaie d'échange klingonne"],
+    funFact: "Le vrai dilithium (Li₂) existe comme molécule gazeuse fugace à deux atomes — Star Trek n'a emprunté que le nom, pour son côté futuriste."
+  },
+  mol_myth_007: {
+    commonName: "Tibérium", iupacName: "Flèche tricarbone-hexasoufre",
+    description: "Un cristal extraterrestre qui pousse en transformant tout ce qu'il touche en lui-même. Magnifique, lucratif, et déconseillé à mains nues.",
+    uses: ["Armement de l'âge du tibérium", "Ressource stratégique en jeu", "Contamination atmosphérique", "Fin du monde au ralenti"],
+    funFact: "Westwood Studios a nommé le tibérium d'après l'empereur romain Tibère — il leur fallait quelque chose de latino-futuriste pour ancrer l'univers Command & Conquer."
+  },
+  mol_myth_008: {
+    commonName: "Naquadah", iupacName: "Minerai de Porte à cinq sodiums",
+    description: "Un minerai supraconducteur d'une densité incroyable — le matériau de chaque Porte des Étoiles. Vaut la peine de se battre pour lui.",
+    uses: ["Construction des Stargates", "Combustible de réacteurs avancés", "Monnaie de contrebande", "Carburant scénaristique sur dix saisons"],
+    funFact: "Le naquadah a été inventé en cours de saison 1 de Stargate SG-1 pour expliquer rétroactivement la masse colossale des Portes — les scénaristes avaient besoin d'une excuse."
+  },
+  mol_myth_009: {
+    commonName: "Élément Zéro", iupacName: "Pentaoxyde de pentazote (eezo)",
+    description: "Une poussière bleue scintillante qui, traversée par un courant, courbe la masse des objets proches. Tout l'univers de Mass Effect tourne grâce à elle.",
+    uses: ["Vaisseaux supraluminiques", "Pouvoirs biotiques", "Mini trous noirs sur commande", "Économies galactiques"],
+    funFact: "Les scénaristes de Mass Effect ont choisi « élément zéro » pour évoquer une case manquante du tableau périodique — le numéro atomique 0 n'existe pas, mais ça sonne crédible."
+  },
+  mol_myth_010: {
+    commonName: "Phlogistique", iupacName: "La substance du feu",
+    description: "L'« élément du feu » que les chimistes du XVIIᵉ siècle croyaient s'échapper de tout ce qui brûle. Une théorie parfaitement respectable en 1700 — et un manuel d'erreur scientifique.",
+    uses: ["Expliquer la combustion (mal)", "Manuels de chimie pré-Lavoisier", "Rappeler que la science se corrige", "Construction d'univers steampunk"],
+    funFact: "La théorie du phlogistique a dominé la chimie pendant plus d'un siècle. La découverte de l'oxygène par Lavoisier en 1777 y a mis fin — réécrivant littéralement ce qu'est la combustion."
   }
 };

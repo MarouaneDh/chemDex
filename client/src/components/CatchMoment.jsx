@@ -48,10 +48,16 @@ export default function CatchMoment() {
 
   const { molecule, shiny, rarity } = catchMoment;
   const dur = (CATCH_MS[rarity] || CATCH_MS.common) + (shiny ? 500 : 0);
+  const isMyth = molecule.category === "myth";
 
   return (
     <div
-      className={"catch-moment rarity-" + rarity + (shiny ? " shiny" : "")}
+      className={
+        "catch-moment rarity-" +
+        rarity +
+        (shiny ? " shiny" : "") +
+        (isMyth ? " glitch" : "")
+      }
       style={{ "--catch-dur": dur + "ms" }}
       onClick={end}
       role="button"

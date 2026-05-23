@@ -31,4 +31,17 @@ export const CLUES = {
   mol_028: { en: "Ant venom! The sting in a tiny bite.", fr: "Le venin de la fourmi ! La brûlure d'une minuscule piqûre." },
   mol_029: { en: "What ripens bananas — two carbons sharing a double bond.", fr: "Ce qui fait mûrir les bananes — deux carbones unis par une double liaison." },
   mol_030: { en: "The smallest building block of every protein in you.", fr: "La plus petite brique élémentaire de toutes tes protéines." },
+
+  /* Myth Vault — only reachable via impossible combinations. The clues
+     lean into the pop-culture origin instead of real chemistry. */
+  mol_myth_001: { en: "A glowing green rock that weakens a man in a red cape — six of one element.", fr: "Une roche verte luminescente qui affaiblit un homme à la cape rouge — six d'un même élément." },
+  mol_myth_002: { en: "An untameable metal alloy. Pile carbon — a lot of it.",                       fr: "Un alliage indomptable. Empile du carbone — beaucoup." },
+  mol_myth_003: { en: "Hobbit chainmail — one of three different elements you've unlocked.",         fr: "Cotte de mailles de hobbit — un seul atome de chacun de trois éléments." },
+  mol_myth_004: { en: "A meteor metal that drinks impacts — equal carbon and sodium clusters.",      fr: "Un métal météoritique qui boit les chocs — autant de carbone que de sodium." },
+  mol_myth_005: { en: "Every element you've ever unlocked, one of each. The engineer's wish.",       fr: "Chacun des éléments débloqués, une fois. Le rêve de l'ingénieur." },
+  mol_myth_006: { en: "A warp-drive crystal — pair of one alkali metal.",                            fr: "Cristal de moteur warp — paire d'un seul métal alcalin." },
+  mol_myth_007: { en: "An alien crystal that eats tanks — heavy on sulfur, a little carbon.",        fr: "Cristal alien qui dévore les blindés — beaucoup de soufre, un peu de carbone." },
+  mol_myth_008: { en: "The metal of a stargate — five of one element.",                              fr: "Le métal d'une Porte des Étoiles — cinq d'un même élément." },
+  mol_myth_009: { en: "A glittery dust that bends mass — equal nitrogen and oxygen, five each.",     fr: "Une poussière scintillante qui courbe la masse — autant d'azote que d'oxygène, cinq chacun." },
+  mol_myth_010: { en: "The 17th-century 'fire element' — five H's and a pair of O's.",               fr: "L'« élément du feu » du XVIIᵉ siècle — cinq H et deux O." },
 };

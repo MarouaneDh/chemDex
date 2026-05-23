@@ -1986,3 +1986,418 @@ body.catch-shake { animation: catchShake 600ms var(--ease-out) both; }
   .catch-ring, .catch-core-glyph, .holo-foil { animation: none; }
   body.catch-shake { animation: none; }
 }
+
+/* ============================================================
+   THE DAILY HEARTBEAT  (Priority 3 — capsule + atom buddy)
+   ============================================================ */
+
+/* daily-puzzle / capsule row — wraps on narrow screens */
+.heartbeat-row {
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+  margin-bottom: 14px;
+}
+.heartbeat-row > * { flex: 1 1 320px; }
+
+/* the capsule panel mirrors the daily-puzzle panel */
+.capsule-panel {
+  position: relative;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  padding: 16px 18px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  overflow: hidden;
+}
+.capsule-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+.capsule-title {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 15px;
+  letter-spacing: 0.02em;
+}
+.capsule-dots { display: flex; gap: 6px; }
+.capsule-dots .dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+}
+.capsule-dots .dot.on {
+  background: var(--accent);
+  border-color: var(--accent);
+  box-shadow: 0 0 8px var(--glow);
+}
+
+/* the squeezable vial */
+.capsule-vial {
+  --squeeze: 0;
+  position: relative;
+  width: 72px;
+  height: 130px;
+  border-radius: 36px / 50px;
+  background: linear-gradient(180deg, #1a2230, #0b0e14);
+  border: 1px solid var(--border-hi);
+  cursor: pointer;
+  touch-action: none;
+  user-select: none;
+  transform: scale(calc(1 - var(--squeeze) * 0.08), calc(1 + var(--squeeze) * 0.04));
+  transition: filter 220ms var(--ease-out), opacity 220ms var(--ease-out);
+  overflow: hidden;
+}
+.capsule-vial.spent {
+  filter: grayscale(0.6) brightness(0.55);
+  cursor: default;
+}
+.capsule-vial.ready {
+  filter: drop-shadow(0 0 18px rgba(45, 212, 191, 0.4));
+  animation: capsuleBob 2.6s var(--ease-in-out) infinite;
+}
+.capsule-vial.squeezing { animation: none; }
+
+/* the gel highlight */
+.capsule-shell {
+  position: absolute;
+  inset: 4px 4px 50% 4px;
+  border-radius: 36px 36px 0 0 / 60px 60px 0 0;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.18), rgba(255, 255, 255, 0) 70%);
+  pointer-events: none;
+}
+.capsule-fill {
+  position: absolute;
+  inset: 50% 6px 8px 6px;
+  border-radius: 0 0 32px 32px / 0 0 46px 46px;
+  background: radial-gradient(ellipse at 50% 100%, var(--accent), rgba(45, 212, 191, 0.0) 70%),
+              linear-gradient(180deg, rgba(45, 212, 191, 0.0), rgba(45, 212, 191, 0.5));
+  pointer-events: none;
+}
+.capsule-vial.spent .capsule-fill { background: var(--surface-2); }
+
+.capsule-progress {
+  position: absolute;
+  left: 8px; right: 8px; bottom: 8px;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 99px;
+  overflow: hidden;
+}
+.capsule-progress-bar {
+  height: 100%;
+  background: var(--accent);
+  border-radius: 99px;
+  transition: width 60ms linear;
+}
+
+.capsule-vial.pop {
+  animation: capsulePop 700ms var(--ease-spring) both;
+}
+@keyframes capsulePop {
+  0%   { transform: scale(0.92, 1.04); }
+  40%  { transform: scale(1.25, 1.25); filter: brightness(1.6) drop-shadow(0 0 26px var(--glow)); }
+  100% { transform: scale(1, 1); filter: brightness(1); }
+}
+@keyframes capsuleBob {
+  0%, 100% { transform: translateY(0) scale(calc(1 - var(--squeeze) * 0.08), calc(1 + var(--squeeze) * 0.04)); }
+  50%      { transform: translateY(-3px) scale(calc(1 - var(--squeeze) * 0.08), calc(1 + var(--squeeze) * 0.04)); }
+}
+
+.capsule-foot {
+  font-size: 12.5px;
+  color: var(--muted);
+  text-align: center;
+  font-family: var(--font-mono);
+  letter-spacing: 0.02em;
+}
+
+/* ----- Atom Buddy card ----- */
+.buddy-card {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px 18px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  margin: 4px 0 14px;
+}
+.buddy-avatar {
+  width: 68px; height: 68px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: radial-gradient(circle at 38% 30%, #1b2230, #0a0d13);
+  border: 1px solid var(--border-hi);
+  flex: none;
+  position: relative;
+}
+.buddy-avatar.stage-egg     { box-shadow: inset 0 0 0 1px rgba(255,255,255,0.05); }
+.buddy-avatar.stage-spark   { box-shadow: 0 0 14px rgba(251, 191, 36, 0.35); }
+.buddy-avatar.stage-orb     { box-shadow: 0 0 18px rgba(56, 189, 248, 0.4); }
+.buddy-avatar.stage-cosmic  { box-shadow: 0 0 24px rgba(192, 132, 252, 0.55); }
+.buddy-glyph {
+  font-size: 34px;
+  animation: buddyBob 3s var(--ease-in-out) infinite;
+}
+@keyframes buddyBob {
+  0%, 100% { transform: translateY(0) rotate(-3deg); }
+  50%      { transform: translateY(-4px) rotate(3deg); }
+}
+
+.buddy-info { flex: 1; min-width: 0; }
+.buddy-title {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 15px;
+}
+.buddy-stage {
+  font-size: 12px;
+  color: var(--muted);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  margin-top: 2px;
+}
+.buddy-streak {
+  font-size: 14px;
+  color: var(--text);
+  margin-top: 6px;
+}
+.buddy-next { font-size: 12px; color: var(--faint); margin-top: 2px; }
+
+.buddy-stabilizers {
+  display: flex;
+  gap: 6px;
+  flex: none;
+  align-self: flex-start;
+}
+.buddy-stabilizers .stab {
+  font-size: 18px;
+  opacity: 0.25;
+  filter: grayscale(1);
+}
+.buddy-stabilizers .stab.on {
+  opacity: 1;
+  filter: none;
+  text-shadow: 0 0 8px rgba(56, 189, 248, 0.5);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .capsule-vial.ready,
+  .buddy-glyph { animation: none; }
+}
+
+/* ============================================================
+   THE MYTH VAULT  (Priority 4 — fictional substances)
+   ============================================================ */
+
+.modal.myth {
+  border: 1px solid rgba(192, 132, 252, 0.45);
+  box-shadow:
+    0 0 0 1px rgba(192, 132, 252, 0.18),
+    0 30px 80px -25px rgba(192, 132, 252, 0.35);
+}
+
+.fictional-banner {
+  display: inline-block;
+  margin-bottom: 8px;
+  padding: 4px 12px;
+  border-radius: 99px;
+  border: 1px solid rgba(192, 132, 252, 0.5);
+  background: rgba(192, 132, 252, 0.12);
+  color: var(--epic);
+  font-family: var(--font-display);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  align-self: center;
+}
+
+/* the structure slot, replaced for myths with a glyphic placeholder */
+.myth-struct {
+  display: grid;
+  place-items: center;
+  gap: 6px;
+  padding: 28px 12px;
+  background:
+    radial-gradient(60% 80% at 50% 40%, rgba(192, 132, 252, 0.22), transparent 70%),
+    linear-gradient(180deg, rgba(192, 132, 252, 0.05), rgba(0, 0, 0, 0));
+  border: 1px dashed rgba(192, 132, 252, 0.35);
+  border-radius: 14px;
+  cursor: default;
+}
+.myth-struct .myth-symbol {
+  font-size: 56px;
+  color: var(--epic);
+  filter: drop-shadow(0 0 18px rgba(192, 132, 252, 0.55));
+  animation: mythPulse 2.6s var(--ease-in-out) infinite;
+}
+.myth-struct .myth-name {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 18px;
+  letter-spacing: 0.04em;
+}
+.myth-struct .myth-formula {
+  font-family: var(--font-mono);
+  color: var(--muted);
+  font-size: 14px;
+}
+@keyframes mythPulse {
+  0%, 100% { transform: scale(1); opacity: 0.9; }
+  50%      { transform: scale(1.08); opacity: 1; }
+}
+
+/* "Where it's from" card */
+.origin-card {
+  margin: 6px 0 4px;
+  padding: 14px 16px;
+  border-radius: 14px;
+  border: 1px solid rgba(192, 132, 252, 0.25);
+  background: linear-gradient(180deg, rgba(192, 132, 252, 0.06), rgba(192, 132, 252, 0.02));
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.origin-row {
+  display: flex;
+  gap: 10px;
+  align-items: baseline;
+  flex-wrap: wrap;
+}
+.origin-key {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--epic);
+  flex: none;
+  min-width: 96px;
+}
+.origin-val {
+  font-size: 14px;
+  color: var(--text);
+}
+.origin-science { color: var(--muted); font-size: 13.5px; line-height: 1.45; }
+
+/* ============================================================
+   GLITCH LEGENDARIES  (Priority 4 — myth discoveries break reality)
+   ============================================================ */
+
+/* the whole catch overlay flickers and color-shifts when a myth lands */
+.catch-moment.glitch {
+  animation: catchVeil 220ms var(--ease-out) both,
+             glitchFlicker 0.18s steps(2) infinite;
+}
+
+/* scan lines + a faint chromatic banding swept across the whole stage */
+.catch-moment.glitch::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    repeating-linear-gradient(
+      0deg,
+      rgba(255, 255, 255, 0.07) 0 2px,
+      rgba(0, 0, 0, 0) 2px 4px
+    );
+  mix-blend-mode: overlay;
+  animation: scanShift 0.4s linear infinite;
+  z-index: 0;
+}
+@keyframes scanShift {
+  from { background-position: 0 0; }
+  to   { background-position: 0 4px; }
+}
+
+/* a stray tear band that flicks between three vertical positions */
+.catch-moment.glitch::after {
+  content: "";
+  position: absolute;
+  left: -10vw;
+  right: -10vw;
+  height: 18px;
+  background: linear-gradient(
+    90deg,
+    rgba(255, 0, 220, 0.18),
+    rgba(0, 240, 255, 0.18)
+  );
+  mix-blend-mode: screen;
+  filter: blur(1.5px);
+  pointer-events: none;
+  z-index: 1;
+  animation: glitchTear 720ms steps(1) infinite;
+}
+@keyframes glitchTear {
+  0%   { top: 22%; opacity: 0.85; transform: translateX(0); }
+  18%  { top: 22%; opacity: 0; }
+  35%  { top: 64%; opacity: 0.7; transform: translateX(2vw); }
+  55%  { top: 64%; opacity: 0; }
+  72%  { top: 42%; opacity: 0.9; transform: translateX(-2vw); }
+  100% { top: 42%; opacity: 0; }
+}
+
+@keyframes glitchFlicker {
+  0%, 100% { filter: none; }
+  50%      { filter: brightness(1.15) contrast(1.1); }
+}
+
+/* RGB-split on the discovery caption — the label is the centrepiece */
+.catch-moment.glitch .catch-name {
+  animation: catchRise 520ms var(--ease-out) 280ms both,
+             chromaShift 320ms steps(4) 280ms infinite;
+}
+@keyframes chromaShift {
+  0%   { text-shadow:  3px 0 0 #ff00d4, -3px 0 0 #00f0ff; transform: translate(0, 0); }
+  25%  { text-shadow: -2px 0 0 #ff00d4,  2px 0 0 #00f0ff; transform: translate(1px, -1px); }
+  50%  { text-shadow:  2px 0 0 #ff00d4, -2px 0 0 #00f0ff; transform: translate(-1px, 0); }
+  75%  { text-shadow: -3px 0 0 #ff00d4,  3px 0 0 #00f0ff; transform: translate(0, 1px); }
+}
+
+/* the flash cycles through hues while the rings stretch into ovals */
+.catch-moment.glitch .catch-flash {
+  animation: catchFlash 620ms var(--ease-out) both,
+             glitchHue 240ms steps(4) infinite;
+}
+.catch-moment.glitch .catch-ring {
+  animation: catchRing 1100ms var(--ease-out) infinite,
+             glitchHue 240ms steps(4) infinite;
+}
+@keyframes glitchHue {
+  0%, 100% { filter: hue-rotate(0deg); }
+  25%      { filter: hue-rotate(120deg); }
+  50%      { filter: hue-rotate(-60deg); }
+  75%      { filter: hue-rotate(200deg); }
+}
+
+/* the core distorts — slight skew + tiny position jumps */
+.catch-moment.glitch .catch-core {
+  animation: catchPop 640ms var(--ease-spring) both,
+             glitchCore 300ms steps(3) 640ms infinite;
+}
+@keyframes glitchCore {
+  0%, 100% { transform: skewX(0) translate(0, 0); }
+  33%      { transform: skewX(-3deg) translate(2px, -1px); }
+  66%      { transform: skewX(2deg)  translate(-2px, 1px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .catch-moment.glitch,
+  .catch-moment.glitch::before,
+  .catch-moment.glitch::after,
+  .catch-moment.glitch .catch-name,
+  .catch-moment.glitch .catch-flash,
+  .catch-moment.glitch .catch-ring,
+  .catch-moment.glitch .catch-core {
+    animation: none;
+  }
+}

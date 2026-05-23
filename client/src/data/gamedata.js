@@ -361,8 +361,201 @@ export const MOLECULES = [
     smiles: "C(C(=O)O)N", inchiKey: "DHMQDGOQFOQNFH-UHFFFAOYSA-N", molarMass: 75.067,
     structureImage: "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/cid/750/PNG",
     funFact: "Glycine has been detected on comets and in interstellar dust clouds — supporting the idea that the building blocks of life could have arrived from space."
+  },
+
+  /* ============================================================
+     THE MYTH VAULT — fictional substances from pop culture and
+     historical scientific dead-ends. Discoverable by combinations
+     real chemistry doesn't allow (large clusters of one element,
+     impossible salts). Every card flips to an Origin panel.
+     ============================================================ */
+  {
+    id: "mol_myth_001", pubchemCid: null, formula: "Na6",
+    commonName: "Kryptonite", iupacName: "Hexasodium glow-crystal",
+    atoms: { Na: 6 },
+    description: "A fluorescent green crystal radiating an unknown alpha frequency. Said to weaken visitors from a faraway dying star — but on our workbench it just glows.",
+    uses: ["Disabling super-powered visitors", "A reliable plot device since 1943", "Cosplay prop centerpiece", "Glow-in-the-dark Halloween rock"],
+    category: "myth", type: "fictional", rarity: "epic", tier: 5,
+    smiles: null, inchiKey: "FICTIONAL-KRYPTONITE-0000-X", molarMass: 137.94,
+    structureImage: null,
+    funFact: "Kryptonite first appeared in a 1943 Superman radio drama — the writers needed a plot device so the voice actor could take a vacation."
+  },
+  {
+    id: "mol_myth_002", pubchemCid: null, formula: "C13",
+    commonName: "Adamantium", iupacName: "Tridecacarbon untameable",
+    atoms: { C: 13 },
+    description: "A virtually indestructible alloy of dense carbon clusters. Real hard alloys exist — none are unbreakable, but a kid can dream.",
+    uses: ["Skeletal reinforcement", "Claws of legend", "Comic-book MacGuffin", "Sci-fi armor plating"],
+    category: "myth", type: "fictional", rarity: "epic", tier: 5,
+    smiles: null, inchiKey: "FICTIONAL-ADAMANTIUM-000-X", molarMass: 156.13,
+    structureImage: null,
+    funFact: "In Wolverine's 1974 debut his claws were bone — adamantium was bonded onto his skeleton later, retconning him into the metal claw character we know."
+  },
+  {
+    id: "mol_myth_003", pubchemCid: null, formula: "NaSCl",
+    commonName: "Mithril", iupacName: "Sodium-sulfur-chloride filigree",
+    atoms: { Na: 1, S: 1, Cl: 1 },
+    description: "A silvery, feather-light metal stronger than steel — a single chainmail shirt of it could turn a cave troll's spear.",
+    uses: ["Chainmail for hobbits", "Elven jewelry", "Fantasy-game ore drop", "Forging legendary blades"],
+    category: "myth", type: "fictional", rarity: "epic", tier: 5,
+    smiles: null, inchiKey: "FICTIONAL-MITHRIL-00000-X", molarMass: 94.51,
+    structureImage: null,
+    funFact: "Tolkien coined 'mithril' from his invented Sindarin language — it roughly means 'grey-glitter'."
+  },
+  {
+    id: "mol_myth_004", pubchemCid: null, formula: "C4Na4",
+    commonName: "Vibranium", iupacName: "Tetrasodium tetracarbide",
+    atoms: { Na: 4, C: 4 },
+    description: "A meteor-borne metal that drinks kinetic energy and re-emits it as vibration. The signature ore of a hidden African nation.",
+    uses: ["Energy-dampening shields", "Sound-proofing fictional cities", "Heroic vibrations", "Marvel box-office returns"],
+    category: "myth", type: "fictional", rarity: "epic", tier: 5,
+    smiles: null, inchiKey: "FICTIONAL-VIBRANIUM-0000-X", molarMass: 139.99,
+    structureImage: null,
+    funFact: "Vibranium debuted in Daredevil #13 (1966), three years before Wakanda's first comic appearance — the metal predates the country it now defines."
+  },
+  {
+    id: "mol_myth_005", pubchemCid: null, formula: "★Un★",
+    commonName: "Unobtanium", iupacName: "All-element wishstone",
+    atoms: { H: 1, C: 1, N: 1, O: 1, Na: 1, S: 1, Cl: 1 },
+    description: "A room-temperature superconductor with negative mass and a perfect lattice. Engineers have wanted this since the 1950s. Still waiting.",
+    uses: ["Floating cities", "Anti-gravity engines", "Plot resolution", "Holy grail of materials science"],
+    category: "myth", type: "fictional", rarity: "epic", tier: 5,
+    smiles: null, inchiKey: "FICTIONAL-UNOBTANIUM-000-X", molarMass: 142.86,
+    structureImage: null,
+    funFact: "'Unobtainium' was 1950s engineering slang for any material the team wished existed. James Cameron leaned into the joke for Avatar (2009)."
+  },
+  {
+    id: "mol_myth_006", pubchemCid: null, formula: "Na2",
+    commonName: "Dilithium", iupacName: "Disodium warp-lattice",
+    atoms: { Na: 2 },
+    description: "A crystalline matrix that regulates a matter–antimatter reaction in a warp drive. Cracked dilithium leaves a starship dead in the water.",
+    uses: ["Warp-core regulation", "Faster-than-light travel", "Star Trek bottle episodes", "Trade currency in the Klingon Empire"],
+    category: "myth", type: "fictional", rarity: "epic", tier: 5,
+    smiles: null, inchiKey: "FICTIONAL-DILITHIUM-0000-X", molarMass: 45.98,
+    structureImage: null,
+    funFact: "Real dilithium (Li₂) exists as a fleeting two-atom gas — Star Trek borrowed the name purely for its sci-fi ring."
+  },
+  {
+    id: "mol_myth_007", pubchemCid: null, formula: "C3S6",
+    commonName: "Tiberium", iupacName: "Trisulfur tricarbon spire",
+    atoms: { S: 6, C: 3 },
+    description: "An alien crystalline weed that grows by converting whatever it touches into more of itself. Beautiful, lucrative, and deeply unwise to harvest barehanded.",
+    uses: ["Powering tiberium-age weaponry", "Strategy-game resource", "Atmospheric contamination", "Slow-motion world-ending"],
+    category: "myth", type: "fictional", rarity: "epic", tier: 5,
+    smiles: null, inchiKey: "FICTIONAL-TIBERIUM-00000-X", molarMass: 228.41,
+    structureImage: null,
+    funFact: "Westwood Studios named tiberium after the Roman emperor Tiberius — they wanted something sci-fi-Latin to anchor the whole Command & Conquer universe."
+  },
+  {
+    id: "mol_myth_008", pubchemCid: null, formula: "Na5",
+    commonName: "Naquadah", iupacName: "Pentasodium gate-ore",
+    atoms: { Na: 5 },
+    description: "An incredibly dense superconducting ore — the structural material of every Stargate. Worth fighting over.",
+    uses: ["Building Stargates", "Reactor fuel for advanced civilizations", "Black-market currency", "Plot fuel for ten seasons of TV"],
+    category: "myth", type: "fictional", rarity: "epic", tier: 5,
+    smiles: null, inchiKey: "FICTIONAL-NAQUADAH-00000-X", molarMass: 114.95,
+    structureImage: null,
+    funFact: "Naquadah was invented mid-Stargate-SG-1's first season to retroactively explain why Stargates have such immense mass — the writers needed an excuse."
+  },
+  {
+    id: "mol_myth_009", pubchemCid: null, formula: "N5O5",
+    commonName: "Element Zero", iupacName: "Pentanitrogen pentoxide (eezo)",
+    atoms: { N: 5, O: 5 },
+    description: "A glittery blue dust that, when current is passed through it, bends the mass of nearby objects. The whole Mass Effect universe runs on it.",
+    uses: ["Faster-than-light starships", "Biotic powers", "Mini black-hole party tricks", "Galactic economies"],
+    category: "myth", type: "fictional", rarity: "epic", tier: 5,
+    smiles: null, inchiKey: "FICTIONAL-EEZO-000000000-X", molarMass: 150.04,
+    structureImage: null,
+    funFact: "Mass Effect's writers picked 'element zero' to evoke an undiscovered slot in the periodic table — atomic number 0 isn't real chemistry, but it sounds plausible."
+  },
+  {
+    id: "mol_myth_010", pubchemCid: null, formula: "H5O2",
+    commonName: "Phlogiston", iupacName: "The fire substance",
+    atoms: { H: 5, O: 2 },
+    description: "The 'fire element' that 17th-century chemists believed flowed out of anything that burned. A perfectly respectable theory in 1700 — and a textbook example of being wrong.",
+    uses: ["Explaining combustion (badly)", "Pre-Lavoisier chemistry textbooks", "A reminder that science self-corrects", "Steampunk world-building"],
+    category: "myth", type: "fictional", rarity: "epic", tier: 5,
+    smiles: null, inchiKey: "FICTIONAL-PHLOGISTON-000-X", molarMass: 37.04,
+    structureImage: null,
+    funFact: "Phlogiston theory ruled chemistry for over a century until Lavoisier's 1777 discovery of oxygen burned it down — literally rewriting what combustion meant."
   }
 ];
+
+/* The Origin Card — for each myth molecule, where the fiction comes
+   from and a line on the real science it riffs on. Shown in the modal
+   under a "FICTIONAL" banner so kids can tell fiction from chemistry. */
+export const MOL_ORIGIN = {
+  mol_myth_001: {
+    source: { en: "Superman radio drama (1943)", fr: "Feuilleton radio Superman (1943)" },
+    scienceNote: {
+      en: "Riffs on real radioactive minerals. Uranium ore can fluoresce green under UV — but it doesn't, alas, weaken aliens.",
+      fr: "Inspiré de vrais minéraux radioactifs. Le minerai d'uranium fluoresce en vert sous UV — mais il n'affaiblit aucun alien."
+    }
+  },
+  mol_myth_002: {
+    source: { en: "Avengers #66 (Marvel, 1969)", fr: "Avengers #66 (Marvel, 1969)" },
+    scienceNote: {
+      en: "Named after 'adamant' from Greek myth — 'untameable'. Real hard alloys exist (osmium, tungsten carbide), but nothing is indestructible.",
+      fr: "Du mot grec « adamas » — « indomptable ». De vrais alliages très durs existent (osmium, carbure de tungstène), mais rien n'est indestructible."
+    }
+  },
+  mol_myth_003: {
+    source: { en: "The Lord of the Rings — J.R.R. Tolkien (1954)", fr: "Le Seigneur des Anneaux — J.R.R. Tolkien (1954)" },
+    scienceNote: {
+      en: "Tolkien imagined a silver-like metal stronger than steel and feather-light. Real titanium is the closest match — silver-grey, light, and tough.",
+      fr: "Tolkien imaginait un métal argenté plus solide que l'acier et léger comme une plume. Le titane est le plus proche dans la vraie chimie."
+    }
+  },
+  mol_myth_004: {
+    source: { en: "Daredevil #13 (Marvel, 1966)", fr: "Daredevil #13 (Marvel, 1966)" },
+    scienceNote: {
+      en: "An energy-absorbing metal. Real metamaterials can absorb specific wavelengths, but no real solid drinks impact force the way vibranium does.",
+      fr: "Un métal qui absorbe l'énergie. Les vrais métamatériaux absorbent certaines longueurs d'onde, mais aucun solide ne boit les chocs comme le vibranium."
+    }
+  },
+  mol_myth_005: {
+    source: { en: "Sci-fi engineering slang, popularised by Avatar (2009)", fr: "Argot d'ingénieur, popularisé par Avatar (2009)" },
+    scienceNote: {
+      en: "Engineers used 'unobtainium' as a wink for any material the team wished existed. Real room-temperature superconductors remain materials science's holy grail.",
+      fr: "Mot-clin d'œil des ingénieurs pour tout matériau dont on rêve. Les vrais supraconducteurs à température ambiante restent le Graal de la science des matériaux."
+    }
+  },
+  mol_myth_006: {
+    source: { en: "Star Trek (1967)", fr: "Star Trek (1967)" },
+    scienceNote: {
+      en: "Real dilithium (Li₂) is a real two-atom gas-phase molecule — fleeting and unspectacular. Star Trek borrowed the name for its sci-fi ring.",
+      fr: "Le vrai dilithium (Li₂) est une molécule gazeuse de deux atomes — fugace et banale. Star Trek a emprunté le nom pour sa sonorité futuriste."
+    }
+  },
+  mol_myth_007: {
+    source: { en: "Command & Conquer (Westwood Studios, 1995)", fr: "Command & Conquer (Westwood Studios, 1995)" },
+    scienceNote: {
+      en: "A crystalline 'lifeform' that converts matter to more of itself. Real crystals grow in lattices — but they don't eat tanks.",
+      fr: "Un cristal « vivant » qui transforme la matière en lui-même. Les vrais cristaux poussent en réseau — mais ne dévorent pas les blindés."
+    }
+  },
+  mol_myth_008: {
+    source: { en: "Stargate SG-1 (1997)", fr: "Stargate SG-1 (1997)" },
+    scienceNote: {
+      en: "A super-dense ore. Real osmium is the densest stable element on Earth — but it doesn't unlock wormholes, sorry.",
+      fr: "Un minerai super-dense. L'osmium est l'élément stable le plus dense sur Terre — mais il n'ouvre aucun trou de ver, désolé."
+    }
+  },
+  mol_myth_009: {
+    source: { en: "Mass Effect (BioWare, 2007)", fr: "Mass Effect (BioWare, 2007)" },
+    scienceNote: {
+      en: "Said to bend mass. Real physics has 'effective mass' for electrons in solids — a clever borrowing of a legitimate idea.",
+      fr: "Censé courber la masse. La vraie physique parle de « masse effective » pour les électrons dans les solides — un emprunt astucieux."
+    }
+  },
+  mol_myth_010: {
+    source: { en: "J.J. Becher's theory (1667)", fr: "Théorie de J.J. Becher (1667)" },
+    scienceNote: {
+      en: "Phlogiston theory dominated chemistry for over a century. Lavoisier's 1777 discovery of oxygen ended it — the textbook case of science self-correcting.",
+      fr: "La théorie du phlogistique a régné sur la chimie pendant plus d'un siècle. La découverte de l'oxygène par Lavoisier en 1777 y a mis fin — l'exemple type d'une science qui se corrige."
+    }
+  }
+};
 
 // Curated chemistry-meaningful neighbors per molecule. The relationships
 // are precursors / products / conjugate pairs / family members — they're

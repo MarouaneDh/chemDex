@@ -30,6 +30,12 @@ import {
   pickDailyPuzzle,
   todayStr,
 } from "../game/content.js";
+import {
+  tickCapsules,
+  claimCapsule as claimCapsuleState,
+  rollCapsuleLoot,
+} from "../game/capsule.js";
+import { updateBuddyOnDiscovery, addStabilizer } from "../game/buddy.js";
 import { CLUES } from "../game/clues.js";
 import { confettiBurst, xpPopup, toast } from "../game/fx.js";
 import { makeI18n } from "../i18n/t.js";
@@ -75,6 +81,14 @@ export function GameProvider({ children }) {
     "chemdex.atoms",
     STARTER_ATOMS.slice()
   );
+  // Daily Heartbeat (Priority 3) — Capsule cooldown + Atom Buddy streak
+  const [capsules, setCapsules] = usePersistentState("chemdex.capsules", null);
+  const [buddy, setBuddy] = usePersistentState("chemdex.buddy", {
+    streak: 0,
+    lastDiscoveryDate: "",
+    stabilizers: 0,
+  });
+  const [lastSeen, setLastSeen] = usePersistentState("chemdex.lastSeen", "");
 
   // which top-bar tab is showing
   const [activeTab, setActiveTab] = useState("lab");
@@ -171,8 +185,13 @@ export function GameProvider({ children }) {
   // Tapping the mascot escalates the help level; idle nudges never do,
   // so the player stays in control of how much gets spoiled.
   const showHint = (escalate = true) => {
+    // myths are stumble-upon discoveries — never spoiled by a mascot hint
     const target = MOLECULES.find(
-      (m) => !discoveries[m.id] && tierUnlocked(m.tier) && moleculeBuildable(m)
+      (m) =>
+        m.category !== "myth" &&
+        !discoveries[m.id] &&
+        tierUnlocked(m.tier) &&
+        moleculeBuildable(m)
     );
     if (!target) {
       mascotSay(mascotLine("idle", lang));
@@ -239,6 +258,8 @@ export function GameProvider({ children }) {
 
     /* --- commit every state slice --- */
     setDiscoveries(nextDiscoveries);
+    // the Atom Buddy's streak — one bump per calendar day, never punished
+    setBuddy((b) => updateBuddyOnDiscovery(b, todayStr()));
     if (gotBadges.length) {
       setEarnedBadges((prev) => [...prev, ...gotBadges.map((b) => b.id)]);
     }
@@ -278,19 +299,53 @@ export function GameProvider({ children }) {
   };
 
   /* The Catch Moment cinematic finished (or was tapped through) — float
-     the XP, open the molecule modal, and let the mascot react. */
+     the XP, open the molecule modal, and let the mascot react. Myth
+     finds get their own stunned line under the reality-glitch overlay. */
   const finishCatch = () => {
     if (!catchMoment) return;
     const cm = catchMoment;
     setCatchMoment(null);
     xpPopup(cm.xp, cm.shiny);
     openMolecule(cm.molecule, true);
-    mascotSay(mascotLine(cm.shiny ? "shiny" : "discover", lang));
+    const lineKey =
+      cm.molecule.category === "myth"
+        ? "mythStruck"
+        : cm.shiny
+          ? "shiny"
+          : "discover";
+    mascotSay(mascotLine(lineKey, lang));
   };
 
   /* --- Holo Brag Card (shareable trading card) --- */
   const openBragCard = (m) => setBragCard(m);
   const closeBragCard = () => setBragCard(null);
+
+  /* ============================================================
+     THE DAILY CAPSULE — twice-daily reward, squeeze-to-burst
+     ============================================================ */
+  const claimCapsule = () => {
+    if (!capsules || capsules.stockpile <= 0) return null;
+    const loot = rollCapsuleLoot({
+      discoveries,
+      unlockedAtoms,
+      stabilizers: buddy.stabilizers || 0,
+    });
+    setCapsules((c) => claimCapsuleState(c, Date.now()));
+
+    SFX.success();
+    if (loot.kind === "xp") {
+      setTotalXP((p) => p + loot.amount);
+      xpPopup(loot.amount, false);
+      toast("💊", t("lootXP", loot.amount));
+    } else if (loot.kind === "stabilizer") {
+      setBuddy((b) => addStabilizer(b));
+      toast("❄️", t("lootStabilizer"));
+    } else if (loot.kind === "hint") {
+      mascotSay("🧩 " + t("atomHint", atomRecipe(loot.molecule)), 9000);
+      toast("📜", t("lootHint"));
+    }
+    return loot;
+  };
 
   /* ============================================================
      ATOM TECH TREE — milestone picks, unlock flow, cinematic
@@ -372,6 +427,8 @@ export function GameProvider({ children }) {
     setModal(null);
     setPathModalOpen(false);
     setCinematic(null);
+    setCapsules(tickCapsules(null));
+    setBuddy({ streak: 0, lastDiscoveryDate: "", stabilizers: 0 });
   };
 
   /* ============================================================
@@ -392,6 +449,8 @@ export function GameProvider({ children }) {
     missions: claimedMissions,
     daily: dailyState,
     atoms: unlockedAtoms,
+    capsule: capsules,
+    buddy,
     lang,
     muted,
   });
@@ -405,6 +464,8 @@ export function GameProvider({ children }) {
     if (Array.isArray(p.missions)) setClaimedMissions(p.missions);
     if (p.daily) setDailyState(p.daily);
     if (Array.isArray(p.atoms) && p.atoms.length) setUnlockedAtoms(p.atoms);
+    if (p.capsule) setCapsules(p.capsule);
+    if (p.buddy) setBuddy(p.buddy);
     if (p.lang) setLang(p.lang);
     if (typeof p.muted === "boolean") setMuted(p.muted);
   };
@@ -450,6 +511,8 @@ export function GameProvider({ children }) {
     claimedMissions,
     dailyState,
     unlockedAtoms,
+    capsules,
+    buddy,
     lang,
     muted,
   ]);
@@ -488,16 +551,24 @@ export function GameProvider({ children }) {
       });
     }
 
-    // greet the player, then start the idle-nudge timer
-    const greet = setTimeout(() => mascotSay(mascotLine("greet", lang), 7000), 900);
+    // Daily Heartbeat — bring the capsule clock up to date
+    setCapsules((c) => tickCapsules(c));
+
+    // pick a warmer "missed you" greeting if it's been a long while away
+    const now = Date.now();
+    const seenAt = lastSeen ? Date.parse(lastSeen) : 0;
+    const greetKey =
+      seenAt && now - seenAt > 18 * 60 * 60 * 1000 ? "welcomeBack" : "greet";
+    setLastSeen(new Date(now).toISOString());
+
+    // greet the player, then start the idle-nudge timer.
+    // these are fire-and-forget — no cleanup, so React StrictMode's
+    // double-mount can't cancel them between setup and re-setup.
+    setTimeout(() => mascotSay(mascotLine(greetKey, lang), 7000), 900);
     resetIdle();
 
     // a returning player may already be owed an element pick
-    const offer = setTimeout(() => maybeOfferAtomPick(), 1600);
-    return () => {
-      clearTimeout(greet);
-      clearTimeout(offer);
-    };
+    setTimeout(() => maybeOfferAtomPick(), 1600);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -556,6 +627,9 @@ export function GameProvider({ children }) {
     bragCard,
     openBragCard,
     closeBragCard,
+    capsules,
+    claimCapsule,
+    buddy,
     syncStatus,
     pathModalOpen,
     lockedAtomList,

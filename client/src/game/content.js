@@ -79,6 +79,17 @@ export const MASCOT = {
   levelUp:  [{ en: "You levelled up! So smart!",                 fr: "Tu as gagné un niveau ! Trop fort !" }],
   fail:     [{ en: "Hmm, that didn't bond. Try again!",          fr: "Hmm, ça n'a pas réagi. Réessaie !" }],
   idle:     [{ en: "Stuck? Tap me for a hint!",                  fr: "Bloqué ? Touche-moi pour un indice !" }],
+  welcomeBack: [
+    { en: "Welcome back! I found something to show you 👀",      fr: "Te revoilà ! J'ai un truc à te montrer 👀" },
+    { en: "There you are! Ready to discover more?",              fr: "Te voilà ! Prêt à découvrir encore ?" },
+  ],
+  // when an impossible combination yields a Myth Vault entry — the
+  // mascot's "reality just broke" line under the glitch cinematic
+  mythStruck: [
+    { en: "I… I don't think that's chemistry anymore. ✦",         fr: "Je… ce n'est plus de la chimie. ✦" },
+    { en: "The instruments are reading FICTION. How?!",           fr: "Les instruments lisent FICTION. Comment ?!" },
+    { en: "That's not in the periodic table — that's in a comic.", fr: "Ce n'est pas dans le tableau périodique — c'est dans une BD." },
+  ],
 };
 
 // Random line from a mascot category, in the active language.
@@ -125,7 +136,10 @@ export function pickDailyPuzzle(dateStr, discoveries, unlockedAtoms) {
   const count = MOLECULES.filter((m) => discoveries[m.id]).length;
   const tierOk = (tier) => count >= (TIER_UNLOCK[tier] || 0);
   const buildable = (m) => Object.keys(m.atoms).every((s) => unlockedAtoms.includes(s));
-  const pool = MOLECULES.filter((m) => tierOk(m.tier) && buildable(m));
+  // myths are stumble-upon discoveries — never picked as the daily prompt
+  const pool = MOLECULES.filter(
+    (m) => m.category !== "myth" && tierOk(m.tier) && buildable(m)
+  );
   if (pool.length === 0) return null;
   return pool[dailySeed(dateStr) % pool.length];
 }

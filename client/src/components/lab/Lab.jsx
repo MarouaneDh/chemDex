@@ -7,6 +7,7 @@ import { useGame } from "../../context/GameContext.jsx";
 import AtomPalette from "./AtomPalette.jsx";
 import Workbench from "./Workbench.jsx";
 import DailyPuzzle from "./DailyPuzzle.jsx";
+import Capsule from "./Capsule.jsx";
 import Formula from "../Formula.jsx";
 
 /* The Lab — build a molecule from atoms, then Combine to validate.
@@ -78,7 +79,10 @@ export default function Lab() {
 
   return (
     <>
-      <DailyPuzzle />
+      <div className="heartbeat-row">
+        <DailyPuzzle />
+        <Capsule />
+      </div>
 
       <div className="lab-grid">
         <div className="panel">
