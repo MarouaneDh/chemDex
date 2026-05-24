@@ -3,6 +3,7 @@ import { SFX } from "../game/sfx.js";
 import { useCatalog } from "../context/CatalogContext.jsx";
 import { useGame } from "../context/GameContext.jsx";
 import { useAuth } from "../context/AuthContext.jsx";
+import { useFriends } from "../context/FriendsContext.jsx";
 
 const TABS = [
   { id: "lab", i18n: "tabLab" },
@@ -18,7 +19,11 @@ export default function TopBar() {
     discoveries, totalXP, activeTab, setActiveTab, syncStatus, openAuth,
   } = useGame();
   const { isAuthed, isAdmin, user } = useAuth();
+  const { totalUnread, incomingInvites } = useFriends();
   const visibleTabs = isAdmin ? [...TABS, ADMIN_TAB] : TABS;
+  // anything that needs the player's attention — unread chat messages
+  // plus pending friend invitations — surfaces as one red badge
+  const badge = (totalUnread || 0) + (incomingInvites.length || 0);
   const { molecules } = useCatalog();
 
   const found = molecules.filter((m) => discoveries[m.id]).length;
@@ -81,6 +86,14 @@ export default function TopBar() {
           {isAuthed ? user.displayName : t("signIn")}
         </span>
         {isAuthed && <span className={"sync-dot sync-" + syncStatus} />}
+        {isAuthed && badge > 0 && (
+          <span
+            className="account-badge"
+            aria-label={t("notificationsAria", badge)}
+          >
+            {badge > 9 ? "9+" : badge}
+          </span>
+        )}
       </button>
 
       <button className="icon-btn" onClick={toggleMute} title="Sound">

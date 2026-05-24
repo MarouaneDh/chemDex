@@ -10,6 +10,7 @@ import { useAuth } from "./context/AuthContext.jsx";
 import Lightbox from "./components/Lightbox.jsx";
 import Mascot from "./components/Mascot.jsx";
 import AuthModal from "./components/auth/AuthModal.jsx";
+import ChatModal from "./components/chat/ChatModal.jsx";
 import CatchMoment from "./components/CatchMoment.jsx";
 import BragCard from "./components/BragCard.jsx";
 import ChoosePathModal from "./components/atom/ChoosePathModal.jsx";
@@ -66,6 +67,7 @@ export default function App() {
 
       <Mascot />
       <AuthModal />
+      <ChatModal />
       <Modal />
       <BragCard />
       <Lightbox />

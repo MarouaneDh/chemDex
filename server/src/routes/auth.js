@@ -18,6 +18,15 @@ function signToken(user) {
   });
 }
 
+// Lazy backfill — older accounts predate the social fields.
+async function ensureFriendId(user) {
+  if (!user.friendId) {
+    user.friendId = await User.generateFriendId();
+    await user.save();
+  }
+  return user;
+}
+
 /* POST /api/auth/register — create an account, return a token. */
 router.post("/register", async (req, res) => {
   try {
@@ -44,7 +53,8 @@ router.post("/register", async (req, res) => {
     }
 
     const passwordHash = await bcrypt.hash(password, 10);
-    const user = await User.create({ email, passwordHash, displayName });
+    const friendId = await User.generateFriendId();
+    const user = await User.create({ email, passwordHash, displayName, friendId });
     res.status(201).json({ token: signToken(user), user: user.toSafeJSON() });
   } catch (err) {
     console.error("register failed:", err);
@@ -63,6 +73,7 @@ router.post("/login", async (req, res) => {
     if (!user || !(await user.checkPassword(password))) {
       return res.status(401).json({ error: "Incorrect email or password" });
     }
+    await ensureFriendId(user);
     res.json({ token: signToken(user), user: user.toSafeJSON() });
   } catch (err) {
     console.error("login failed:", err);
@@ -75,6 +86,7 @@ router.get("/me", requireAuth, async (req, res) => {
   try {
     const user = await User.findById(req.userId);
     if (!user) return res.status(404).json({ error: "User not found" });
+    await ensureFriendId(user);
     res.json({ user: user.toSafeJSON() });
   } catch (err) {
     console.error("me failed:", err);

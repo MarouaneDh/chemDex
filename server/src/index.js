@@ -5,6 +5,7 @@ import { connectDB } from "./db.js";
 import authRoutes from "./routes/auth.js";
 import progressRoutes from "./routes/progress.js";
 import catalogRoutes from "./routes/catalog.js";
+import friendsRoutes from "./routes/friends.js";
 
 dotenv.config();
 
@@ -28,6 +29,8 @@ app.use("/api/auth", authRoutes);
 app.use("/api/progress", progressRoutes);
 // Reference catalog — atoms + molecules. Public; same data for everyone.
 app.use("/api/catalog", catalogRoutes);
+// Friend graph + brag-card sharing
+app.use("/api/friends", friendsRoutes);
 
 const PORT = process.env.PORT || 4000;
 

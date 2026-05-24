@@ -3329,3 +3329,669 @@ body.catch-shake { animation: catchShake 600ms var(--ease-out) both; }
   color: #1a1d22;
   margin-bottom: -8px;
 }
+
+/* ============================================================
+   FRIENDS — friend ID, friends list, invitations, share dialog
+   ============================================================ */
+
+/* ----- friend ID row (account panel) ----- */
+.friendid-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 12px 0 4px;
+  padding: 8px 12px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  width: 100%;
+  justify-content: center;
+}
+.friendid-label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.friendid-code {
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-size: 16px;
+  letter-spacing: 0.08em;
+  color: var(--accent);
+  padding: 2px 8px;
+  border-radius: 6px;
+  background: rgba(45, 212, 191, 0.08);
+}
+.friendid-copy {
+  border: 1px solid var(--border);
+  background: transparent;
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 13px;
+  transition: border-color 150ms var(--ease-out);
+}
+.friendid-copy:hover { border-color: var(--accent); }
+
+/* ----- friends list sections ----- */
+.friends-section {
+  width: 100%;
+  margin-top: 14px;
+  text-align: left;
+}
+.friends-section-title {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 12px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 8px;
+}
+.friends-count {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  padding: 1px 7px;
+  border-radius: 99px;
+  background: var(--surface-2);
+  color: var(--text);
+  margin-left: 4px;
+}
+.friends-empty {
+  color: var(--faint);
+  font-size: 13px;
+  font-style: italic;
+  margin: 0;
+}
+.friends-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.friend-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px;
+  border-radius: 10px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+}
+.friend-row.pending { opacity: 0.78; }
+.friend-info {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.friend-info strong {
+  font-size: 14px;
+  color: var(--text);
+}
+.friend-info code {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--muted);
+  letter-spacing: 0.04em;
+}
+.friend-actions {
+  display: flex;
+  gap: 6px;
+  flex: none;
+}
+.friend-btn-sm {
+  padding: 5px 12px !important;
+  font-size: 12px !important;
+}
+.friend-pending-tag {
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+  flex: none;
+  padding-right: 4px;
+}
+.friend-add-btn { width: 100%; margin-top: 10px; }
+
+/* ----- add-friend dialog ----- */
+.addfriend-modal { max-width: 400px; }
+.auth-success {
+  color: var(--accent);
+  font-size: 13.5px;
+  margin: 4px 0 0;
+}
+
+/* ----- share-to-friends dialog ----- */
+.share-dialog { max-width: 440px; }
+.share-friends-list {
+  list-style: none;
+  margin: 8px 0;
+  padding: 0;
+  max-height: 280px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.share-friend-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  cursor: pointer;
+  transition: border-color 140ms var(--ease-out);
+}
+.share-friend-row:hover { border-color: var(--accent); }
+.share-friend-row input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--accent);
+  flex: none;
+}
+.share-friend-name {
+  flex: 1;
+  font-weight: 600;
+  font-size: 14px;
+  color: var(--text);
+}
+.share-friend-id {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--muted);
+}
+
+/* ============================================================
+   INBOX — received brag cards + notification badge
+   ============================================================ */
+
+/* notification badge on the account button */
+.account-btn { position: relative; }
+.account-badge {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  border-radius: 99px;
+  background: #fb7185;
+  color: #fff;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 11px;
+  line-height: 18px;
+  text-align: center;
+  border: 2px solid var(--bg-1);
+  pointer-events: none;
+  box-shadow: 0 0 8px rgba(251, 113, 133, 0.4);
+}
+
+/* ----- inbox list inside the account panel ----- */
+.inbox-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.inbox-row {
+  display: flex;
+  align-items: stretch;
+  gap: 4px;
+  border-radius: 10px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  overflow: hidden;
+}
+.inbox-row.unseen {
+  border-color: rgba(251, 113, 133, 0.45);
+  background: linear-gradient(
+    180deg,
+    rgba(251, 113, 133, 0.08),
+    var(--surface)
+  );
+}
+.inbox-open {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 12px;
+  border: none;
+  background: transparent;
+  color: var(--text);
+  text-align: left;
+  cursor: pointer;
+  font: inherit;
+  position: relative;
+  transition: background 140ms var(--ease-out);
+}
+.inbox-open:hover { background: var(--surface-2); }
+.inbox-icon { font-size: 18px; flex: none; }
+.inbox-card-text {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  flex: 1;
+  min-width: 0;
+}
+.inbox-card-text strong {
+  font-size: 13.5px;
+  color: var(--text);
+}
+.inbox-card-name {
+  font-size: 12px;
+  color: var(--muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.inbox-unseen-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: #fb7185;
+  flex: none;
+  box-shadow: 0 0 6px rgba(251, 113, 133, 0.55);
+}
+.inbox-trash {
+  flex: none;
+  width: 38px;
+  background: transparent;
+  border: none;
+  color: var(--muted);
+  font-size: 14px;
+  cursor: pointer;
+  border-left: 1px solid var(--border);
+  transition: color 140ms var(--ease-out), background 140ms var(--ease-out);
+}
+.inbox-trash:hover {
+  color: #fb7185;
+  background: rgba(251, 113, 133, 0.1);
+}
+
+/* ----- brag card "Received from" banner ----- */
+.bragcard-received-banner {
+  font-family: var(--font-display);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  padding: 5px 14px;
+  border-radius: 99px;
+  background: rgba(45, 212, 191, 0.16);
+  border: 1px solid rgba(45, 212, 191, 0.55);
+  color: var(--accent);
+  margin-bottom: 8px;
+}
+
+/* ============================================================
+   CHAT — conversations list + thread modal + bubbles + reactions
+   ============================================================ */
+
+/* ----- conversations list (in account panel) ----- */
+.chat-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.chat-row {
+  border-radius: 10px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  overflow: hidden;
+}
+.chat-row.unread {
+  border-color: rgba(251, 113, 133, 0.45);
+  background: linear-gradient(180deg, rgba(251, 113, 133, 0.08), var(--surface));
+}
+.chat-row-open {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 12px;
+  border: none;
+  background: transparent;
+  color: var(--text);
+  text-align: left;
+  cursor: pointer;
+  font: inherit;
+  transition: background 140ms var(--ease-out);
+}
+.chat-row-open:hover { background: var(--surface-2); }
+.chat-row-avatar { font-size: 22px; flex: none; }
+.chat-row-text {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.chat-row-line1 { display: flex; align-items: center; gap: 6px; }
+.chat-row-line1 strong { font-size: 14px; color: var(--text); }
+.chat-row-unread {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  background: #fb7185;
+  color: #fff;
+  border-radius: 99px;
+  padding: 1px 8px;
+  font-weight: 700;
+}
+.chat-row-preview {
+  font-size: 12px;
+  color: var(--muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ----- chat thread modal ----- */
+.chat-overlay { z-index: 60; }
+.chat-modal {
+  max-width: 520px;
+  width: 92vw;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  height: min(80vh, 720px);
+  overflow: hidden;
+}
+.chat-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--border);
+  background: var(--surface);
+}
+.chat-header-info { display: flex; align-items: center; gap: 10px; flex: 1; min-width: 0; }
+.chat-header-avatar {
+  font-size: 24px;
+  width: 36px; height: 36px;
+  display: grid; place-items: center;
+  border-radius: 50%;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  flex: none;
+}
+.chat-header-name {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 15px;
+  color: var(--text);
+}
+.chat-header-id {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--muted);
+}
+.chat-close { position: static; }
+
+.chat-scroller {
+  flex: 1;
+  padding: 14px 16px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  background: var(--bg-1);
+}
+.chat-empty {
+  text-align: center;
+  color: var(--muted);
+  font-size: 13.5px;
+  font-style: italic;
+  margin: auto 0;
+}
+
+/* ----- one message ----- */
+.chat-msg {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  align-items: flex-start;
+  max-width: 78%;
+}
+.chat-msg.mine { align-self: flex-end; align-items: flex-end; }
+.chat-msg-row { display: flex; align-items: center; gap: 6px; }
+.chat-msg.mine .chat-msg-row { flex-direction: row-reverse; }
+
+.chat-bubble {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px 14px 14px 4px;
+  padding: 8px 12px;
+  display: inline-flex;
+  flex-direction: column;
+  gap: 4px;
+  max-width: 100%;
+}
+.chat-msg.mine .chat-bubble {
+  border-radius: 14px 14px 4px 14px;
+  background: color-mix(in srgb, var(--accent) 22%, var(--surface));
+  border-color: color-mix(in srgb, var(--accent) 30%, var(--border));
+}
+.chat-bubble.card { padding: 0; overflow: hidden; }
+.chat-msg-text {
+  font-size: 14px;
+  color: var(--text);
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+.chat-msg-meta {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--muted);
+  align-self: flex-end;
+}
+.chat-msg-sender {
+  font-family: var(--font-display);
+  font-size: 10.5px;
+  color: var(--faint);
+  letter-spacing: 0.04em;
+}
+
+/* card preview as a message */
+.chat-msg-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  background: transparent;
+  border: none;
+  padding: 10px 12px;
+  color: var(--text);
+  font: inherit;
+  cursor: pointer;
+  text-align: left;
+  transition: background 140ms var(--ease-out);
+}
+.chat-msg-card:hover { background: var(--surface-2); }
+.chat-msg-card-icon { font-size: 26px; flex: none; }
+.chat-msg-card-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.chat-msg-card-name {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 14px;
+}
+.chat-msg-card-formula {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--muted);
+}
+.chat-msg-card-rarity {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+/* react button + picker */
+.chat-react-btn {
+  border: 1px solid var(--border);
+  background: var(--surface);
+  border-radius: 99px;
+  padding: 2px 8px;
+  font-size: 11px;
+  color: var(--muted);
+  cursor: pointer;
+  transition: border-color 140ms var(--ease-out);
+}
+.chat-react-btn:hover { border-color: var(--accent); color: var(--text); }
+
+.chat-react-picker {
+  display: flex;
+  gap: 4px;
+  padding: 4px;
+  border-radius: 99px;
+  background: var(--surface-2);
+  border: 1px solid var(--border-hi);
+  box-shadow: 0 6px 20px -8px rgba(0, 0, 0, 0.5);
+}
+.chat-react-pick {
+  background: transparent;
+  border: none;
+  font-size: 20px;
+  padding: 2px 4px;
+  cursor: pointer;
+  border-radius: 6px;
+  transition: background 120ms var(--ease-out), transform 120ms var(--ease-spring);
+}
+.chat-react-pick:hover { background: var(--surface); transform: scale(1.2); }
+
+.chat-reactions {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+}
+.chat-reaction {
+  font-size: 12px;
+  padding: 1px 8px;
+  border-radius: 99px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--text);
+  cursor: pointer;
+  font-family: var(--font-mono);
+  transition: border-color 140ms var(--ease-out);
+}
+.chat-reaction:hover { border-color: var(--accent); }
+
+/* ----- composer ----- */
+.chat-composer {
+  display: flex;
+  gap: 8px;
+  padding: 10px 12px;
+  border-top: 1px solid var(--border);
+  background: var(--surface);
+}
+.chat-input {
+  flex: 1;
+  height: 38px;
+  padding: 0 13px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--bg-1);
+  color: var(--text);
+  font-size: 14px;
+  font-family: var(--font-body);
+}
+.chat-input:focus { outline: none; border-color: var(--accent); }
+.chat-send { flex: none; min-width: 80px; }
+
+/* ============================================================
+   OVERLAY LAYERING
+   ----------------------------------------------------------------
+   regular modal-overlay   = 50  (molecule modal, auth, admin edit,
+                                  publish, add-friend, …)
+   chat-overlay            = 60  (chat thread modal)
+   bragcard-overlay        = 70  (a brag card opened from inside chat
+                                  or any other lower-tier modal)
+   share-overlay           = 80  (the share-to-friends picker, which
+                                  opens FROM the brag card)
+   ============================================================ */
+.bragcard-overlay { z-index: 70; }
+.share-overlay    { z-index: 80; }
+
+/* ============================================================
+   BRAG CARD — reactions row (chat-bound)
+   ============================================================ */
+
+.bragcard-reactions {
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 0 0;
+  justify-content: center;
+}
+.bragcard-reaction {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  padding: 3px 10px;
+  border-radius: 99px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--text);
+  cursor: pointer;
+  transition: border-color 140ms var(--ease-out);
+}
+.bragcard-reaction:hover { border-color: var(--accent); }
+.bragcard-react-add {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  padding: 3px 10px;
+  border-radius: 99px;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+  transition: border-color 140ms var(--ease-out), color 140ms var(--ease-out);
+}
+.bragcard-react-add:hover { border-color: var(--accent); color: var(--text); }
+.bragcard-react-picker {
+  position: absolute;
+  bottom: 100%;
+  margin-bottom: 6px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 4px;
+  padding: 4px 6px;
+  border-radius: 99px;
+  background: var(--surface-2);
+  border: 1px solid var(--border-hi);
+  box-shadow: 0 10px 24px -10px rgba(0, 0, 0, 0.55);
+  z-index: 1;
+}
+.bragcard-react-pick {
+  background: transparent;
+  border: none;
+  font-size: 22px;
+  padding: 2px 4px;
+  cursor: pointer;
+  border-radius: 6px;
+  transition: background 120ms var(--ease-out), transform 120ms var(--ease-spring);
+}
+.bragcard-react-pick:hover { background: var(--surface); transform: scale(1.2); }
