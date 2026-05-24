@@ -27,4 +27,6 @@ export function currentLevelIndex(xp) {
 // Tier difficulty curve — a tier unlocks at N total discoveries.
 // Tier 5 is the Myth Vault: pop-culture fictional substances, gated
 // behind a deep Dex so the fiction lands as a reward, not a distraction.
-export const TIER_UNLOCK = { 1: 0, 2: 3, 3: 8, 4: 13, 5: 18 };
+// Tier 6 is the Forbidden Shelf — visibility is gated separately by the
+// player breaching the Leak in the Lab, so the tier count itself is 0.
+export const TIER_UNLOCK = { 1: 0, 2: 3, 3: 8, 4: 13, 5: 18, 6: 0 };

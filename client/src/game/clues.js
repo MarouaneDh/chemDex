@@ -56,4 +56,28 @@ export const CLUES = {
   mol_myth_018: { en: "Adamantium's weaker cousin — eleven carbons in a row.",                        fr: "Le cousin faible de l'adamantium — onze carbones d'affilée." },
   mol_myth_019: { en: "A 25th-century impenetrable metal — nine carbons, nine sodiums.",              fr: "Un métal impénétrable du XXVᵉ siècle — neuf carbones, neuf sodiums." },
   mol_myth_020: { en: "A bubbling green resurrection pool — eight hydrogens, eight oxygens.",         fr: "Bassin vert qui ressuscite — huit hydrogènes, huit oxygènes." },
+
+  /* Forbidden Shelf — visible only after the Leak has been breached. */
+  mol_forbidden_001: { en: "Smells of bitter almonds — one each of the three lightest non-metals.",           fr: "Odeur d'amandes amères — un seul de chacun des trois plus légers non-métaux." },
+  mol_forbidden_002: { en: "Apollo's lunar-module rocket fuel — two nitrogens, four hydrogens.",              fr: "Carburant du module lunaire d'Apollo — deux azotes, quatre hydrogènes." },
+  mol_forbidden_003: { en: "Burns in drag-racing engines — one C, three H, one N, two O.",                    fr: "Brûle dans les dragsters — un C, trois H, un N, deux O." },
+  mol_forbidden_004: { en: "The yellow-green choking gas of WWI — two of one halogen.",                       fr: "Le gaz suffocant jaune-vert de 1914-1918 — deux d'un halogène." },
+  mol_forbidden_005: { en: "Smells of fresh-cut hay — one C, one O, two Cl.",                                 fr: "Sent le foin coupé — un C, un O, deux Cl." },
+  mol_forbidden_006: { en: "Yellow crystals measured by the kiloton — seven C, five H, three N, six O.",      fr: "Cristaux jaunes mesurés en kilotonnes — sept C, cinq H, trois N, six O." },
+  mol_forbidden_007: { en: "Nobel's accidental medicine — three C, five H, three N, nine O.",                 fr: "Le médicament-accident de Nobel — trois C, cinq H, trois N, neuf O." },
+  mol_forbidden_008: { en: "A yellow dye that became a war shell — six C, three H, three N, seven O.",        fr: "Un colorant jaune devenu obus de guerre — six C, trois H, trois N, sept O." },
+  mol_forbidden_009: { en: "Belgian field shell leak — four C, eight H, two Cl, one S.",                      fr: "Fuite d'obus en Belgique — quatre C, huit H, deux Cl, un S." },
+  mol_forbidden_010: { en: "Mystery-novel poison + gold-mine solvent — one each of Na, C, N.",                fr: "Poison des romans + solvant minier d'or — un seul de Na, C, N." },
+
+  /* Vitamin Family — the wholesome wing */
+  mol_vit_001: { en: "The 'eat your oranges' vitamin — six C, eight H, six O.",                              fr: "La vitamine « mange tes oranges » — six C, huit H, six O." },
+  mol_vit_002: { en: "Your skin makes this from sunlight — 27 C, 44 H, 1 O.",                                fr: "Ta peau la fabrique grâce au soleil — 27 C, 44 H, 1 O." },
+  mol_vit_003: { en: "The night-vision vitamin in carrots and liver — 20 C, 30 H, 1 O.",                     fr: "La vitamine de la vision nocturne (carottes, foie) — 20 C, 30 H, 1 O." },
+  mol_vit_004: { en: "Membrane antioxidant in almonds & oils — 29 C, 50 H, 2 O.",                            fr: "Antioxydant membranaire des amandes et huiles — 29 C, 50 H, 2 O." },
+  mol_vit_005: { en: "Folate — named after foliage, builds DNA — 19 C, 19 H, 7 N, 6 O.",                     fr: "Folate — nommée d'après le feuillage, construit l'ADN — 19 C, 19 H, 7 N, 6 O." },
+  mol_vit_006: { en: "B6 — cofactor for 140+ enzymes — 8 C, 11 H, 1 N, 3 O.",                                fr: "B6 — cofacteur de plus de 140 enzymes — 8 C, 11 H, 1 N, 3 O." },
+  mol_vit_007: { en: "Koagulation vitamin from leafy greens — 31 C, 46 H, 2 O.",                             fr: "Vitamine de la « Koagulation » dans les légumes verts — 31 C, 46 H, 2 O." },
+  mol_vit_008: { en: "The neon-yellow B-vitamin — 17 C, 20 H, 4 N, 6 O.",                                    fr: "La vitamine B jaune néon — 17 C, 20 H, 4 N, 6 O." },
+  mol_vit_009: { en: "B3, builds NAD+ — 6 C, 5 H, 1 N, 2 O.",                                                fr: "B3, fabrique le NAD+ — 6 C, 5 H, 1 N, 2 O." },
+  mol_vit_010: { en: "B7 — the hair-and-nails vitamin (cook your eggs!) — 10 C, 16 H, 2 N, 3 O, 1 S.",       fr: "B7 — la vitamine des cheveux et ongles (cuis tes œufs !) — 10 C, 16 H, 2 N, 3 O, 1 S." },
 };

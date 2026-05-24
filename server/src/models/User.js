@@ -17,6 +17,8 @@ const progressSchema = new mongoose.Schema(
     atoms: { type: [String], default: [] },
     capsule: { type: mongoose.Schema.Types.Mixed, default: {} },
     buddy: { type: mongoose.Schema.Types.Mixed, default: {} },
+    forbiddenBreached: { type: Boolean, default: false },
+    vitaminDActivated: { type: Boolean, default: false },
     lang: { type: String, default: "en" },
     muted: { type: Boolean, default: false },
     updatedAt: { type: Date, default: Date.now },

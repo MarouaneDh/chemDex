@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { MOLECULES } from "../../data/gamedata.js";
 import { countAtoms, countsEqual, hillFormula } from "../../game/rules.js";
 import { SFX } from "../../game/sfx.js";
 import { mascotLine } from "../../game/content.js";
@@ -8,13 +7,17 @@ import AtomPalette from "./AtomPalette.jsx";
 import Workbench from "./Workbench.jsx";
 import DailyPuzzle from "./DailyPuzzle.jsx";
 import Capsule from "./Capsule.jsx";
+import Leak from "./Leak.jsx";
 import Formula from "../Formula.jsx";
 
 /* The Lab — build a molecule from atoms, then Combine to validate.
    A new molecule hands off to context's `discover`, which runs the
    full reward flow (XP, badges, missions, daily, confetti, modal). */
 export default function Lab() {
-  const { t, lang, molField, discoveries, discover, isAtomUnlocked, mascotSay } = useGame();
+  const {
+    t, lang, molField, discoveries, discover, isAtomUnlocked, mascotSay,
+    combineMolecule, leakAppeared,
+  } = useGame();
   const [workbench, setWorkbench] = useState([]);
   const [message, setMessage] = useState({ text: "", kind: "" });
 
@@ -50,7 +53,8 @@ export default function Lab() {
       return;
     }
     const counts = countAtoms(workbench);
-    const match = MOLECULES.find((m) => countsEqual(m.atoms, counts));
+    // forbidden recipes are "cursed" — they only match after the breach
+    const match = combineMolecule(counts, (m, c) => countsEqual(m.atoms, c));
 
     if (!match) {
       setMessage({ text: t("noMatch", hillFormula(counts)), kind: "bad" });
@@ -92,6 +96,7 @@ export default function Lab() {
         </div>
 
         <div className="panel workbench-panel">
+          {leakAppeared && <Leak />}
           <h2>{t("workbench")}</h2>
           <Workbench workbench={workbench} onRemove={removeAtom} onDropAtom={addAtom} />
           <div className="formula-line">

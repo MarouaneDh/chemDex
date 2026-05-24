@@ -1,5 +1,6 @@
 import { TIER_UNLOCK } from "../../game/progression.js";
 import { CLUES } from "../../game/clues.js";
+import { hazardsOf, hazardById } from "../../game/hazards.js";
 import { useGame } from "../../context/GameContext.jsx";
 import Formula from "../Formula.jsx";
 import StructureImg from "../StructureImg.jsx";
@@ -19,6 +20,7 @@ export default function DexCard({ m }) {
   if (rec) {
     const shiny = !!rec.shiny;
     const name = molField(m, "commonName");
+    const hazards = hazardsOf(m);
     return (
       <div
         className={"dex-card discovered r-" + m.rarity + (shiny ? " shiny" : "")}
@@ -26,6 +28,15 @@ export default function DexCard({ m }) {
       >
         <span className="id">{idTag}</span>
         {shiny && <span className="shiny-star">✨</span>}
+        {hazards.length > 0 && (
+          <span className="card-hazards" aria-label="hazards">
+            {hazards.slice(0, 3).map((hid) => (
+              <span key={hid} className="card-hazard" title={hazardById(hid)?.en}>
+                {hazardById(hid)?.icon}
+              </span>
+            ))}
+          </span>
+        )}
         <div className="img-wrap">
           <StructureImg cid={m.pubchemCid} alt={name} />
         </div>

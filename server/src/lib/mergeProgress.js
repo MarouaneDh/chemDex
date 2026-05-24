@@ -87,6 +87,10 @@ export function mergeProgress(stored = {}, incoming = {}) {
     daily: mergeDaily(s.daily, i.daily),
     capsule: mergeCapsule(s.capsule, i.capsule),
     buddy: mergeBuddy(s.buddy, i.buddy),
+    // a breach on any device sticks — never un-breached by a stale push
+    forbiddenBreached: !!(s.forbiddenBreached || i.forbiddenBreached),
+    // ditto the sunlight stamp — you really did go outside, on either device
+    vitaminDActivated: !!(s.vitaminDActivated || i.vitaminDActivated),
     // preferences: the device that just pushed wins
     lang: i.lang || s.lang || "en",
     muted: typeof i.muted === "boolean" ? i.muted : !!s.muted,

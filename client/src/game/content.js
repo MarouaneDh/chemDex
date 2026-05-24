@@ -90,6 +90,11 @@ export const MASCOT = {
     { en: "The instruments are reading FICTION. How?!",           fr: "Les instruments lisent FICTION. Comment ?!" },
     { en: "That's not in the periodic table — that's in a comic.", fr: "Ce n'est pas dans le tableau périodique — c'est dans une BD." },
   ],
+  // the Hazmat-officer voice — fires once the Leak is breached
+  hazmatLine: [
+    { en: "Dangerous things in here. Look — but don't get hurt.", fr: "Choses dangereuses ici. Regarde — mais ne te blesse pas." },
+    { en: "All this stuff is real. Treat it that way.",            fr: "Tout ça est bien réel. Traite-le comme tel." },
+  ],
 };
 
 // Random line from a mascot category, in the active language.
@@ -136,9 +141,13 @@ export function pickDailyPuzzle(dateStr, discoveries, unlockedAtoms) {
   const count = MOLECULES.filter((m) => discoveries[m.id]).length;
   const tierOk = (tier) => count >= (TIER_UNLOCK[tier] || 0);
   const buildable = (m) => Object.keys(m.atoms).every((s) => unlockedAtoms.includes(s));
-  // myths are stumble-upon discoveries — never picked as the daily prompt
+  // myths + forbidden are stumble-upon / breach discoveries — never picked
   const pool = MOLECULES.filter(
-    (m) => m.category !== "myth" && tierOk(m.tier) && buildable(m)
+    (m) =>
+      m.category !== "myth" &&
+      m.category !== "forbidden" &&
+      tierOk(m.tier) &&
+      buildable(m)
   );
   if (pool.length === 0) return null;
   return pool[dailySeed(dateStr) % pool.length];

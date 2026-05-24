@@ -3,6 +3,7 @@ import { LEVELS, currentLevelIndex } from "../../game/progression.js";
 import { BADGES, MISSIONS, buildStats } from "../../game/content.js";
 import { useGame } from "../../context/GameContext.jsx";
 import Buddy from "./Buddy.jsx";
+import HazardClasses from "./HazardClasses.jsx";
 
 /* The Quests tab — player profile, mission checklist and badge case. */
 export default function Quests() {
@@ -82,6 +83,9 @@ export default function Quests() {
           );
         })}
       </div>
+
+      {/* hazard classes */}
+      <HazardClasses />
 
       {/* badges */}
       <h2 className="quest-h">{t("badges")}</h2>

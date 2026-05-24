@@ -69,10 +69,11 @@ export function rollCapsuleLoot({
   const count = Object.keys(discoveries || {}).length;
   const tierOk = (t) => count >= (TIER_UNLOCK[t] || 0);
   const buildable = (m) => Object.keys(m.atoms).every((s) => unlockedAtoms.includes(s));
-  // myths are stumble-upon discoveries — capsules never hint at them
+  // myths + forbidden are stumble-upon / breach discoveries — never hinted
   const hintTarget = MOLECULES.find(
     (m) =>
       m.category !== "myth" &&
+      m.category !== "forbidden" &&
       !discoveries[m.id] &&
       tierOk(m.tier) &&
       buildable(m)

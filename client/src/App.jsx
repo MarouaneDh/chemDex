@@ -11,6 +11,7 @@ import CatchMoment from "./components/CatchMoment.jsx";
 import BragCard from "./components/BragCard.jsx";
 import ChoosePathModal from "./components/atom/ChoosePathModal.jsx";
 import AtomCinematic from "./components/atom/AtomCinematic.jsx";
+import BreachCinematic from "./components/BreachCinematic.jsx";
 import { useGame } from "./context/GameContext.jsx";
 
 /* The app shell. Each tab's view is always mounted and toggled with the
@@ -56,6 +57,7 @@ export default function App() {
       <Lightbox />
       <ChoosePathModal />
       <AtomCinematic />
+      <BreachCinematic />
       <CatchMoment />
     </>
   );

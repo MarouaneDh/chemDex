@@ -103,6 +103,27 @@ export const I18N = {
     fictionalBanner: "✦ FICTIONAL",
     originFrom:     "From",
     realScience:    "Real science",
+    dangerBanner:   "☣ FORBIDDEN",
+    safetyLabel:    "Safety",
+    leakWhisper:    "Something's leaking from behind the wall…",
+    leakBreached:   "Forbidden Shelf — tap to view",
+    foundInLabel:   "Found in your fridge",
+    sunlightTitle:  "🌞 Sunlight required",
+    sunlightHint:   "Step outdoors and tap to activate this card.",
+    sunlightActivate: "Activate in sunlight",
+    sunlightReading: "Reading sunlight…",
+    sunlightDone:   "☀️ Activated by sunlight",
+    sunlightNotEnough: lux => `Only ${lux} lux — try outdoors in real daylight.`,
+    sunlightUnsupported: "Your device can't read sunlight. Are you outside right now?",
+    sunlightConfirm: "Yes, I'm in real sunlight",
+    sunlightCancel: "Not really",
+    sunlightToast:  amt => `☀️ +${amt} XP — your skin actually makes Vitamin D from sunlight!`,
+    hazardClassesTitle: "Hazard Classes",
+    hazardComplete: "Complete!",
+    hazardsLabel:   "Hazards",
+    filterSeparator: "·",
+    breachTitle:    "FORBIDDEN SHELF BREACHED",
+    breachSub:      "Dangerous chemistry — handle with respect.",
     capsuleTitle:   "💊 Daily Capsule",
     capsuleReady:   "Pinch & squeeze to crack it open",
     capsuleNextIn:  ms => `Next capsule in ${ms}`,
@@ -215,6 +236,27 @@ export const I18N = {
     fictionalBanner: "✦ FICTIF",
     originFrom:     "Origine",
     realScience:    "Vraie science",
+    dangerBanner:   "☣ INTERDITE",
+    safetyLabel:    "Sécurité",
+    leakWhisper:    "Quelque chose fuit de derrière le mur…",
+    leakBreached:   "Étagère Interdite — touche pour ouvrir",
+    foundInLabel:   "Dans ton frigo",
+    sunlightTitle:  "🌞 Lumière du soleil requise",
+    sunlightHint:   "Sors dehors et touche pour activer cette carte.",
+    sunlightActivate: "Activer au soleil",
+    sunlightReading: "Lecture de la lumière…",
+    sunlightDone:   "☀️ Activée par le soleil",
+    sunlightNotEnough: lux => `Seulement ${lux} lux — essaie dehors en plein jour.`,
+    sunlightUnsupported: "Ton appareil ne peut pas lire la lumière. Es-tu vraiment dehors ?",
+    sunlightConfirm: "Oui, je suis au vrai soleil",
+    sunlightCancel: "Pas vraiment",
+    sunlightToast:  amt => `☀️ +${amt} XP — ta peau fabrique vraiment la vitamine D à partir du soleil !`,
+    hazardClassesTitle: "Classes de danger",
+    hazardComplete: "Complet !",
+    hazardsLabel:   "Dangers",
+    filterSeparator: "·",
+    breachTitle:    "ÉTAGÈRE INTERDITE OUVERTE",
+    breachSub:      "Chimie dangereuse — manipule avec respect.",
     capsuleTitle:   "💊 Capsule du jour",
     capsuleReady:   "Pince et serre pour la faire éclater",
     capsuleNextIn:  ms => `Prochaine capsule dans ${ms}`,
@@ -259,12 +301,15 @@ export const TYPE_NUDGES = {
 // Category / type / rarity terms — French only (English = the key itself).
 export const TERMS_FR = {
   // categories
-  inorganic: "inorganique", organic: "organique", myth: "mythe",
+  inorganic: "inorganique", organic: "organique", myth: "mythe", forbidden: "interdite",
+  vitamin: "vitamine",
   // types
   oxide: "oxyde", salt: "sel", hydrocarbon: "hydrocarbure", alcohol: "alcool",
   base: "base", acid: "acide", sugar: "sucre", pharmaceutical: "médicament",
   alkaloid: "alcaloïde", element: "élément", peroxide: "peroxyde",
   ketone: "cétone", aldehyde: "aldéhyde", fictional: "fictionnel",
+  toxin: "toxine", explosive: "explosif", choking: "gaz suffocant",
+  "water-soluble": "hydrosoluble", "fat-soluble": "liposoluble",
   // rarities
   common: "commun", uncommon: "peu commun", rare: "rare", epic: "épique"
 };
@@ -574,5 +619,129 @@ export const MOL_FR = {
     description: "Un fluide vert bouillonnant dans un bassin de pierre qui ressuscite les morts et inverse le vieillissement — au prix d'un moment de folie à chaque plongée.",
     uses: ["Ressusciter Ra's al Ghul (encore et encore)", "Retours dramatiques", "Cosmétiques regrettables", "Cures thermales pour vilains gothamites"],
     funFact: "Les Puits de Lazare apparaissent dans Batman #232 (1971). Ra's al Ghul a été ressuscité tant de fois que les scénaristes le rationnent désormais à une fois par an."
+  },
+
+  /* ----- Forbidden Shelf ----- */
+  mol_forbidden_001: {
+    commonName: "Cyanure d'hydrogène", iupacName: "Formonitrile",
+    description: "Un gaz à l'odeur légère d'amande qui empêche les cellules d'utiliser l'oxygène. Mortel en quelques minutes à des concentrations plus petites qu'un grain de poussière.",
+    uses: ["Extraction industrielle de l'or", "Fumigation industrielle, historiquement", "Arme chimique, interdite en 1925", "Référence en toxicologie médico-légale"],
+    funFact: "Environ 5 % des personnes ne peuvent pas du tout sentir le cyanure d'hydrogène — un caprice glaçant de la génétique olfactive."
+  },
+  mol_forbidden_002: {
+    commonName: "Hydrazine", iupacName: "Diazane",
+    description: "Un liquide huileux à odeur d'ammoniaque qui s'enflamme au contact des bons métaux. Puissant propulseur de fusée — et cancérogène à doses minimes.",
+    uses: ["Propulseurs d'attitude des engins spatiaux", "Capteur d'oxygène dans l'eau des chaudières", "Précurseur pharmaceutique", "Agent moussant pour certains plastiques"],
+    funFact: "Le module lunaire d'Apollo carburait à l'hydrazine — un seul réservoir lui permettait de se poser sur la Lune ET de redécoller."
+  },
+  mol_forbidden_003: {
+    commonName: "Nitrométhane", iupacName: "Nitrométhane",
+    description: "Un liquide clair à l'odeur sucrée brûlé dans les moteurs de dragsters et coulé en charges creuses. Détone confiné et heurté.",
+    uses: ["Carburant Top-Fuel en dragster", "Solvant industriel", "Charges minières et démolition", "Combustible de moteurs miniatures"],
+    funFact: "L'attentat d'Oklahoma City de 1995 utilisait un mélange nitrométhane-engrais. Les achats en gros des deux composants sont surveillés aux États-Unis depuis."
+  },
+  mol_forbidden_004: {
+    commonName: "Chlore", iupacName: "Dichlore",
+    description: "Un gaz jaune-vert suffocant qui, dans tes poumons, se transforme en acide chlorhydrique. Première arme de destruction massive lâchée sur le front occidental en 1915.",
+    uses: ["Désinfection de l'eau municipale", "Fabrication du PVC", "Blanchiment industriel", "Arme chimique, Ypres 1915"],
+    funFact: "La trace de chlore dans ton eau du robinet (~1 ppm) protège un milliard de gens des maladies hydriques — la même molécule qui a tué à Ypres sauve plus de vies que presque toute autre."
+  },
+  mol_forbidden_005: {
+    commonName: "Phosgène", iupacName: "Dichlorure de carbonyle",
+    description: "Un gaz incolore à l'odeur faible de foin coupé — qui dissout les tissus pulmonaires des heures après une seule inspiration. Responsable d'environ 80 % des morts par gaz de la Grande Guerre.",
+    uses: ["Fabrication du polycarbonate", "Synthèse pharmaceutique", "Intermédiaire pour pesticides", "Arme chimique, 1914-1918"],
+    funFact: "Toujours produit industriellement aujourd'hui — plus d'un million de tonnes par an — presque entièrement pour fabriquer les plastiques polycarbonates de tes verres de lunettes."
+  },
+  mol_forbidden_006: {
+    commonName: "TNT", iupacName: "2,4,6-Trinitrotoluène",
+    description: "Des cristaux jaunes pâles qui ressemblent à du sucre et détonent sur commande — mais ne sautent ni quand on les laisse tomber, ni quand on les brûle ou les tire. Explosif militaire standard depuis plus d'un siècle.",
+    uses: ["Explosif militaire de référence", "Démolition minière", "Unité d'énergie (1 t TNT ≈ 4,18 GJ)", "Recherche sur les ondes de choc"],
+    funFact: "Les bombes atomiques sont mesurées en « kilotonnes de TNT » précisément parce que l'énergie par kilogramme du TNT est si bien caractérisée (4,184 mégajoules)."
+  },
+  mol_forbidden_007: {
+    commonName: "Nitroglycérine", iupacName: "Trinitrate de propan-1,2,3-triyle",
+    description: "Un liquide huileux clair si instable qu'un éternuement suffisait à l'allumer — jusqu'à ce qu'Alfred Nobel la stabilise en dynamite. Aujourd'hui aussi un médicament pour le cœur.",
+    uses: ["Dynamite (brevet Nobel 1867)", "Vasodilatateur cardiaque", "Charges de démolition", "Poudre sans fumée"],
+    funFact: "La molécule qui a tué le frère de Nobel a aussi financé le prix Nobel — Alfred l'a créé après qu'un journal français a publié par erreur sa nécrologie comme « le marchand de la mort »."
+  },
+  mol_forbidden_008: {
+    commonName: "Acide picrique", iupacName: "2,4,6-Trinitrophénol",
+    description: "Des cristaux jaune vif jadis utilisés pour teindre la soie — jusqu'à ce que les chimistes réalisent qu'ils étaient aussi plus puissants que le TNT. Aujourd'hui, cauchemar des vieux labos : sec et vieilli, il détone au toucher.",
+    uses: ["Teinture textile jaune (aujourd'hui interdite)", "Obus d'artillerie de la Grande Guerre", "Antiseptique pour brûlures, historiquement", "Cas d'école pour les déchets dangereux"],
+    funFact: "Les obus français de 1914-1918 étaient bourrés d'acide picrique (nom de code « mélinite »). L'explosion d'Halifax en 1917 a brièvement détenu le record de la plus grande déflagration non nucléaire de l'histoire."
+  },
+  mol_forbidden_009: {
+    commonName: "Gaz moutarde", iupacName: "Sulfure de bis(2-chloroéthyle)",
+    description: "Un liquide huileux jaune-brun qui cloque la peau, aveugle les yeux et brûle les poumons au contact. L'arme chimique qui a défini « arme chimique » — et qui suinte encore des obus belges et français centenaires.",
+    uses: ["Arme chimique (interdite, Protocole de Genève 1925)", "Ancêtre réticent de la chimiothérapie (mécloréthamine)", "Entraînement à la décontamination", "Avertissement historique"],
+    funFact: "L'étude des victimes du gaz moutarde de 1914-1918 a conduit à la première chimiothérapie moderne — le même mécanisme ADN qui tuait les soldats stoppe les cellules cancéreuses."
+  },
+  mol_forbidden_010: {
+    commonName: "Cyanure de sodium", iupacName: "Cyanure de sodium",
+    description: "Une poudre blanche utilisée pour extraire l'or de la roche — et le poison classique des romans policiers. Une pincée tue en quelques minutes.",
+    uses: ["Lixiviation aurifère en mine", "Électroplaquage", "Fumigation industrielle", "Référence en toxicologie médico-légale"],
+    funFact: "L'extraction moderne de l'or produit environ 90 % de l'or mondial par lixiviation au cyanure de sodium dilué — industrie strictement réglementée depuis plusieurs ruptures de digues historiques."
+  },
+
+  /* ----- Vitamin Family ----- */
+  mol_vit_001: {
+    commonName: "Vitamine C", iupacName: "Acide L-ascorbique",
+    description: "La molécule qui prévient le scorbut. Ton corps ne sait pas la fabriquer — chaque gramme doit venir de ton alimentation.",
+    uses: ["Synthèse du collagène", "Absorption du fer végétal", "Antioxydant cellulaire", "Guérit le scorbut des marins depuis 1747"],
+    funFact: "Les humains, les cochons d'Inde et la plupart des singes sont parmi les rares mammifères incapables de fabriquer la vitamine C — un gène cassé pour l'enzyme finale. Le scorbut est le prix de cette mutation."
+  },
+  mol_vit_002: {
+    commonName: "Vitamine D3", iupacName: "Cholécalciférol",
+    description: "La « vitamine du soleil » — ta peau la photosynthétise vraiment quand les UVB frappent un précurseur de cholestérol. Sors cette carte dehors pour l'activer.",
+    uses: ["Absorption du calcium", "Densité osseuse", "Signalisation immunitaire", "Régulation de l'humeur en hiver"],
+    funFact: "Le 7-déhydrocholestérol de ta peau capte un photon UVB et se réarrange en vitamine D₃ — une des seules réactions photochimiques que les humains font sur eux-mêmes."
+  },
+  mol_vit_003: {
+    commonName: "Vitamine A", iupacName: "Rétinol tout-trans",
+    description: "La vitamine de la vision nocturne. Ta rétine la convertit en rétinal — la molécule qui change physiquement de forme quand un photon la frappe.",
+    uses: ["Vision en faible luminosité (rétinal)", "Santé de la peau et des muqueuses", "Cellules immunitaires", "Développement embryonnaire"],
+    funFact: "Pendant la Seconde Guerre, la propagande britannique attribuait la vision nocturne des pilotes de la RAF aux carottes — c'était une couverture pour cacher leur nouveau radar."
+  },
+  mol_vit_004: {
+    commonName: "Vitamine E", iupacName: "α-Tocophérol",
+    description: "Ton antioxydant dans les graisses. Elle se loge dans les membranes cellulaires et intercepte les radicaux libres avant qu'ils n'endommagent la bicouche lipidique.",
+    uses: ["Antioxydant membranaire", "Cosmétiques", "Empêche le rancissement des graisses polyinsaturées", "Recherche cardiovasculaire"],
+    funFact: "Huit formes chimiques différentes de vitamine E existent ; ton foie ne garde préférentiellement que l'α-tocophérol. Les autres repartent dans la bile en quelques heures."
+  },
+  mol_vit_005: {
+    commonName: "Acide folique", iupacName: "Folate (vitamine B9)",
+    description: "La vitamine qui construit les nouvelles cellules. Critique dans les premières semaines de grossesse — les anomalies du tube neural chutent quand les futures mamans en consomment assez.",
+    uses: ["Synthèse et réparation de l'ADN", "Production de globules rouges", "Développement du tube neural", "Prévention de l'anémie mégaloblastique"],
+    funFact: "« Folate » vient de feuillage — isolée pour la première fois dans des épinards en 1941. L'enrichissement de la farine aux États-Unis (1998) a réduit les anomalies du tube neural d'environ 30 % en quelques années."
+  },
+  mol_vit_006: {
+    commonName: "Vitamine B6", iupacName: "Pyridoxine",
+    description: "Ton couteau suisse des acides aminés. La B6 (en pyridoxal phosphate) est le cofacteur de plus de 140 enzymes — presque chaque réaction qui déplace un azote.",
+    uses: ["Métabolisme des acides aminés", "Synthèse de neurotransmetteurs (sérotonine, dopamine)", "Production d'hémoglobine", "Décomposition du glycogène"],
+    funFact: "La B6 détient le record du plus grand nombre de réactions enzymatiques pour un cofacteur vitaminique unique — plus de 140 connues."
+  },
+  mol_vit_007: {
+    commonName: "Vitamine K1", iupacName: "Phylloquinone",
+    description: "La vitamine de la coagulation — sans elle, même une petite coupure ne s'arrêterait pas. Fabriquée par les plantes dans leurs chloroplastes.",
+    uses: ["Activation des facteurs de coagulation (II, VII, IX, X)", "Signalisation osseuse", "Antidote du surdosage à la warfarine", "Injection néonatale à la naissance"],
+    funFact: "Le K vient de « Koagulation » — le biochimiste danois Henrik Dam l'a nommée en 1929. Il a partagé le prix Nobel 1943 pour cette découverte."
+  },
+  mol_vit_008: {
+    commonName: "Riboflavine", iupacName: "Vitamine B2",
+    description: "La vitamine jaune néon brillant. Ton corps en fait du FAD et du FMN — les cofacteurs navettes d'énergie au cœur de chaque respiration.",
+    uses: ["Métabolisme énergétique (FAD/FMN)", "Maintenance des globules rouges", "Santé des yeux et de la peau", "Colorant alimentaire jaune (E101)"],
+    funFact: "La riboflavine est le jaune vif de ton complément multivitaminé — et la raison pour laquelle ton urine devient jaune fluo après. Le corps excrète ce qu'il n'utilise pas tout de suite."
+  },
+  mol_vit_009: {
+    commonName: "Niacine", iupacName: "Acide nicotinique (vitamine B3)",
+    description: "Ton usine à NAD/NADP. La niacine fabrique les cofacteurs qui transportent les électrons à haute énergie que tes mitochondries brûlent.",
+    uses: ["Synthèse des cofacteurs NAD+/NADP+", "Thérapie hypocholestérolémiante à forte dose", "« Flush » cutané", "Enrichissement de la farine"],
+    funFact: "Une carence en niacine cause la pellagre — historiquement les « quatre D » : diarrhée, dermatite, démence, décès. Éradiquée aux États-Unis dans les années 1940 grâce à l'enrichissement de la farine."
+  },
+  mol_vit_010: {
+    commonName: "Biotine", iupacName: "Vitamine B7",
+    description: "La vitamine des cheveux et des ongles — mais surtout, le porteur de CO₂ de ton corps dans le métabolisme des acides gras et des acides aminés.",
+    uses: ["Cofacteur de synthèse des acides gras", "Néoglucogenèse", "Santé peau, cheveux, ongles (complément populaire)", "Marquage moléculaire avec la streptavidine"],
+    funFact: "Les blancs d'œuf CRUS bloquent l'absorption de biotine — ils contiennent de l'avidine, qui lie la biotine si fortement qu'elle sert en biologie moléculaire comme l'une des liaisons non covalentes les plus solides connues. Cuis tes œufs."
   }
 };

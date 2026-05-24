@@ -590,6 +590,336 @@ export const MOLECULES = [
     smiles: null, inchiKey: "FICTIONAL-LAZARUSPIT-000-X", molarMass: 136.10,
     structureImage: null,
     funFact: "Lazarus Pits debuted in Batman #232 (1971). Ra's al Ghul has been resurrected so many times across DC continuity that the writers semi-officially rationed him to once a year."
+  },
+
+  /* ============================================================
+     THE FORBIDDEN SHELF — real compounds, real danger.
+     Sealed behind a blast door until the player taps the Leak.
+     Recipes are "cursed": Combine returns no match until breach.
+     Educational picks (WWI gases, Nobel-era explosives, classic
+     poisons) — the same chemistry a teenager meets in history class.
+     ============================================================ */
+  {
+    id: "mol_forbidden_001", pubchemCid: 768, formula: "HCN",
+    commonName: "Hydrogen Cyanide", iupacName: "Formonitrile",
+    atoms: { H: 1, C: 1, N: 1 },
+    description: "A faint-almond-scented gas that blocks cells from using oxygen. Lethal in minutes at concentrations smaller than a dust particle.",
+    uses: ["Industrial mining solvent (gold extraction)", "Industrial fumigation, historically", "Chemical warfare, banned 1925", "Forensic toxicology reference"],
+    category: "forbidden", type: "toxin", rarity: "epic", tier: 6,
+    smiles: "C#N", inchiKey: "LELOWRISYMNNSU-UHFFFAOYSA-N", molarMass: 27.03,
+    structureImage: "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/cid/768/PNG",
+    safety: {
+      en: "Lethal at parts per million. Only ever handled in sealed fume hoods.",
+      fr: "Mortel à quelques parties par million. Ne se manipule qu'en sorbonne scellée."
+    },
+    funFact: "Roughly 5% of people genetically can't smell hydrogen cyanide at all — a chilling quirk of olfactory genetics."
+  },
+  {
+    id: "mol_forbidden_002", pubchemCid: 9321, formula: "N2H4",
+    commonName: "Hydrazine", iupacName: "Diazane",
+    atoms: { H: 4, N: 2 },
+    description: "An oily, ammonia-stinking liquid that ignites on contact with the right metals. Powerful rocket propellant — and a slow carcinogen even in trace exposure.",
+    uses: ["Spacecraft attitude-control thrusters", "Boiler-water oxygen scavenger", "Pharmaceutical precursor", "Foaming agent in some plastics"],
+    category: "forbidden", type: "toxin", rarity: "epic", tier: 6,
+    smiles: "NN", inchiKey: "OAKJQQAXSVQMHS-UHFFFAOYSA-N", molarMass: 32.05,
+    structureImage: "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/cid/9321/PNG",
+    safety: {
+      en: "Carcinogenic and explosive. Handled only in full PPE and inert atmospheres.",
+      fr: "Cancérogène et explosif. Manipulé en EPI complet, sous atmosphère inerte."
+    },
+    funFact: "Apollo's lunar module ran on hydrazine — a single tank let it land on the Moon AND lift off again."
+  },
+  {
+    id: "mol_forbidden_003", pubchemCid: 6375, formula: "CH3NO2",
+    commonName: "Nitromethane", iupacName: "Nitromethane",
+    atoms: { C: 1, H: 3, N: 1, O: 2 },
+    description: "A clear, sweet-smelling liquid burned in drag-racing engines and machined into shaped charges. Detonates if confined and hit.",
+    uses: ["Top-fuel drag-racing", "Industrial solvent", "Mining and demolition charges", "Model-engine fuel"],
+    category: "forbidden", type: "explosive", rarity: "epic", tier: 6,
+    smiles: "C[N+](=O)[O-]", inchiKey: "LYGJENNIWJXYER-UHFFFAOYSA-N", molarMass: 61.04,
+    structureImage: "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/cid/6375/PNG",
+    safety: {
+      en: "Stable in storage; explosive under shock or strong base contamination.",
+      fr: "Stable au stockage ; explosif sous choc ou en contact avec une base forte."
+    },
+    funFact: "The 1995 Oklahoma City bombing used a nitromethane–fertilizer mix. After it, the U.S. tightened bulk-purchase reporting on both compounds."
+  },
+  {
+    id: "mol_forbidden_004", pubchemCid: 24526, formula: "Cl2",
+    commonName: "Chlorine Gas", iupacName: "Dichlorine",
+    atoms: { Cl: 2 },
+    description: "A yellow-green choking gas that, in your lungs, becomes hydrochloric acid. First weapon of mass destruction released on the WWI Western Front.",
+    uses: ["Municipal water disinfection", "PVC plastic manufacture", "Industrial bleaching", "Chemical warfare, Ypres 1915"],
+    category: "forbidden", type: "choking", rarity: "epic", tier: 6,
+    smiles: "ClCl", inchiKey: "KZBUYRJDOAKODT-UHFFFAOYSA-N", molarMass: 70.91,
+    structureImage: "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/cid/24526/PNG",
+    safety: {
+      en: "Heavier than air — pools in trenches and basements. Even dilute exposure burns lungs.",
+      fr: "Plus lourd que l'air — s'accumule dans tranchées et caves. Même dilué, il brûle les poumons."
+    },
+    funFact: "Trace chlorine in tap water (~1 ppm) keeps a billion people from waterborne disease — the same molecule that killed at Ypres saves more lives than almost any other."
+  },
+  {
+    id: "mol_forbidden_005", pubchemCid: 6371, formula: "COCl2",
+    commonName: "Phosgene", iupacName: "Carbonyl dichloride",
+    atoms: { C: 1, O: 1, Cl: 2 },
+    description: "A colorless gas that smells faintly of fresh-cut hay — and dissolves lung tissue hours after a single breath. Responsible for ~80% of WWI gas deaths.",
+    uses: ["Polycarbonate-plastic manufacture", "Pharmaceutical synthesis", "Pesticide intermediate", "Chemical warfare, WWI"],
+    category: "forbidden", type: "choking", rarity: "epic", tier: 6,
+    smiles: "O=C(Cl)Cl", inchiKey: "YGYAWVDWMABLBF-UHFFFAOYSA-N", molarMass: 98.92,
+    structureImage: "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/cid/6371/PNG",
+    safety: {
+      en: "Delayed-action: symptoms hit hours after exposure. Even tiny leaks demand immediate evacuation.",
+      fr: "Action retardée : symptômes des heures plus tard. La moindre fuite impose l'évacuation."
+    },
+    funFact: "Still produced industrially today — at over a million tons a year — almost entirely to make polycarbonate plastics like the lens in your eyeglasses."
+  },
+  {
+    id: "mol_forbidden_006", pubchemCid: 8376, formula: "C7H5N3O6",
+    commonName: "TNT", iupacName: "2,4,6-Trinitrotoluene",
+    atoms: { C: 7, H: 5, N: 3, O: 6 },
+    description: "Pale yellow crystals that look like sugar and detonate on demand — but won't go off if you drop, burn, or shoot them. Stable enough to be standard military explosive for over a century.",
+    uses: ["Standard military explosive", "Mining demolitions", "Energy unit (1 ton TNT ≈ 4.18 GJ)", "Shock-wave research"],
+    category: "forbidden", type: "explosive", rarity: "epic", tier: 6,
+    smiles: "Cc1c(cc(cc1[N+](=O)[O-])[N+](=O)[O-])[N+](=O)[O-]",
+    inchiKey: "SPSSULHKWOKEEL-UHFFFAOYSA-N", molarMass: 227.13,
+    structureImage: "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/cid/8376/PNG",
+    safety: {
+      en: "Surprisingly safe to handle — but a detonator turns 1 kg into a measured 4.18 megajoules.",
+      fr: "Étonnamment manipulable — mais 1 kg vaut 4,18 mégajoules sous détonateur."
+    },
+    funFact: "Atomic-bomb yields are measured in 'kilotons of TNT' precisely because TNT's energy per kilogram is so well-characterized (4.184 megajoules)."
+  },
+  {
+    id: "mol_forbidden_007", pubchemCid: 4510, formula: "C3H5N3O9",
+    commonName: "Nitroglycerin", iupacName: "1,2,3-Propanetriyl trinitrate",
+    atoms: { C: 3, H: 5, N: 3, O: 9 },
+    description: "An oily clear liquid so unstable a sneeze used to set it off — until Alfred Nobel mixed it into dynamite. Today it's a prescription heart medicine.",
+    uses: ["Dynamite (Nobel's 1867 patent)", "Heart-attack vasodilator", "Demolition charges", "Smokeless gunpowder"],
+    category: "forbidden", type: "explosive", rarity: "epic", tier: 6,
+    smiles: "C(C(CO[N+](=O)[O-])O[N+](=O)[O-])O[N+](=O)[O-]",
+    inchiKey: "SNIOPGDIGTZGOP-UHFFFAOYSA-N", molarMass: 227.09,
+    structureImage: "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/cid/4510/PNG",
+    safety: {
+      en: "Shock-sensitive when pure. Diluted into kieselguhr it becomes dynamite — and angina patients carry diluted tablets in their pocket.",
+      fr: "Sensible aux chocs à l'état pur. Diluée dans la silice elle devient dynamite — et les patients cardiaques en ont des comprimés en poche."
+    },
+    funFact: "The same molecule that killed Nobel's brother also funded the Nobel Prize — Alfred set up the prize after a French paper mistakenly published his obituary as 'the merchant of death'."
+  },
+  {
+    id: "mol_forbidden_008", pubchemCid: 6954, formula: "C6H3N3O7",
+    commonName: "Picric Acid", iupacName: "2,4,6-Trinitrophenol",
+    atoms: { C: 6, H: 3, N: 3, O: 7 },
+    description: "Bright yellow crystals once used to dye silk — until chemists realized they were also a more powerful explosive than TNT. Now an old-lab nightmare: dry, aged picric acid is shock-sensitive enough to detonate on touch.",
+    uses: ["Yellow textile dye (now banned)", "WWI artillery shells", "Antiseptic for burns, historically", "Hazardous-waste case study"],
+    category: "forbidden", type: "explosive", rarity: "epic", tier: 6,
+    smiles: "c1c(cc(c(c1[N+](=O)[O-])O)[N+](=O)[O-])[N+](=O)[O-]",
+    inchiKey: "OXNIZHLAWKMVMX-UHFFFAOYSA-N", molarMass: 229.10,
+    structureImage: "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/cid/6954/PNG",
+    safety: {
+      en: "Wet and stable, dry and lethal. Every chemistry teacher has heard the story of the bomb-squad call from a forgotten high-school stockroom.",
+      fr: "Humide : stable. Sec : mortel. Toute prof de chimie connaît l'histoire du démineur appelé pour un lycée."
+    },
+    funFact: "France's WWI shells were stuffed with picric acid (codenamed 'mélinite'). When the Halifax explosion of 1917 went off, it briefly held the record for the largest non-nuclear blast in history."
+  },
+  {
+    id: "mol_forbidden_009", pubchemCid: 10461, formula: "C4H8Cl2S",
+    commonName: "Mustard Gas", iupacName: "Bis(2-chloroethyl) sulfide",
+    atoms: { C: 4, H: 8, Cl: 2, S: 1 },
+    description: "An oily yellow-brown liquid that blisters skin, blinds eyes, and burns lungs on contact. The chemical weapon that defined 'chemical weapon' — and still leaks from a hundred-year-old Belgian and French farm fields.",
+    uses: ["Chemical warfare (banned, Geneva Protocol 1925)", "Reluctant cancer-drug ancestor (mechlorethamine)", "Decontamination training", "Cautionary history"],
+    category: "forbidden", type: "choking", rarity: "epic", tier: 6,
+    smiles: "C(CCl)SCCCl", inchiKey: "QKSKPIVNLNLAAV-UHFFFAOYSA-N", molarMass: 159.08,
+    structureImage: "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/cid/10461/PNG",
+    safety: {
+      en: "Persistent in soil for decades. Belgian farmers still occasionally unearth WWI shells leaking it.",
+      fr: "Persistant dans le sol pendant des décennies. Les fermiers belges déterrent encore parfois des obus qui en fuient."
+    },
+    funFact: "Studying mustard-gas victims in WWI led to the first modern chemotherapy — the same DNA-damaging mechanism that killed soldiers also stops cancer cells from dividing."
+  },
+  {
+    id: "mol_forbidden_010", pubchemCid: 8929, formula: "NaCN",
+    commonName: "Sodium Cyanide", iupacName: "Sodium cyanide",
+    atoms: { Na: 1, C: 1, N: 1 },
+    description: "A white powder used to extract gold from rock — and the classic mystery-novel poison. A pinch is fatal within minutes.",
+    uses: ["Gold mining (cyanide-leach process)", "Electroplating", "Industrial fumigation", "Forensic toxicology reference"],
+    category: "forbidden", type: "toxin", rarity: "epic", tier: 6,
+    smiles: "[C-]#N.[Na+]", inchiKey: "MNWBNISUBARLIT-UHFFFAOYSA-N", molarMass: 49.01,
+    structureImage: "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/cid/8929/PNG",
+    safety: {
+      en: "Reacts with weak acid (even stomach acid) to release hydrogen cyanide gas.",
+      fr: "Réagit avec un acide faible (même celui de l'estomac) pour libérer du cyanure d'hydrogène."
+    },
+    funFact: "Modern gold mining produces about 90% of the world's gold via dilute sodium-cyanide leach — a tightly regulated industry with strict tailings rules after several historic dam failures."
+  },
+
+  /* ============================================================
+     THE VITAMIN FAMILY — real, friendly chemistry your body needs
+     every day. The wholesome counterweight to the Forbidden Shelf:
+     a warm-glowing wing with a Found-in-Your-Fridge food list, and
+     a Vitamin D3 sunlight easter egg that asks the player to step
+     outdoors (real ambient-light sensor, honor-system fallback).
+     ============================================================ */
+  {
+    id: "mol_vit_001", pubchemCid: 54670067, formula: "C6H8O6",
+    commonName: "Vitamin C", iupacName: "L-Ascorbic acid",
+    atoms: { C: 6, H: 8, O: 6 },
+    description: "The molecule that prevents scurvy. Your body can't make it — every gram has to come from your diet.",
+    uses: ["Collagen synthesis", "Iron absorption from plant foods", "Antioxidant in cells", "Curing scurvy in sailors since 1747"],
+    category: "vitamin", type: "water-soluble", rarity: "rare", tier: 4,
+    smiles: "OCC(O)C1OC(=O)C(O)=C1O",
+    inchiKey: "CIWBSHSKHKDKBQ-JLAZNSOCSA-N", molarMass: 176.12,
+    structureImage: "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/cid/54670067/PNG",
+    foundIn: {
+      en: ["Oranges & citrus", "Bell peppers", "Strawberries", "Broccoli", "Kiwi"],
+      fr: ["Oranges & agrumes", "Poivrons", "Fraises", "Brocoli", "Kiwi"]
+    },
+    funFact: "Humans, guinea pigs, and most monkeys are among the rare mammals that CAN'T make Vitamin C — we have a broken gene for the final enzyme. Scurvy is the price of that mutation."
+  },
+  {
+    id: "mol_vit_002", pubchemCid: 5280795, formula: "C27H44O",
+    commonName: "Vitamin D3", iupacName: "Cholecalciferol",
+    atoms: { C: 27, H: 44, O: 1 },
+    description: "The 'sunshine vitamin' — your skin literally photosynthesizes it when UVB hits a cholesterol precursor. Take this card outdoors to activate it.",
+    uses: ["Calcium absorption", "Bone density", "Immune-cell signaling", "Mood regulation in northern winters"],
+    category: "vitamin", type: "fat-soluble", rarity: "epic", tier: 4,
+    sunlightSpecial: true,
+    smiles: "CC(C)CCCC(C)C1CCC2C1(CCCC2=CC=C3CC(CCC3=C)O)C",
+    inchiKey: "QYSXJUFSXHHAJI-XFEUOLMDSA-N", molarMass: 384.64,
+    structureImage: "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/cid/5280795/PNG",
+    foundIn: {
+      en: ["Direct sunlight on skin", "Fatty fish (salmon, sardines)", "Egg yolks", "Fortified milk", "Cod liver oil"],
+      fr: ["Lumière directe sur la peau", "Poissons gras (saumon, sardines)", "Jaunes d'œuf", "Lait enrichi", "Huile de foie de morue"]
+    },
+    funFact: "Your skin's 7-dehydrocholesterol catches UVB photons and rearranges itself into Vitamin D₃ — one of the only photochemical reactions humans run on themselves."
+  },
+  {
+    id: "mol_vit_003", pubchemCid: 445354, formula: "C20H30O",
+    commonName: "Vitamin A", iupacName: "all-trans-Retinol",
+    atoms: { C: 20, H: 30, O: 1 },
+    description: "The night-vision vitamin. Your retina converts it into retinal — the molecule that physically changes shape when a photon hits it, letting you see.",
+    uses: ["Low-light vision (retinal pigment)", "Skin and mucous-membrane health", "Immune cells", "Embryonic development"],
+    category: "vitamin", type: "fat-soluble", rarity: "rare", tier: 4,
+    smiles: "CC1=C(C(CCC1)(C)C)C=CC(=CC=CC(=CCO)C)C",
+    inchiKey: "FPIPGXGPPPQFEQ-OVSJKPMPSA-N", molarMass: 286.45,
+    structureImage: "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/cid/445354/PNG",
+    foundIn: {
+      en: ["Liver", "Egg yolks", "Dairy fat", "Carrots & sweet potatoes (as β-carotene)", "Dark leafy greens"],
+      fr: ["Foie", "Jaunes d'œuf", "Matière grasse laitière", "Carottes & patates douces (β-carotène)", "Légumes-feuilles sombres"]
+    },
+    funFact: "WWII Britain told the public that RAF pilots' night-vision came from eating carrots — actually a cover story to hide their new radar. Carrots really do help with night vision; just not enough to spot a Heinkel."
+  },
+  {
+    id: "mol_vit_004", pubchemCid: 14985, formula: "C29H50O2",
+    commonName: "Vitamin E", iupacName: "α-Tocopherol",
+    atoms: { C: 29, H: 50, O: 2 },
+    description: "Your fat-storage antioxidant. It sits inside cell membranes and intercepts free-radical chains before they shred the lipid bilayer.",
+    uses: ["Membrane antioxidant", "Skincare formulations", "Prevention of polyunsaturated-fat rancidity", "Cardiovascular research"],
+    category: "vitamin", type: "fat-soluble", rarity: "rare", tier: 4,
+    smiles: "CC1=C(C2=C(CCC(O2)(C)CCCC(C)CCCC(C)CCCC(C)C)C(=C1O)C)C",
+    inchiKey: "GVJHHUAWPYXKBD-IEOSBIPESA-N", molarMass: 430.71,
+    structureImage: "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/cid/14985/PNG",
+    foundIn: {
+      en: ["Almonds & sunflower seeds", "Vegetable oils", "Avocado", "Spinach & swiss chard", "Wheat germ"],
+      fr: ["Amandes & graines de tournesol", "Huiles végétales", "Avocat", "Épinards & bettes", "Germes de blé"]
+    },
+    funFact: "Eight different chemical forms of Vitamin E exist; α-tocopherol is the one your liver preferentially keeps. The others get exported back out in bile within hours."
+  },
+  {
+    id: "mol_vit_005", pubchemCid: 6037, formula: "C19H19N7O6",
+    commonName: "Folic Acid", iupacName: "Folate (Vitamin B9)",
+    atoms: { C: 19, H: 19, N: 7, O: 6 },
+    description: "The build-new-cells vitamin. Especially critical in the first weeks of pregnancy — neural-tube defects drop sharply when expectant mothers have enough.",
+    uses: ["DNA synthesis & repair", "Red-blood-cell production", "Neural-tube development", "Prevention of megaloblastic anemia"],
+    category: "vitamin", type: "water-soluble", rarity: "rare", tier: 4,
+    smiles: "C1=CC(=CC=C1C(=O)NC(CCC(=O)O)C(=O)O)NCC2=CN=C3C(=N2)C(=O)NC(=N3)N",
+    inchiKey: "OVBPIULPVIDEAO-LBPRGKRZSA-N", molarMass: 441.40,
+    structureImage: "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/cid/6037/PNG",
+    foundIn: {
+      en: ["Dark leafy greens (spinach, kale)", "Beans & lentils", "Asparagus", "Citrus fruit", "Fortified breads & cereals"],
+      fr: ["Légumes-feuilles sombres (épinards, chou kale)", "Haricots & lentilles", "Asperges", "Agrumes", "Pains & céréales enrichis"]
+    },
+    funFact: "'Folate' comes from foliage — first isolated from spinach in 1941. The US flour-fortification program (1998) cut neural-tube birth defects by roughly 30% nationwide within a few years."
+  },
+  {
+    id: "mol_vit_006", pubchemCid: 1054, formula: "C8H11NO3",
+    commonName: "Vitamin B6", iupacName: "Pyridoxine",
+    atoms: { C: 8, H: 11, N: 1, O: 3 },
+    description: "Your amino-acid Swiss Army knife. B6 (as pyridoxal phosphate) is the cofactor for more than 140 enzymes — almost every reaction that moves a nitrogen.",
+    uses: ["Amino-acid metabolism", "Neurotransmitter synthesis (serotonin, dopamine)", "Hemoglobin production", "Glycogen breakdown"],
+    category: "vitamin", type: "water-soluble", rarity: "rare", tier: 4,
+    smiles: "CC1=NC=C(C(=C1O)CO)CO",
+    inchiKey: "LXNHXLLTXMVWPM-UHFFFAOYSA-N", molarMass: 169.18,
+    structureImage: "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/cid/1054/PNG",
+    foundIn: {
+      en: ["Poultry & fish", "Potatoes & sweet potatoes", "Bananas", "Chickpeas", "Fortified cereals"],
+      fr: ["Volaille & poisson", "Pommes de terre & patates douces", "Bananes", "Pois chiches", "Céréales enrichies"]
+    },
+    funFact: "B6 holds the record for the most enzyme reactions of any single vitamin cofactor — over 140 known. Most of them shuffle the amino-group between proteins and energy intermediates."
+  },
+  {
+    id: "mol_vit_007", pubchemCid: 5284607, formula: "C31H46O2",
+    commonName: "Vitamin K1", iupacName: "Phylloquinone",
+    atoms: { C: 31, H: 46, O: 2 },
+    description: "The blood-clotting vitamin — without it, even a small cut would not stop. Made by plants in their chloroplasts.",
+    uses: ["Activates clotting factors (II, VII, IX, X)", "Bone-mineralization signaling", "Antidote for warfarin overdose", "Newborn injection at birth"],
+    category: "vitamin", type: "fat-soluble", rarity: "rare", tier: 4,
+    smiles: "CC1=C(C(=O)c2ccccc2C1=O)CC=C(C)CCCC(C)CCCC(C)CCCC(C)C",
+    inchiKey: "MBWXNTAXLNYFJB-NKFFZRIASA-N", molarMass: 450.70,
+    structureImage: "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/cid/5284607/PNG",
+    foundIn: {
+      en: ["Kale & spinach", "Broccoli & Brussels sprouts", "Parsley & basil", "Green tea leaves", "Soybean oil"],
+      fr: ["Chou kale & épinards", "Brocoli & choux de Bruxelles", "Persil & basilic", "Feuilles de thé vert", "Huile de soja"]
+    },
+    funFact: "The K stands for 'Koagulation' — Danish biochemist Henrik Dam named it in 1929 after noticing chicks on fat-free diets bled to death. He shared the 1943 Nobel Prize for the discovery."
+  },
+  {
+    id: "mol_vit_008", pubchemCid: 493570, formula: "C17H20N4O6",
+    commonName: "Riboflavin", iupacName: "Vitamin B2",
+    atoms: { C: 17, H: 20, N: 4, O: 6 },
+    description: "The bright neon-yellow vitamin. Your body uses it to build FAD and FMN — the energy-shuttle cofactors at the center of every breath you take.",
+    uses: ["Energy metabolism (FAD/FMN cofactors)", "Red-blood-cell maintenance", "Eye and skin health", "Bright yellow food coloring (E101)"],
+    category: "vitamin", type: "water-soluble", rarity: "rare", tier: 4,
+    smiles: "Cc1cc2nc3c(=O)[nH]c(=O)n(c3n(c2cc1C)CC(O)C(O)C(O)CO)",
+    inchiKey: "AUNGANRZJHBGPY-SCRDCRAPSA-N", molarMass: 376.36,
+    structureImage: "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/cid/493570/PNG",
+    foundIn: {
+      en: ["Milk & yogurt", "Eggs", "Almonds", "Lean beef", "Mushrooms"],
+      fr: ["Lait & yaourt", "Œufs", "Amandes", "Bœuf maigre", "Champignons"]
+    },
+    funFact: "Riboflavin is the bright yellow in your multivitamin — and the reason your pee turns electric-yellow afterwards. Your body excretes whatever it can't immediately use."
+  },
+  {
+    id: "mol_vit_009", pubchemCid: 938, formula: "C6H5NO2",
+    commonName: "Niacin", iupacName: "Nicotinic acid (Vitamin B3)",
+    atoms: { C: 6, H: 5, N: 1, O: 2 },
+    description: "Your NAD/NADP factory. Niacin builds the cofactors that carry the high-energy electrons your mitochondria burn — basically the wire of cellular respiration.",
+    uses: ["NAD+/NADP+ cofactor synthesis", "Cholesterol-lowering high-dose therapy", "Skin-flushing 'niacin flush'", "Bread flour fortification"],
+    category: "vitamin", type: "water-soluble", rarity: "rare", tier: 4,
+    smiles: "c1cc(cnc1)C(=O)O",
+    inchiKey: "PVNIIMVLHYAWGP-UHFFFAOYSA-N", molarMass: 123.11,
+    structureImage: "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/cid/938/PNG",
+    foundIn: {
+      en: ["Tuna & salmon", "Chicken & turkey", "Peanuts", "Brown rice", "Mushrooms"],
+      fr: ["Thon & saumon", "Poulet & dinde", "Cacahuètes", "Riz complet", "Champignons"]
+    },
+    funFact: "Niacin deficiency causes pellagra — the historic 'four D's': dermatitis, diarrhea, dementia, death. Eradicated in the US in the 1940s by fortifying bread flour with niacin."
+  },
+  {
+    id: "mol_vit_010", pubchemCid: 171548, formula: "C10H16N2O3S",
+    commonName: "Biotin", iupacName: "Vitamin B7",
+    atoms: { C: 10, H: 16, N: 2, O: 3, S: 1 },
+    description: "The hair-and-nails vitamin — though more importantly, your body's CO₂ carrier in fatty-acid and amino-acid metabolism.",
+    uses: ["Fatty-acid synthesis cofactor", "Gluconeogenesis", "Skin, hair, and nail health (popular supplement)", "Lab tagging via the biotin-streptavidin bond"],
+    category: "vitamin", type: "water-soluble", rarity: "rare", tier: 4,
+    smiles: "C1[C@H]2[C@@H]([C@@H](S1)CCCCC(=O)O)NC(=O)N2",
+    inchiKey: "YBJHBAHKTGYVGT-ZKWXMUAHSA-N", molarMass: 244.31,
+    structureImage: "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/cid/171548/PNG",
+    foundIn: {
+      en: ["Egg yolks (cooked)", "Almonds & walnuts", "Sweet potatoes", "Salmon", "Sunflower seeds"],
+      fr: ["Jaunes d'œuf (cuits)", "Amandes & noix", "Patates douces", "Saumon", "Graines de tournesol"]
+    },
+    funFact: "Raw egg whites BLOCK biotin absorption — they contain avidin, which binds biotin so tightly it's used in molecular biology as one of the strongest non-covalent bonds known. Cook the eggs."
   }
 ];
 

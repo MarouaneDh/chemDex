@@ -58,4 +58,10 @@ export const SFX = {
     tone(110, 0.4, "triangle", 0.14, 0.05);
     chord([392, 523, 659, 784], 0.5, "triangle", 0.16, 0.09);
   },
+  // the Forbidden Shelf breach — a low, ominous alarm pair
+  breach: () => {
+    tone(55, 0.65, "sawtooth", 0.22);
+    tone(82, 0.55, "sawtooth", 0.16, 0.08);
+    chord([220, 175, 147], 0.45, "sawtooth", 0.12, 0.14);
+  },
 };

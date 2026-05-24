@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 import { MOL_ORIGIN } from "../data/gamedata.js";
+import { hazardsOf, hazardById } from "../game/hazards.js";
+import { readSunlight } from "../game/sunlight.js";
 import { useGame } from "../context/GameContext.jsx";
 import Formula from "./Formula.jsx";
 import StructureImg from "./StructureImg.jsx";
@@ -8,13 +10,19 @@ import RelatedSection from "./RelatedSection.jsx";
 /* The molecule detail modal. Driven by context `modal` state; renders
    nothing when closed. Tap the structure to open the zoom lightbox. */
 export default function Modal() {
-  const { modal, closeMolecule, openLightbox, openBragCard, t, L, term, molField, discoveries } =
-    useGame();
+  const {
+    modal, closeMolecule, openLightbox, openBragCard,
+    t, L, term, molField, discoveries,
+    vitaminDActivated, activateVitaminD,
+  } = useGame();
   const [view, setView] = useState("2d");
+  // sunlight-button state: idle | reading | dim | unsupported
+  const [sunState, setSunState] = useState({ mode: "idle", lux: null });
 
   const m = modal?.molecule;
   useEffect(() => {
     setView("2d"); // fresh 2D view whenever the molecule changes
+    setSunState({ mode: "idle", lux: null });
   }, [m?.id]);
 
   if (!modal) return null;
@@ -26,7 +34,26 @@ export default function Modal() {
   const tag = shiny ? t("shinyDiscovery") : isNew ? t("newDiscovery") : "";
   const name = molField(m, "commonName");
   const isMyth = m.category === "myth";
+  const isForbidden = m.category === "forbidden";
+  const isVitamin = m.category === "vitamin";
+  const needsSunlight = !!m.sunlightSpecial && !vitaminDActivated;
   const origin = isMyth ? MOL_ORIGIN[m.id] : null;
+  const foundIn = isVitamin && m.foundIn ? L(m.foundIn) : null;
+  const hazards = hazardsOf(m);
+
+  const tapSunlight = async () => {
+    setSunState({ mode: "reading", lux: null });
+    const r = await readSunlight();
+    if (r.ok) {
+      activateVitaminD();
+      return;
+    }
+    if (r.supported === false) {
+      setSunState({ mode: "unsupported", lux: null });
+    } else {
+      setSunState({ mode: "dim", lux: Math.round(r.lux || 0) });
+    }
+  };
 
   return (
     <div
@@ -40,10 +67,16 @@ export default function Modal() {
           "modal" +
           (shiny ? " shiny" : "") +
           (isNew ? " reveal" : "") +
-          (isMyth ? " myth" : "")
+          (isMyth ? " myth" : "") +
+          (isForbidden ? " forbidden" : "") +
+          (isVitamin ? " vitamin" : "")
         }
       >
         {isMyth && <span className="fictional-banner">{t("fictionalBanner")}</span>}
+        {isForbidden && <span className="danger-banner">{t("dangerBanner")}</span>}
+        {m.sunlightSpecial && vitaminDActivated && (
+          <span className="sun-badge">{t("sunlightDone")}</span>
+        )}
         {tag && <span className="discovery-tag">{tag}</span>}
         <h2>{name}</h2>
         <div className="sub">
@@ -96,6 +129,60 @@ export default function Modal() {
           </div>
         )}
 
+        {isForbidden && m.safety && (
+          <div className="safety-card">
+            <div className="safety-row">
+              <span className="safety-key">{t("safetyLabel")}</span>
+              <span className="safety-val">{L(m.safety)}</span>
+            </div>
+          </div>
+        )}
+
+        {foundIn && (
+          <div className="fridge-card">
+            <div className="fridge-title">🥗 {t("foundInLabel")}</div>
+            <ul className="fridge-list">
+              {foundIn.map((food, i) => (
+                <li key={i}>{food}</li>
+              ))}
+            </ul>
+          </div>
+        )}
+
+        {needsSunlight && (
+          <div className="sunlight-card">
+            <div className="sunlight-title">{t("sunlightTitle")}</div>
+            <p className="sunlight-hint">{t("sunlightHint")}</p>
+            {sunState.mode === "dim" && (
+              <p className="sunlight-msg">{t("sunlightNotEnough", sunState.lux)}</p>
+            )}
+            {sunState.mode === "unsupported" ? (
+              <div className="sunlight-fallback">
+                <p className="sunlight-msg">{t("sunlightUnsupported")}</p>
+                <div className="sunlight-actions">
+                  <button className="btn btn-primary" onClick={activateVitaminD}>
+                    {t("sunlightConfirm")}
+                  </button>
+                  <button
+                    className="btn"
+                    onClick={() => setSunState({ mode: "idle", lux: null })}
+                  >
+                    {t("sunlightCancel")}
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <button
+                className="btn btn-primary sunlight-btn"
+                onClick={tapSunlight}
+                disabled={sunState.mode === "reading"}
+              >
+                {sunState.mode === "reading" ? t("sunlightReading") : t("sunlightActivate")}
+              </button>
+            )}
+          </div>
+        )}
+
         <div className="badges">
           <span className={"badge rarity-" + m.rarity}>{term(m.rarity)}</span>
           <span className="badge badge-type">{term(m.type)}</span>
@@ -104,6 +191,20 @@ export default function Modal() {
             {t("tier")} {m.tier}
           </span>
         </div>
+
+        {hazards.length > 0 && (
+          <div className="hazard-row">
+            <span className="hazard-label">{t("hazardsLabel")}</span>
+            {hazards.map((hid) => {
+              const h = hazardById(hid);
+              return (
+                <span key={hid} className={"hazard-tag hazard-" + hid}>
+                  {h.icon} {L(h)}
+                </span>
+              );
+            })}
+          </div>
+        )}
 
         <div className="section-title">{t("uses")}</div>
         <ul>

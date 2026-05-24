@@ -89,9 +89,25 @@ export function GameProvider({ children }) {
     stabilizers: 0,
   });
   const [lastSeen, setLastSeen] = usePersistentState("chemdex.lastSeen", "");
+  // The Forbidden Shelf — Priority 4b. The blast door stays sealed until
+  // the player taps the Leak; recipes won't even match until then.
+  const [forbiddenBreached, setForbiddenBreached] = usePersistentState(
+    "chemdex.forbidden",
+    false
+  );
+  // Vitamin D₃'s sunlight easter egg — brainstorm #34. True once the
+  // player has held the card under real daylight (sensor) or honor-
+  // confirmed they're outdoors.
+  const [vitaminDActivated, setVitaminDActivated] = usePersistentState(
+    "chemdex.vitaminD",
+    false
+  );
 
   // which top-bar tab is showing
   const [activeTab, setActiveTab] = useState("lab");
+  // current Dex category filter — kept in context so other components
+  // (e.g. the breached Leak) can deep-link straight into a Dex wing
+  const [dexFilter, setDexFilter] = useState("all");
   // the molecule detail modal — { molecule, isNew } | null
   const [modal, setModal] = useState(null);
   // the zoomable structure lightbox — { molecule, view } | null
@@ -108,6 +124,8 @@ export function GameProvider({ children }) {
   // Atom Tech Tree — the "Choose Your Path" picker and unlock cinematic
   const [pathModalOpen, setPathModalOpen] = useState(false);
   const [cinematic, setCinematic] = useState(null); // { symbol, branch } | null
+  // The Forbidden Shelf breach cinematic — set true while it plays
+  const [breachCinematic, setBreachCinematic] = useState(false);
 
   // keep the audio module's mute flag in step with state
   useEffect(() => {
@@ -409,6 +427,54 @@ export function GameProvider({ children }) {
     maybeOfferAtomPick();
   };
 
+  /* ============================================================
+     THE FORBIDDEN SHELF — the Leak appears after the player has
+     felt at home in the Lab (5+ discoveries). Tapping it breaches
+     the wing and opens the cursed-recipe matches; after that, the
+     Leak stays in place as a permanent shortcut to the forbidden wing.
+     ============================================================ */
+  const leakAppeared = discoveredCount >= 5;
+
+  const breachForbidden = () => {
+    if (forbiddenBreached) return;
+    SFX.breach();
+    setForbiddenBreached(true);
+    setBreachCinematic(true);
+  };
+
+  const dismissBreachCinematic = () => {
+    setBreachCinematic(false);
+    mascotSay(mascotLine("hazmatLine", lang), 8000);
+  };
+
+  // The post-breach Leak is a hot link into the Dex's forbidden wing
+  const goToForbiddenWing = () => {
+    setDexFilter("forbidden");
+    setActiveTab("dex");
+  };
+
+  /* ============================================================
+     THE VITAMIN D SUNLIGHT EASTER EGG (brainstorm #34)
+     ============================================================ */
+  const activateVitaminD = () => {
+    if (vitaminDActivated) return;
+    setVitaminDActivated(true);
+    setTotalXP((prev) => prev + 100);
+    SFX.sparkle();
+    confettiBurst(false);
+    xpPopup(100, true);
+    toast("☀️", t("sunlightToast", 100));
+  };
+
+  // Forbidden recipes are "cursed" — they don't match in the workbench
+  // until the breach. The Lab passes this filter to its combine step.
+  const combineMolecule = (counts, matcher) => {
+    return MOLECULES.find(
+      (m) =>
+        (m.category !== "forbidden" || forbiddenBreached) && matcher(m, counts)
+    );
+  };
+
   /* --- wipe all progress (Dex "Reset progress" button) --- */
   const resetProgress = () => {
     setDiscoveries({});
@@ -429,6 +495,10 @@ export function GameProvider({ children }) {
     setCinematic(null);
     setCapsules(tickCapsules(null));
     setBuddy({ streak: 0, lastDiscoveryDate: "", stabilizers: 0 });
+    setForbiddenBreached(false);
+    setBreachCinematic(false);
+    setVitaminDActivated(false);
+    setDexFilter("all");
   };
 
   /* ============================================================
@@ -451,6 +521,8 @@ export function GameProvider({ children }) {
     atoms: unlockedAtoms,
     capsule: capsules,
     buddy,
+    forbiddenBreached,
+    vitaminDActivated,
     lang,
     muted,
   });
@@ -466,6 +538,10 @@ export function GameProvider({ children }) {
     if (Array.isArray(p.atoms) && p.atoms.length) setUnlockedAtoms(p.atoms);
     if (p.capsule) setCapsules(p.capsule);
     if (p.buddy) setBuddy(p.buddy);
+    // a breach is one-way — never un-set by sync
+    if (p.forbiddenBreached === true) setForbiddenBreached(true);
+    // the sunlight stamp is also one-way (you really did go outside)
+    if (p.vitaminDActivated === true) setVitaminDActivated(true);
     if (p.lang) setLang(p.lang);
     if (typeof p.muted === "boolean") setMuted(p.muted);
   };
@@ -513,6 +589,8 @@ export function GameProvider({ children }) {
     unlockedAtoms,
     capsules,
     buddy,
+    forbiddenBreached,
+    vitaminDActivated,
     lang,
     muted,
   ]);
@@ -610,6 +688,8 @@ export function GameProvider({ children }) {
     discover,
     activeTab,
     setActiveTab,
+    dexFilter,
+    setDexFilter,
     modal,
     openMolecule,
     closeMolecule,
@@ -630,6 +710,15 @@ export function GameProvider({ children }) {
     capsules,
     claimCapsule,
     buddy,
+    forbiddenBreached,
+    leakAppeared,
+    breachForbidden,
+    breachCinematic,
+    dismissBreachCinematic,
+    goToForbiddenWing,
+    combineMolecule,
+    vitaminDActivated,
+    activateVitaminD,
     syncStatus,
     pathModalOpen,
     lockedAtomList,
