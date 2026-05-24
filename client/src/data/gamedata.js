@@ -478,6 +478,118 @@ export const MOLECULES = [
     smiles: null, inchiKey: "FICTIONAL-PHLOGISTON-000-X", molarMass: 37.04,
     structureImage: null,
     funFact: "Phlogiston theory ruled chemistry for over a century until Lavoisier's 1777 discovery of oxygen burned it down — literally rewriting what combustion meant."
+  },
+
+  /* ----- Myth Vault — wave 2 ----- */
+  {
+    id: "mol_myth_011", pubchemCid: null, formula: "CO8",
+    commonName: "Carbonite", iupacName: "Octoxide carbon block",
+    atoms: { C: 1, O: 8 },
+    description: "A super-cooled metal alloy that flash-freezes a smuggler in mid-pose. Survives space transit, looks great mounted on a Hutt's wall.",
+    uses: ["Encasing bounty-hunter trophies", "Deep-space cargo preservation", "Intimidating wall art", "Jabba's home decor"],
+    category: "myth", type: "fictional", rarity: "epic", tier: 5,
+    smiles: null, inchiKey: "FICTIONAL-CARBONITE-0000-X", molarMass: 140.01,
+    structureImage: null,
+    funFact: "Real 'carbonite' is a real calcium-carbide-based explosive — Star Wars picked the name purely for its alien-tech ring."
+  },
+  {
+    id: "mol_myth_012", pubchemCid: null, formula: "H9",
+    commonName: "Cavorite", iupacName: "Nonatomic hydrogen lift",
+    atoms: { H: 9 },
+    description: "A pale powder that screens objects from gravity. Pop a cavorite blind in your window and your Victorian house starts climbing toward the Moon.",
+    uses: ["Antigravity boats to the Moon", "Lifting Victorian gentlemen", "Steampunk levitation rigs", "Suspect physics demonstrations"],
+    category: "myth", type: "fictional", rarity: "epic", tier: 5,
+    smiles: null, inchiKey: "FICTIONAL-CAVORITE-00000-X", molarMass: 9.07,
+    structureImage: null,
+    funFact: "H.G. Wells's The First Men in the Moon (1901) predates Einstein's general relativity by 14 years — cavorite was respectable hard sci-fi at the time."
+  },
+  {
+    id: "mol_myth_013", pubchemCid: null, formula: "C5H5N5O5",
+    commonName: "Aether", iupacName: "Pentacosmic quintessence",
+    atoms: { H: 5, C: 5, N: 5, O: 5 },
+    description: "The mythic fifth element that ancient cosmologies believed filled the heavens beyond air, earth, water, and fire. Banished from physics by Michelson and Morley in 1887.",
+    uses: ["Filling the celestial spheres", "Carrying light through the vacuum (incorrectly)", "Anchoring medieval cosmology", "Modern New Age branding"],
+    category: "myth", type: "fictional", rarity: "epic", tier: 5,
+    smiles: null, inchiKey: "FICTIONAL-AETHER-000000000-X", molarMass: 215.21,
+    structureImage: null,
+    funFact: "The 1887 Michelson–Morley experiment famously found no evidence for a luminiferous aether — opening the door to special relativity 18 years later."
+  },
+  {
+    id: "mol_myth_014", pubchemCid: null, formula: "Na7O",
+    commonName: "Felix Felicis", iupacName: "Heptasodium luck dram",
+    atoms: { Na: 7, O: 1 },
+    description: "A potion of liquid gold that grants the drinker a perfect day. Brewed over six months in a cauldron of patience, and very firmly banned from school exams.",
+    uses: ["Bottling luck", "Narratively contrived victories", "Terrible decisions, executed perfectly", "School-exam contraband"],
+    category: "myth", type: "fictional", rarity: "epic", tier: 5,
+    smiles: null, inchiKey: "FICTIONAL-FELIXFELICIS-0-X", molarMass: 177.05,
+    structureImage: null,
+    funFact: "J.K. Rowling has joked that if Felix Felicis existed in the real world, 'we'd all be drinking it.' The potion debuts in Half-Blood Prince (2005)."
+  },
+  {
+    id: "mol_myth_015", pubchemCid: null, formula: "C7S7",
+    commonName: "Materia", iupacName: "Carbon-sulfur lifestream gem",
+    atoms: { C: 7, S: 7 },
+    description: "A crystallized condensate of a planet's lifestream. Slot a green orb into a sword to cast Fire; slot one into a body, and you crack the world.",
+    uses: ["Magic spells, socketed into weapons", "Jewelry-grade gemstone", "World-ending plot device", "Mako reactor exhaust"],
+    category: "myth", type: "fictional", rarity: "epic", tier: 5,
+    smiles: null, inchiKey: "FICTIONAL-MATERIA-000000-X", molarMass: 308.49,
+    structureImage: null,
+    funFact: "Materia was Final Fantasy VII's elegant fix to the series' classic spell-grinding problem — you customize a character's whole magic loadout by socketing gems."
+  },
+  {
+    id: "mol_myth_016", pubchemCid: null, formula: "C11H11",
+    commonName: "Melange", iupacName: "Undecacarbon undecahydride (spice)",
+    atoms: { C: 11, H: 11 },
+    description: "A cinnamon-tinted addictive substance harvested from sandworm secretions. Stains the eyes blue, expands consciousness, and folds space for Guild Navigators.",
+    uses: ["Faster-than-light navigation", "Prescient visions", "Interstellar economic chokehold", "Life-extension at any cost"],
+    category: "myth", type: "fictional", rarity: "epic", tier: 5,
+    smiles: null, inchiKey: "FICTIONAL-MELANGE-000000-X", molarMass: 143.21,
+    structureImage: null,
+    funFact: "Frank Herbert based Dune's spice on real-world oil dependency — written in 1965 during a Middle East oil boom he saw as eerily prophetic."
+  },
+  {
+    id: "mol_myth_017", pubchemCid: null, formula: "C3Na3S3",
+    commonName: "Orichalcum", iupacName: "Tricarbon trisodium trisulfide",
+    atoms: { C: 3, Na: 3, S: 3 },
+    description: "The mythical gold-copper alloy that gilded the temples of Atlantis. Possibly real and lost; possibly never real and Plato was simply spinning a beautiful story.",
+    uses: ["Atlantean temple cladding", "Final Fantasy crafting material", "Video-game currency", "Archaeology mysteries"],
+    category: "myth", type: "fictional", rarity: "epic", tier: 5,
+    smiles: null, inchiKey: "FICTIONAL-ORICHALCUM-0000-X", molarMass: 201.13,
+    structureImage: null,
+    funFact: "In 2015, divers off Sicily recovered 39 ingots of a copper-zinc-lead alloy from a 600 BC shipwreck — some classicists argue this was real 'orichalcum.'"
+  },
+  {
+    id: "mol_myth_018", pubchemCid: null, formula: "C11",
+    commonName: "Carbonadium", iupacName: "Undecacarbon irradiated alloy",
+    atoms: { C: 11 },
+    description: "A radioactive cousin of adamantium — slightly less indestructible, slightly more carcinogenic. Used when a storyline needs Wolverine to actually struggle.",
+    uses: ["Bonding metal to characters who heal too well", "Plot device for nerfing Wolverine", "Low-budget adamantium", "Comic-book hand-waving"],
+    category: "myth", type: "fictional", rarity: "epic", tier: 5,
+    smiles: null, inchiKey: "FICTIONAL-CARBONADIUM-000-X", molarMass: 132.13,
+    structureImage: null,
+    funFact: "Carbonadium debuted in X-Men #4 (1991) as the substance keeping Omega Red's tentacles flexible — Marvel needed something exactly less amazing than adamantium."
+  },
+  {
+    id: "mol_myth_019", pubchemCid: null, formula: "C9Na9",
+    commonName: "Inertron", iupacName: "Nonacarbon nonasodium hide",
+    atoms: { C: 9, Na: 9 },
+    description: "A 25th-century alloy that is utterly impenetrable and weightless. Wraps spacecraft, soldiers' armor, and the floating city of Niagara.",
+    uses: ["Spaceship hulls in the year 2419", "Body armor for everyone", "Lifting platforms for entire cities", "Comic-strip world-building"],
+    category: "myth", type: "fictional", rarity: "epic", tier: 5,
+    smiles: null, inchiKey: "FICTIONAL-INERTRON-00000-X", molarMass: 315.07,
+    structureImage: null,
+    funFact: "Inertron predates adamantium by 40 years — Philip Francis Nowlan invented it for Buck Rogers's first appearance in 1928."
+  },
+  {
+    id: "mol_myth_020", pubchemCid: null, formula: "H8O8",
+    commonName: "Lazarus Pit", iupacName: "Octahydrogen octoxide elixir",
+    atoms: { H: 8, O: 8 },
+    description: "A bubbling green fluid in a stone basin that resurrects the dead and reverses aging — at the cost of a moment of madness for each dunk.",
+    uses: ["Resurrecting Ra's al Ghul (repeatedly)", "Dramatic comeback storylines", "Regrettable cosmetics", "Gotham villain spa days"],
+    category: "myth", type: "fictional", rarity: "epic", tier: 5,
+    smiles: null, inchiKey: "FICTIONAL-LAZARUSPIT-000-X", molarMass: 136.10,
+    structureImage: null,
+    funFact: "Lazarus Pits debuted in Batman #232 (1971). Ra's al Ghul has been resurrected so many times across DC continuity that the writers semi-officially rationed him to once a year."
   }
 ];
 
@@ -553,6 +665,78 @@ export const MOL_ORIGIN = {
     scienceNote: {
       en: "Phlogiston theory dominated chemistry for over a century. Lavoisier's 1777 discovery of oxygen ended it — the textbook case of science self-correcting.",
       fr: "La théorie du phlogistique a régné sur la chimie pendant plus d'un siècle. La découverte de l'oxygène par Lavoisier en 1777 y a mis fin — l'exemple type d'une science qui se corrige."
+    }
+  },
+
+  /* ----- Wave 2 ----- */
+  mol_myth_011: {
+    source: { en: "Star Wars: The Empire Strikes Back (1980)", fr: "Star Wars : L'Empire contre-attaque (1980)" },
+    scienceNote: {
+      en: "Real cryopreservation freezes biological tissue, but no real material 'flash-freezes' a person in seconds without lethal ice damage.",
+      fr: "La vraie cryoconservation gèle les tissus, mais aucun matériau réel ne « surcongèle » quelqu'un en quelques secondes sans dégâts létaux."
+    }
+  },
+  mol_myth_012: {
+    source: { en: "H.G. Wells — The First Men in the Moon (1901)", fr: "H.G. Wells — Les Premiers Hommes dans la Lune (1901)" },
+    scienceNote: {
+      en: "Anti-gravity remains hypothetical. Einstein's general relativity ties gravity to mass-energy — you can't simply 'shield' against it.",
+      fr: "L'antigravité reste hypothétique. La relativité générale d'Einstein lie la gravité à la masse-énergie — impossible de la « blinder »."
+    }
+  },
+  mol_myth_013: {
+    source: { en: "Aristotle's Physics (~350 BC), medieval alchemy", fr: "Physique d'Aristote (~350 av. J.-C.), alchimie médiévale" },
+    scienceNote: {
+      en: "Once believed to be the medium through which light travels. Real physics replaced it with electromagnetic fields — light needs no medium.",
+      fr: "Longtemps cru être le milieu où voyage la lumière. La physique l'a remplacé par les champs électromagnétiques — la lumière n'a besoin d'aucun support."
+    }
+  },
+  mol_myth_014: {
+    source: { en: "Harry Potter and the Half-Blood Prince — J.K. Rowling (2005)", fr: "Harry Potter et le Prince de sang-mêlé — J.K. Rowling (2005)" },
+    scienceNote: {
+      en: "No chemical confers 'luck'. Psychology shows belief in luck does increase confidence and risk-taking — so the placebo half is real.",
+      fr: "Aucun composé chimique ne donne « de la chance ». La psychologie montre que croire à sa chance augmente la confiance — la moitié placebo est bien réelle."
+    }
+  },
+  mol_myth_015: {
+    source: { en: "Final Fantasy VII (Square, 1997)", fr: "Final Fantasy VII (Square, 1997)" },
+    scienceNote: {
+      en: "Real crystals grow atom-by-atom in lattices. Piezoelectric crystals can convert mechanical force into electricity — the closest real magic.",
+      fr: "Les vrais cristaux croissent atome par atome en réseau. Les cristaux piézoélectriques convertissent la force en électricité — la magie la plus proche."
+    }
+  },
+  mol_myth_016: {
+    source: { en: "Frank Herbert — Dune (1965)", fr: "Frank Herbert — Dune (1965)" },
+    scienceNote: {
+      en: "Real psychoactives (caffeine, THC, LSD) alter perception, but none let you fold space. Saffron is the closest real 'spice worth more than gold.'",
+      fr: "Les vraies substances psychoactives modifient la perception, mais aucune ne plie l'espace. Le safran est l'« épice plus chère que l'or » la plus proche."
+    }
+  },
+  mol_myth_017: {
+    source: { en: "Plato — Critias (~360 BC)", fr: "Platon — Critias (~360 av. J.-C.)" },
+    scienceNote: {
+      en: "Real brass is a copper-zinc alloy known to the Romans. Bronze-age ingots recovered off Sicily in 2015 are the best candidate for what Plato meant.",
+      fr: "Le vrai laiton est un alliage cuivre-zinc connu des Romains. Des lingots de l'âge du bronze retrouvés en Sicile en 2015 sont les meilleurs candidats au sens platonicien."
+    }
+  },
+  mol_myth_018: {
+    source: { en: "X-Men #4 (Marvel, 1991)", fr: "X-Men #4 (Marvel, 1991)" },
+    scienceNote: {
+      en: "Real radioactive metals (uranium, plutonium) are dense and structural. None grant healing-factor immunity, alas.",
+      fr: "Les vrais métaux radioactifs (uranium, plutonium) sont denses et structurels. Aucun ne neutralise un facteur de guérison, hélas."
+    }
+  },
+  mol_myth_019: {
+    source: { en: "Buck Rogers — Philip Francis Nowlan (1928–29)", fr: "Buck Rogers — Philip Francis Nowlan (1928–29)" },
+    scienceNote: {
+      en: "Real aerogel is the lightest engineered solid — but it's brittle, not impenetrable. Genuinely weightless structural materials remain fiction.",
+      fr: "Le vrai aérogel est le solide artificiel le plus léger — mais il est cassant. Un matériau structurel vraiment sans masse reste de la fiction."
+    }
+  },
+  mol_myth_020: {
+    source: { en: "Batman #232 (DC, 1971)", fr: "Batman #232 (DC, 1971)" },
+    scienceNote: {
+      en: "Real hot springs contain dissolved minerals and microbes. They won't bring you back to life, but they can help with arthritis.",
+      fr: "Les vraies sources chaudes contiennent minéraux et microbes. Elles ne ressuscitent personne, mais elles soulagent l'arthrite."
     }
   }
 };

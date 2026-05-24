@@ -512,5 +512,67 @@ export const MOL_FR = {
     description: "L'« élément du feu » que les chimistes du XVIIᵉ siècle croyaient s'échapper de tout ce qui brûle. Une théorie parfaitement respectable en 1700 — et un manuel d'erreur scientifique.",
     uses: ["Expliquer la combustion (mal)", "Manuels de chimie pré-Lavoisier", "Rappeler que la science se corrige", "Construction d'univers steampunk"],
     funFact: "La théorie du phlogistique a dominé la chimie pendant plus d'un siècle. La découverte de l'oxygène par Lavoisier en 1777 y a mis fin — réécrivant littéralement ce qu'est la combustion."
+  },
+
+  /* ----- Myth Vault — wave 2 ----- */
+  mol_myth_011: {
+    commonName: "Carbonite", iupacName: "Bloc de carbone à huit oxygènes",
+    description: "Un alliage métallique surcongelé qui fige un contrebandier en pleine pose. Survit au voyage spatial, du plus bel effet sur un mur de Hutt.",
+    uses: ["Encadrer les trophées de chasseur de primes", "Conservation de cargaison interstellaire", "Décoration murale intimidante", "Intérieur chez Jabba"],
+    funFact: "Le vrai « carbonite » est un explosif à base de carbure de calcium — Star Wars n'a gardé que le nom pour sa sonorité techno-alien."
+  },
+  mol_myth_012: {
+    commonName: "Cavorite", iupacName: "Voile d'hydrogène à neuf atomes",
+    description: "Une poudre pâle qui isole les objets de la gravité. Glissez un store de cavorite à votre fenêtre, et votre maison victorienne s'élève vers la Lune.",
+    uses: ["Vaisseaux antigravité vers la Lune", "Lever des gentlemen victoriens", "Lévitation steampunk", "Démonstrations de physique suspectes"],
+    funFact: "Les Premiers Hommes dans la Lune (1901) précèdent de 14 ans la relativité générale d'Einstein — la cavorite passait alors pour de la hard SF respectable."
+  },
+  mol_myth_013: {
+    commonName: "Éther", iupacName: "Quintessence pentacosmique",
+    description: "Le cinquième élément mythique que les cosmologies anciennes croyaient remplir les cieux au-delà de l'air, la terre, l'eau et le feu. Banni de la physique par Michelson et Morley en 1887.",
+    uses: ["Remplir les sphères célestes", "Porter la lumière dans le vide (à tort)", "Ancrer la cosmologie médiévale", "Marketing New Age contemporain"],
+    funFact: "L'expérience Michelson-Morley de 1887 n'a trouvé aucune trace d'éther luminifère — ouvrant la voie à la relativité restreinte dix-huit ans plus tard."
+  },
+  mol_myth_014: {
+    commonName: "Felix Felicis", iupacName: "Goutte de chance à sept sodiums",
+    description: "Une potion dorée qui offre au buveur une journée parfaite. Brassée pendant six mois dans un chaudron de patience, et très fermement interdite aux examens.",
+    uses: ["Mettre la chance en bouteille", "Victoires narratives invraisemblables", "Mauvaises décisions, parfaitement exécutées", "Contrebande aux examens scolaires"],
+    funFact: "J.K. Rowling a plaisanté qu'en vrai, « on en boirait tous ». Le philtre apparaît dans Le Prince de sang-mêlé (2005)."
+  },
+  mol_myth_015: {
+    commonName: "Materia", iupacName: "Gemme de Flux à carbone-soufre",
+    description: "Un condensat cristallisé du Flux Vital d'une planète. Insérée dans une épée, l'orbe verte lance des sorts ; insérée dans un corps, elle peut briser le monde.",
+    uses: ["Sorts insérés dans les armes", "Pierre précieuse de joaillerie", "Ressort de fin du monde", "Résidu de réacteur Mako"],
+    funFact: "La materia est la réponse élégante de Final Fantasy VII au grind de sorts traditionnel — toute la magie d'un personnage se personnalise en sertissant des gemmes."
+  },
+  mol_myth_016: {
+    commonName: "Mélange", iupacName: "Undécacarbone undécahydrure (épice)",
+    description: "Une substance cannelle addictive récoltée dans les sécrétions des vers des sables. Bleuit les yeux, ouvre la conscience et plie l'espace pour les Navigateurs de la Guilde.",
+    uses: ["Navigation supraluminique", "Visions prescientes", "Mainmise économique interstellaire", "Prolongation de vie à tout prix"],
+    funFact: "Frank Herbert s'est inspiré de la dépendance au pétrole — écrit en 1965 pendant un boom moyen-oriental qu'il jugeait étrangement prophétique."
+  },
+  mol_myth_017: {
+    commonName: "Orichalque", iupacName: "Tricarbone-trisodium-trisulfure",
+    description: "L'alliage doré-cuivré mythique qui revêtait les temples de l'Atlantide. Peut-être réel et perdu ; peut-être jamais réel et Platon racontait simplement une belle histoire.",
+    uses: ["Habillage des temples atlantes", "Matériau d'artisanat dans les RPG", "Monnaie de jeu vidéo", "Mystères d'archéologie"],
+    funFact: "En 2015, des plongeurs au large de la Sicile ont remonté 39 lingots d'un alliage cuivre-zinc-plomb d'une épave de 600 av. J.-C. — certains classicistes y voient le vrai « orichalque »."
+  },
+  mol_myth_018: {
+    commonName: "Carbonadium", iupacName: "Alliage undécacarbone irradié",
+    description: "Un cousin radioactif de l'adamantium — un peu moins indestructible, un peu plus cancérigène. Sert quand un scénario exige que Wolverine galère vraiment.",
+    uses: ["Lier du métal aux personnages qui guérissent trop bien", "Affaiblir Wolverine pour le drame", "Adamantium de bas budget", "Justifications hand-waving"],
+    funFact: "Le carbonadium fait ses débuts dans X-Men #4 (1991) comme matériau gardant les tentacules d'Omega Red flexibles — Marvel avait besoin d'« exactement moins génial que l'adamantium »."
+  },
+  mol_myth_019: {
+    commonName: "Inertron", iupacName: "Cuir nonacarbone-nonasodium",
+    description: "Un alliage du XXVᵉ siècle absolument impénétrable et sans poids. Recouvre vaisseaux, armures, et la cité flottante de Niagara.",
+    uses: ["Coques de vaisseaux en l'an 2419", "Armures pour tous", "Plates-formes portantes de cités entières", "Construction d'univers BD"],
+    funFact: "L'inertron précède l'adamantium de 40 ans — Philip Francis Nowlan l'a inventé pour la première apparition de Buck Rogers en 1928."
+  },
+  mol_myth_020: {
+    commonName: "Puits de Lazare", iupacName: "Élixir octahydrogène octoxyde",
+    description: "Un fluide vert bouillonnant dans un bassin de pierre qui ressuscite les morts et inverse le vieillissement — au prix d'un moment de folie à chaque plongée.",
+    uses: ["Ressusciter Ra's al Ghul (encore et encore)", "Retours dramatiques", "Cosmétiques regrettables", "Cures thermales pour vilains gothamites"],
+    funFact: "Les Puits de Lazare apparaissent dans Batman #232 (1971). Ra's al Ghul a été ressuscité tant de fois que les scénaristes le rationnent désormais à une fois par an."
   }
 };

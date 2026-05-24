@@ -44,4 +44,16 @@ export const CLUES = {
   mol_myth_008: { en: "The metal of a stargate — five of one element.",                              fr: "Le métal d'une Porte des Étoiles — cinq d'un même élément." },
   mol_myth_009: { en: "A glittery dust that bends mass — equal nitrogen and oxygen, five each.",     fr: "Une poussière scintillante qui courbe la masse — autant d'azote que d'oxygène, cinq chacun." },
   mol_myth_010: { en: "The 17th-century 'fire element' — five H's and a pair of O's.",               fr: "L'« élément du feu » du XVIIᵉ siècle — cinq H et deux O." },
+
+  /* Myth Vault — wave 2 */
+  mol_myth_011: { en: "What Han Solo woke up frozen in — one carbon, smothered by eight oxygens.",   fr: "Ce dans quoi Han Solo s'est réveillé congelé — un carbone, étouffé par huit oxygènes." },
+  mol_myth_012: { en: "A Victorian sci-fi powder that ignores gravity — nine of the lightest atom.",  fr: "Une poudre sci-fi victorienne qui ignore la gravité — neuf du plus léger des atomes." },
+  mol_myth_013: { en: "The mythic fifth element — five each of the four starter atoms.",              fr: "Le mythique cinquième élément — cinq de chacun des quatre atomes de départ." },
+  mol_myth_014: { en: "Liquid gold luck — seven sodiums and a single oxygen.",                        fr: "Chance dorée en flacon — sept sodiums et un seul oxygène." },
+  mol_myth_015: { en: "A spell crystallized in a green orb — seven carbons, seven sulfurs.",          fr: "Un sort cristallisé en orbe verte — sept carbones, sept soufres." },
+  mol_myth_016: { en: "An addictive spice that folds space — eleven carbons, eleven hydrogens.",      fr: "Une épice addictive qui plie l'espace — onze carbones, onze hydrogènes." },
+  mol_myth_017: { en: "Atlantis's lost alloy — three each of carbon, sodium, sulfur.",                fr: "Alliage perdu de l'Atlantide — trois de carbone, sodium, soufre." },
+  mol_myth_018: { en: "Adamantium's weaker cousin — eleven carbons in a row.",                        fr: "Le cousin faible de l'adamantium — onze carbones d'affilée." },
+  mol_myth_019: { en: "A 25th-century impenetrable metal — nine carbons, nine sodiums.",              fr: "Un métal impénétrable du XXVᵉ siècle — neuf carbones, neuf sodiums." },
+  mol_myth_020: { en: "A bubbling green resurrection pool — eight hydrogens, eight oxygens.",         fr: "Bassin vert qui ressuscite — huit hydrogènes, huit oxygènes." },
 };
