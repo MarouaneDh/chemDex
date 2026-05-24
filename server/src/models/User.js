@@ -19,6 +19,8 @@ const progressSchema = new mongoose.Schema(
     buddy: { type: mongoose.Schema.Types.Mixed, default: {} },
     forbiddenBreached: { type: Boolean, default: false },
     vitaminDActivated: { type: Boolean, default: false },
+    // Mad Science Sandbox creations — player-named fictional compounds
+    sandbox: { type: [mongoose.Schema.Types.Mixed], default: [] },
     lang: { type: String, default: "en" },
     muted: { type: Boolean, default: false },
     updatedAt: { type: Date, default: Date.now },
@@ -37,6 +39,8 @@ const userSchema = new mongoose.Schema(
     },
     passwordHash: { type: String, required: true },
     displayName: { type: String, required: true, trim: true, maxlength: 40 },
+    // promote via `npm --prefix server run promote -- <email>` (server-side only)
+    role: { type: String, enum: ["user", "admin"], default: "user" },
     progress: { type: progressSchema, default: () => ({}) },
   },
   { timestamps: true }
@@ -53,6 +57,7 @@ userSchema.methods.toSafeJSON = function () {
     id: this._id.toString(),
     email: this.email,
     displayName: this.displayName,
+    role: this.role || "user",
     createdAt: this.createdAt,
   };
 };

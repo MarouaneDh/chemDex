@@ -1,24 +1,28 @@
-import { MOLECULES } from "../data/gamedata.js";
 import { LEVELS, currentLevelIndex } from "../game/progression.js";
 import { SFX } from "../game/sfx.js";
+import { useCatalog } from "../context/CatalogContext.jsx";
 import { useGame } from "../context/GameContext.jsx";
 import { useAuth } from "../context/AuthContext.jsx";
 
 const TABS = [
   { id: "lab", i18n: "tabLab" },
+  { id: "sandbox", i18n: "tabSandbox" },
   { id: "dex", i18n: "tabDex" },
   { id: "quests", i18n: "tabQuests" },
 ];
+const ADMIN_TAB = { id: "admin", i18n: "tabAdmin" };
 
 export default function TopBar() {
   const {
     t, L, lang, setLang, muted, toggleMute,
     discoveries, totalXP, activeTab, setActiveTab, syncStatus, openAuth,
   } = useGame();
-  const { isAuthed, user } = useAuth();
+  const { isAuthed, isAdmin, user } = useAuth();
+  const visibleTabs = isAdmin ? [...TABS, ADMIN_TAB] : TABS;
+  const { molecules } = useCatalog();
 
-  const found = MOLECULES.filter((m) => discoveries[m.id]).length;
-  const total = MOLECULES.length;
+  const found = molecules.filter((m) => discoveries[m.id]).length;
+  const total = molecules.length;
   const lvlIdx = currentLevelIndex(totalXP);
 
   const go = (id) => {
@@ -39,7 +43,7 @@ export default function TopBar() {
       </div>
 
       <nav className="tabs">
-        {TABS.map((tab) => (
+        {visibleTabs.map((tab) => (
           <button
             key={tab.id}
             className={"tab" + (activeTab === tab.id ? " active" : "")}

@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
-import { ATOMS } from "../../data/gamedata.js";
 import { SFX } from "../../game/sfx.js";
+import { useCatalog } from "../../context/CatalogContext.jsx";
 import { useGame } from "../../context/GameContext.jsx";
 
 /* The fullscreen element-unlock cinematic — the atom flies in over two
@@ -8,6 +8,7 @@ import { useGame } from "../../context/GameContext.jsx";
    `closing` class plays the exit animation before the overlay unmounts. */
 export default function AtomCinematic() {
   const { cinematic, dismissCinematic, t, atomName } = useGame();
+  const { atoms } = useCatalog();
   const [closing, setClosing] = useState(false);
   const closedRef = useRef(false);
   const exitTimer = useRef(null);
@@ -35,7 +36,7 @@ export default function AtomCinematic() {
     exitTimer.current = setTimeout(() => dismissCinematic(), 240);
   }
 
-  const atom = ATOMS.find((a) => a.symbol === cinematic.symbol);
+  const atom = atoms.find((a) => a.symbol === cinematic.symbol);
   if (!atom) return null;
 
   return (

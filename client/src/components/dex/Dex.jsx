@@ -1,6 +1,6 @@
 import { useMemo } from "react";
-import { MOLECULES } from "../../data/gamedata.js";
 import { HAZARDS, hazardsOf } from "../../game/hazards.js";
+import { useCatalog } from "../../context/CatalogContext.jsx";
 import { useGame } from "../../context/GameContext.jsx";
 import DexCard from "./DexCard.jsx";
 
@@ -11,12 +11,13 @@ export default function Dex() {
     t, L, term, resetProgress, forbiddenBreached,
     dexFilter: filter, setDexFilter: setFilter,
   } = useGame();
+  const { molecules } = useCatalog();
 
   // forbidden molecules don't appear in the Dex until the player has
   // breached the Leak — the wing is literally sealed behind a blast door
   const visible = useMemo(
-    () => MOLECULES.filter((m) => forbiddenBreached || m.category !== "forbidden"),
-    [forbiddenBreached]
+    () => molecules.filter((m) => forbiddenBreached || m.category !== "forbidden"),
+    [forbiddenBreached, molecules]
   );
 
   const categories = useMemo(

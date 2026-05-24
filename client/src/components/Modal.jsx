@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
-import { MOL_ORIGIN } from "../data/gamedata.js";
 import { hazardsOf, hazardById } from "../game/hazards.js";
 import { readSunlight } from "../game/sunlight.js";
 import { useGame } from "../context/GameContext.jsx";
 import Formula from "./Formula.jsx";
 import StructureImg from "./StructureImg.jsx";
 import RelatedSection from "./RelatedSection.jsx";
+import EvolutionChain from "./EvolutionChain.jsx";
 
 /* The molecule detail modal. Driven by context `modal` state; renders
    nothing when closed. Tap the structure to open the zoom lightbox. */
@@ -37,7 +37,8 @@ export default function Modal() {
   const isForbidden = m.category === "forbidden";
   const isVitamin = m.category === "vitamin";
   const needsSunlight = !!m.sunlightSpecial && !vitaminDActivated;
-  const origin = isMyth ? MOL_ORIGIN[m.id] : null;
+  // origin lives on the molecule document now (m.origin), not a side-table
+  const origin = isMyth ? m.origin : null;
   const foundIn = isVitamin && m.foundIn ? L(m.foundIn) : null;
   const hazards = hazardsOf(m);
 
@@ -226,6 +227,8 @@ export default function Modal() {
         </div>
 
         <div className="funfact">💡 {molField(m, "funFact")}</div>
+
+        <EvolutionChain m={m} />
 
         <RelatedSection m={m} />
 

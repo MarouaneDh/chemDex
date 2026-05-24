@@ -9,13 +9,12 @@
 
 import { createContext, useContext, useEffect, useMemo, useRef, useState } from "react";
 import {
-  MOLECULES,
-  ATOMS,
   STARTER_ATOMS,
   ATOM_MILESTONES,
   ATOM_BRANCHES,
 } from "../data/gamedata.js";
 import { TYPE_NUDGES } from "../data/i18n.js";
+import { useCatalog } from "./CatalogContext.jsx";
 import { LEVELS, currentLevelIndex, TIER_UNLOCK } from "../game/progression.js";
 import {
   BADGES,
@@ -36,6 +35,7 @@ import {
   rollCapsuleLoot,
 } from "../game/capsule.js";
 import { updateBuddyOnDiscovery, addStabilizer } from "../game/buddy.js";
+import { countsEqual, hillFormula } from "../game/rules.js";
 import { CLUES } from "../game/clues.js";
 import { confettiBurst, xpPopup, toast } from "../game/fx.js";
 import { makeI18n } from "../i18n/t.js";
@@ -69,6 +69,9 @@ function usePersistentState(key, initial) {
 
 export function GameProvider({ children }) {
   const { token, user } = useAuth();
+  // live atoms + molecules — starts as the bundled copy, swapped with the
+  // server's catalog as soon as /api/catalog answers (offline-safe)
+  const { atoms: catalogAtoms, molecules } = useCatalog();
 
   const [lang, setLang] = usePersistentState("chemdex.lang", "en");
   const [muted, setMuted] = usePersistentState("chemdex.muted", false);
@@ -102,6 +105,8 @@ export function GameProvider({ children }) {
     "chemdex.vitaminD",
     false
   );
+  // Mad Science Sandbox — player-named fictional compounds (brainstorm #41)
+  const [sandbox, setSandbox] = usePersistentState("chemdex.sandbox", []);
 
   // which top-bar tab is showing
   const [activeTab, setActiveTab] = useState("lab");
@@ -132,8 +137,8 @@ export function GameProvider({ children }) {
     setSfxMuted(muted);
   }, [muted]);
 
-  // i18n helpers, rebuilt only when the language changes
-  const i18n = useMemo(() => makeI18n(lang), [lang]);
+  // i18n helpers, rebuilt when language or atoms catalog changes
+  const i18n = useMemo(() => makeI18n(lang, catalogAtoms), [lang, catalogAtoms]);
   const { t, L, atomName } = i18n;
 
   const toggleMute = () => {
@@ -148,7 +153,7 @@ export function GameProvider({ children }) {
   };
 
   /* --- derived collection state --- */
-  const discoveredCount = MOLECULES.filter((m) => discoveries[m.id]).length;
+  const discoveredCount = molecules.filter((m) => discoveries[m.id]).length;
   const tierUnlocked = (tier) => discoveredCount >= (TIER_UNLOCK[tier] || 0);
 
   /* --- Atom Tech Tree helpers (bound to current unlockedAtoms) --- */
@@ -204,7 +209,7 @@ export function GameProvider({ children }) {
   // so the player stays in control of how much gets spoiled.
   const showHint = (escalate = true) => {
     // myths are stumble-upon discoveries — never spoiled by a mascot hint
-    const target = MOLECULES.find(
+    const target = molecules.find(
       (m) =>
         m.category !== "myth" &&
         !discoveries[m.id] &&
@@ -254,7 +259,12 @@ export function GameProvider({ children }) {
     };
 
     // badges + missions newly satisfied by this find
-    const s = buildStats(nextDiscoveries, unlockedAtoms);
+    const s = buildStats({
+      discoveries: nextDiscoveries,
+      unlockedAtoms,
+      molecules,
+      atoms: catalogAtoms,
+    });
     const gotBadges = BADGES.filter((b) => !earnedBadges.includes(b.id) && b.check(s));
     const gotMissions = MISSIONS.filter(
       (mi) => !claimedMissions.includes(mi.id) && mi.progress(s) >= mi.target
@@ -347,6 +357,7 @@ export function GameProvider({ children }) {
       discoveries,
       unlockedAtoms,
       stabilizers: buddy.stabilizers || 0,
+      molecules,
     });
     setCapsules((c) => claimCapsuleState(c, Date.now()));
 
@@ -370,7 +381,8 @@ export function GameProvider({ children }) {
      ============================================================ */
 
   // Locked elements still waiting to be earned.
-  const lockedAtomList = () => ATOMS.filter((a) => !unlockedAtoms.includes(a.symbol));
+  const lockedAtomList = () =>
+    catalogAtoms.filter((a) => !unlockedAtoms.includes(a.symbol));
 
   // "Choose Your Path" picks earned (one per milestone) but not yet spent.
   const atomPicksPending = () => {
@@ -386,7 +398,12 @@ export function GameProvider({ children }) {
     const nextAtoms = [...unlockedAtoms, sym];
     setUnlockedAtoms(nextAtoms);
 
-    const s = buildStats(discoveries, nextAtoms);
+    const s = buildStats({
+      discoveries,
+      unlockedAtoms: nextAtoms,
+      molecules,
+      atoms: catalogAtoms,
+    });
     const gotBadges = BADGES.filter((b) => !earnedBadges.includes(b.id) && b.check(s));
     if (gotBadges.length) {
       setEarnedBadges((prev) => [...prev, ...gotBadges.map((b) => b.id)]);
@@ -469,10 +486,58 @@ export function GameProvider({ children }) {
   // Forbidden recipes are "cursed" — they don't match in the workbench
   // until the breach. The Lab passes this filter to its combine step.
   const combineMolecule = (counts, matcher) => {
-    return MOLECULES.find(
+    return molecules.find(
       (m) =>
         (m.category !== "forbidden" || forbiddenBreached) && matcher(m, counts)
     );
+  };
+
+  /* ============================================================
+     MAD SCIENCE SANDBOX — publish a recipe under a player-chosen
+     name. If the atoms actually match a real molecule (and the
+     Forbidden Shelf's blast door isn't in the way), auto-promote
+     it to a real discovery — "if an invented combo is actually
+     real, the app auto-discovers it" (brainstorm #41).
+     ============================================================ */
+  const newSandboxId = () =>
+    "sb_" +
+    (typeof crypto !== "undefined" && crypto.randomUUID
+      ? crypto.randomUUID()
+      : Date.now() + "-" + Math.random().toString(36).slice(2, 9));
+
+  const publishSandbox = ({ name, description, rarity, atoms: atomsMap }) => {
+    // 1. real chemistry detected?
+    const match = combineMolecule(atomsMap, (m, c) => countsEqual(m.atoms, c));
+    if (match) {
+      if (!discoveries[match.id]) {
+        discover(match);
+        return { kind: "realDiscovery", molecule: match };
+      }
+      return { kind: "alreadyKnown", molecule: match };
+    }
+    // 2. fictional — save it under the player's name
+    const entry = {
+      id: newSandboxId(),
+      name: (name || "").trim(),
+      commonName: (name || "").trim(),
+      iupacName: "(player invention)",
+      description: (description || "").trim(),
+      rarity: rarity || "common",
+      formula: hillFormula(atomsMap),
+      atoms: atomsMap,
+      type: "invention",
+      category: "sandbox",
+      tier: 0,
+      pubchemCid: null,
+      invented: true,
+      createdAt: new Date().toISOString(),
+    };
+    setSandbox((prev) => [entry, ...prev]);
+    return { kind: "saved", entry };
+  };
+
+  const deleteSandboxEntry = (id) => {
+    setSandbox((prev) => prev.filter((e) => e.id !== id));
   };
 
   /* --- wipe all progress (Dex "Reset progress" button) --- */
@@ -483,7 +548,7 @@ export function GameProvider({ children }) {
     setClaimedMissions([]);
     setUnlockedAtoms(STARTER_ATOMS.slice());
     const today = todayStr();
-    const fresh = pickDailyPuzzle(today, {}, STARTER_ATOMS);
+    const fresh = pickDailyPuzzle(today, {}, STARTER_ATOMS, molecules);
     setDailyState({
       date: today,
       moleculeId: fresh ? fresh.id : null,
@@ -498,6 +563,7 @@ export function GameProvider({ children }) {
     setForbiddenBreached(false);
     setBreachCinematic(false);
     setVitaminDActivated(false);
+    setSandbox([]);
     setDexFilter("all");
   };
 
@@ -523,6 +589,7 @@ export function GameProvider({ children }) {
     buddy,
     forbiddenBreached,
     vitaminDActivated,
+    sandbox,
     lang,
     muted,
   });
@@ -542,6 +609,7 @@ export function GameProvider({ children }) {
     if (p.forbiddenBreached === true) setForbiddenBreached(true);
     // the sunlight stamp is also one-way (you really did go outside)
     if (p.vitaminDActivated === true) setVitaminDActivated(true);
+    if (Array.isArray(p.sandbox)) setSandbox(p.sandbox);
     if (p.lang) setLang(p.lang);
     if (typeof p.muted === "boolean") setMuted(p.muted);
   };
@@ -591,6 +659,7 @@ export function GameProvider({ children }) {
     buddy,
     forbiddenBreached,
     vitaminDActivated,
+    sandbox,
     lang,
     muted,
   ]);
@@ -605,7 +674,12 @@ export function GameProvider({ children }) {
     didInit.current = true;
 
     // catch up any badges/missions a returning player already earned
-    const s = buildStats(discoveries, unlockedAtoms);
+    const s = buildStats({
+      discoveries,
+      unlockedAtoms,
+      molecules,
+      atoms: catalogAtoms,
+    });
     const syncBadges = BADGES.filter(
       (b) => !earnedBadges.includes(b.id) && b.check(s)
     ).map((b) => b.id);
@@ -620,7 +694,7 @@ export function GameProvider({ children }) {
     // make sure today's puzzle exists for whatever tiers are unlocked now
     const today = todayStr();
     if (dailyState.date !== today || dailyState.moleculeId === undefined) {
-      const m = pickDailyPuzzle(today, discoveries, unlockedAtoms);
+      const m = pickDailyPuzzle(today, discoveries, unlockedAtoms, molecules);
       setDailyState({
         date: today,
         moleculeId: m ? m.id : null,
@@ -719,6 +793,9 @@ export function GameProvider({ children }) {
     combineMolecule,
     vitaminDActivated,
     activateVitaminD,
+    sandbox,
+    publishSandbox,
+    deleteSandboxEntry,
     syncStatus,
     pathModalOpen,
     lockedAtomList,

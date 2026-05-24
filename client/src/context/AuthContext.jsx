@@ -82,6 +82,7 @@ export function AuthProvider({ children }) {
     user,
     status,
     isAuthed: !!token && !!user,
+    isAdmin: user?.role === "admin",
     register,
     login,
     logout,

@@ -6,8 +6,6 @@
    `drawBragCard` is a no-op when there is no 2D context (jsdom / SSR).
    ============================================================ */
 
-import { ATOMS } from "../data/gamedata.js";
-
 const CARD_W = 600;
 const CARD_H = 840;
 
@@ -120,14 +118,14 @@ function drawFormula(ctx, formula, cx, y) {
 }
 
 // a decorative atom constellation: a centre atom ringed by the rest
-function drawMotif(ctx, atomsMap, cx, cy, color) {
+function drawMotif(ctx, atomsMap, cx, cy, color, atomCatalog) {
   const instances = [];
   for (const [sym, n] of Object.entries(atomsMap)) {
     for (let i = 0; i < n; i++) instances.push(sym);
   }
   const shown = instances.slice(0, 14);
   const colorOf = (sym) => {
-    const a = ATOMS.find((x) => x.symbol === sym);
+    const a = (atomCatalog || []).find((x) => x.symbol === sym);
     return a ? { bg: a.color, fg: a.text } : { bg: "#3a4150", fg: "#eef2f6" };
   };
 
@@ -238,6 +236,12 @@ export function drawBragCard(canvas, opts) {
     ctx.fillStyle = "#fbbf24";
     ctx.textAlign = "right";
     ctx.fillText("✨ SHINY", W - 56, 71);
+  } else if (opts.invented) {
+    // sandbox creations swap the SHINY corner for an INVENTED-BY-YOU stamp
+    ctx.font = "700 18px 'Space Grotesk', system-ui, sans-serif";
+    ctx.fillStyle = "#fbbf24";
+    ctx.textAlign = "right";
+    ctx.fillText("✦ INVENTED", W - 56, 71);
   }
 
   // molecule name + type
@@ -255,7 +259,7 @@ export function drawBragCard(canvas, opts) {
   ctx.lineWidth = 1;
   ctx.strokeStyle = rgba("#ffffff", 0.07);
   ctx.stroke();
-  drawMotif(ctx, opts.atoms || {}, W / 2, 400, accent);
+  drawMotif(ctx, opts.atoms || {}, W / 2, 400, accent, opts.atomCatalog);
 
   // formula
   ctx.fillStyle = "#eef2f6";

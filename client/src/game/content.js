@@ -5,9 +5,12 @@
    The badge `check` and mission `progress` callbacks are pure:
    they take a `stats` bundle (see buildStats) instead of reading
    globals, so GameContext can evaluate them at any time.
+
+   This module is catalog-agnostic — every function that needs to
+   iterate molecules or atoms takes them as parameters. Callers
+   pull them from useCatalog() and pass them in.
    ============================================================ */
 
-import { MOLECULES, ATOMS } from "../data/gamedata.js";
 import { TIER_UNLOCK } from "./progression.js";
 
 /* ---------- XP economy ---------- */
@@ -23,19 +26,21 @@ export function discoveryXP(m, shiny) {
 /* ---------- collection stats ----------
    One bundle of derived counts, rebuilt from the discoveries map
    whenever badges / missions need re-evaluating. */
-export function buildStats(discoveries, unlockedAtoms) {
-  const found = MOLECULES.filter((m) => discoveries[m.id]);
+export function buildStats({ discoveries, unlockedAtoms, molecules, atoms }) {
+  const mols = molecules || [];
+  const allAtomSyms = (atoms || []).map((a) => a.symbol);
+  const found = mols.filter((m) => discoveries[m.id]);
   return {
     count: found.length,
-    total: MOLECULES.length,
+    total: mols.length,
     shiny: found.filter((m) => discoveries[m.id]?.shiny).length,
     byType: (type) => found.filter((m) => m.type === type).length,
     byCat: (cat) => found.filter((m) => m.category === cat).length,
-    totalType: (type) => MOLECULES.filter((m) => m.type === type).length,
-    totalCat: (cat) => MOLECULES.filter((m) => m.category === cat).length,
+    totalType: (type) => mols.filter((m) => m.type === type).length,
+    totalCat: (cat) => mols.filter((m) => m.category === cat).length,
     tierCount: (tier) => found.filter((m) => m.tier === tier).length,
     tierAtLeast: (tier) => found.filter((m) => m.tier >= tier).length,
-    allAtoms: ATOMS.every((a) => unlockedAtoms.includes(a.symbol)),
+    allAtoms: allAtomSyms.every((s) => unlockedAtoms.includes(s)),
   };
 }
 
@@ -111,9 +116,9 @@ export function atomRecipe(m) {
     .join(" + ");
 }
 
-// How many molecules in the Dex use a given element — shown on path cards.
-export function moleculesWithAtom(sym) {
-  return MOLECULES.filter((m) => m.atoms[sym]).length;
+// How many molecules use a given element — shown on path cards.
+export function moleculesWithAtom(sym, molecules) {
+  return (molecules || []).filter((m) => m.atoms[sym]).length;
 }
 
 /* ---------- daily puzzle ---------- */
@@ -137,12 +142,13 @@ function dailySeed(dateStr) {
 }
 
 // Pick the day's puzzle from molecules the player can actually build now.
-export function pickDailyPuzzle(dateStr, discoveries, unlockedAtoms) {
-  const count = MOLECULES.filter((m) => discoveries[m.id]).length;
+export function pickDailyPuzzle(dateStr, discoveries, unlockedAtoms, molecules) {
+  const mols = molecules || [];
+  const count = mols.filter((m) => discoveries[m.id]).length;
   const tierOk = (tier) => count >= (TIER_UNLOCK[tier] || 0);
   const buildable = (m) => Object.keys(m.atoms).every((s) => unlockedAtoms.includes(s));
   // myths + forbidden are stumble-upon / breach discoveries — never picked
-  const pool = MOLECULES.filter(
+  const pool = mols.filter(
     (m) =>
       m.category !== "myth" &&
       m.category !== "forbidden" &&

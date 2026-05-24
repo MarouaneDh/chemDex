@@ -46,6 +46,24 @@ function mergeCapsule(a = {}, b = {}) {
   };
 }
 
+/* Sandbox — Mad Science creations are a union by id. If the same id
+   exists on both sides (someone edited the same entry on two devices)
+   the later createdAt wins. Each device's brand-new entries survive. */
+function mergeSandbox(a = [], b = []) {
+  const map = new Map();
+  for (const item of [...(a || []), ...(b || [])]) {
+    if (!item || !item.id) continue;
+    const existing = map.get(item.id);
+    if (
+      !existing ||
+      (item.createdAt || "") > (existing.createdAt || "")
+    ) {
+      map.set(item.id, item);
+    }
+  }
+  return [...map.values()];
+}
+
 /* Buddy — keep the longest streak, the most recent activity, and the
    most stabilizers earned (capped at 2 anyway by the client). */
 function mergeBuddy(a = {}, b = {}) {
@@ -91,6 +109,7 @@ export function mergeProgress(stored = {}, incoming = {}) {
     forbiddenBreached: !!(s.forbiddenBreached || i.forbiddenBreached),
     // ditto the sunlight stamp — you really did go outside, on either device
     vitaminDActivated: !!(s.vitaminDActivated || i.vitaminDActivated),
+    sandbox: mergeSandbox(s.sandbox, i.sandbox),
     // preferences: the device that just pushed wins
     lang: i.lang || s.lang || "en",
     muted: typeof i.muted === "boolean" ? i.muted : !!s.muted,

@@ -1,5 +1,6 @@
 import { ATOM_BRANCHES } from "../../data/gamedata.js";
 import { moleculesWithAtom } from "../../game/content.js";
+import { useCatalog } from "../../context/CatalogContext.jsx";
 import { useGame } from "../../context/GameContext.jsx";
 
 /* "Choose Your Path" — crossing a discovery milestone earns one pick;
@@ -7,6 +8,7 @@ import { useGame } from "../../context/GameContext.jsx";
    A deliberate, un-dismissable choice: no overlay click, no Escape. */
 export default function ChoosePathModal() {
   const { pathModalOpen, lockedAtomList, pickAtomFromPath, t, L, atomName } = useGame();
+  const { molecules } = useCatalog();
   if (!pathModalOpen) return null;
 
   const locked = lockedAtomList();
@@ -42,7 +44,7 @@ export default function ChoosePathModal() {
                 <span className="path-name">{atomName(a.symbol)}</span>
                 <span className="path-branch">{t("atomOpensBranch", branch)}</span>
                 <span className="path-count">
-                  {t("atomFeaturedIn", moleculesWithAtom(a.symbol))}
+                  {t("atomFeaturedIn", moleculesWithAtom(a.symbol, molecules))}
                 </span>
                 <span className="path-cta">{t("choosePathPick")}</span>
               </button>

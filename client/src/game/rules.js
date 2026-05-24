@@ -1,11 +1,12 @@
 /* ============================================================
    Chemistry rules — pure helpers for the combine engine and the
-   structure-image URLs. No React, no state: just functions.
+   structure-image URLs. No React, no state, no module-level
+   bindings to the catalog — every consumer passes its own atoms
+   list (the live one from useCatalog).
    ============================================================ */
 
-import { ATOMS } from "../data/gamedata.js";
-
-export const atomBySymbol = (sym) => ATOMS.find((a) => a.symbol === sym);
+export const atomBySymbol = (atoms, sym) =>
+  (atoms || []).find((a) => a.symbol === sym);
 
 // Count symbols in an array -> { H: 2, O: 1 }
 export function countAtoms(symbols) {

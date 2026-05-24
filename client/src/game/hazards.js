@@ -3,12 +3,12 @@
    tag layer. Every tagged molecule carries one or more hazard ids;
    players hunt to complete each set Pokémon-type-style.
 
-   Tags are kept here in a side-table rather than baked into each
-   molecule entry so the chemistry data stays clean and a single
-   audit covers every safety call.
+   With the catalog now coming from MongoDB, hazard tags travel
+   inside each molecule document as `m.hazards`. The bundled
+   side-table below is the seed for that DB, kept here as the
+   single source of truth for the seeder script and the offline
+   fallback the CatalogProvider uses before the API responds.
    ============================================================ */
-
-import { MOLECULES } from "../data/gamedata.js";
 
 export const HAZARDS = [
   { id: "explosive", icon: "💥", en: "Explosive", fr: "Explosif" },
@@ -19,9 +19,8 @@ export const HAZARDS = [
 ];
 
 /* Hazard tags by molecule id. Vitamins, glucose, salt, etc. carry no
-   tags (they're inert at room temperature in normal use). The lists
-   reflect real safety-data-sheet categories: a chemistry teacher could
-   read this and recognise the choices. */
+   tags. Lists reflect real safety-data-sheet categories. Seeder
+   pulls from this map; runtime reads m.hazards on each (fat) molecule. */
 export const MOL_HAZARDS = {
   /* ----- real chemistry ----- */
   mol_004: ["flammable"],                          // Methane
@@ -61,12 +60,14 @@ export const MOL_HAZARDS = {
 };
 
 export const hazardById = (id) => HAZARDS.find((h) => h.id === id);
-export const hazardsOf = (m) => MOL_HAZARDS[m.id] || [];
+// Now reads directly from the (fat) molecule document.
+export const hazardsOf = (m) => (m && Array.isArray(m.hazards) ? m.hazards : []);
 
 /* Roll up X / Y progress per hazard for the Quests collection panel. */
-export function hazardStats(discoveries) {
+export function hazardStats(discoveries, molecules) {
+  const mols = molecules || [];
   return HAZARDS.map((h) => {
-    const all = MOLECULES.filter((m) => hazardsOf(m).includes(h.id));
+    const all = mols.filter((m) => hazardsOf(m).includes(h.id));
     const found = all.filter((m) => discoveries[m.id]).length;
     return { ...h, total: all.length, found };
   });

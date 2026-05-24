@@ -1,10 +1,12 @@
 import { useState } from "react";
 import { atomBySymbol } from "../../game/rules.js";
+import { useCatalog } from "../../context/CatalogContext.jsx";
 import { useGame } from "../../context/GameContext.jsx";
 
 /* The workbench — atoms dropped or clicked in. Tap an atom to remove it. */
 export default function Workbench({ workbench, onRemove, onDropAtom }) {
   const { t } = useGame();
+  const { atoms } = useCatalog();
   const [dragOver, setDragOver] = useState(false);
 
   return (
@@ -26,7 +28,7 @@ export default function Workbench({ workbench, onRemove, onDropAtom }) {
         <p className="workbench-empty">{t("workbenchEmpty")}</p>
       ) : (
         workbench.map((sym, i) => {
-          const atom = atomBySymbol(sym);
+          const atom = atomBySymbol(atoms, sym) || { color: "#3a4150", text: "#fff" };
           return (
             <div
               key={i}

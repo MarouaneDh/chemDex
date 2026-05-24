@@ -5,9 +5,10 @@
 
    This module is pure: state-in, state-out + loot description. The
    UI and side effects live in the Capsule component and GameContext.
+   The molecule list flows in via opts so the helper stays catalog-
+   agnostic and works against either the bundled or API catalog.
    ============================================================ */
 
-import { MOLECULES } from "../data/gamedata.js";
 import { TIER_UNLOCK } from "./progression.js";
 
 const REGEN_MS = 12 * 60 * 60 * 1000; // 12 hours per capsule
@@ -64,13 +65,15 @@ export function rollCapsuleLoot({
   discoveries,
   unlockedAtoms,
   stabilizers,
+  molecules,
   rng = Math.random,
 }) {
+  const mols = molecules || [];
   const count = Object.keys(discoveries || {}).length;
   const tierOk = (t) => count >= (TIER_UNLOCK[t] || 0);
   const buildable = (m) => Object.keys(m.atoms).every((s) => unlockedAtoms.includes(s));
   // myths + forbidden are stumble-upon / breach discoveries — never hinted
-  const hintTarget = MOLECULES.find(
+  const hintTarget = mols.find(
     (m) =>
       m.category !== "myth" &&
       m.category !== "forbidden" &&

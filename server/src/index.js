@@ -4,6 +4,7 @@ import dotenv from "dotenv";
 import { connectDB } from "./db.js";
 import authRoutes from "./routes/auth.js";
 import progressRoutes from "./routes/progress.js";
+import catalogRoutes from "./routes/catalog.js";
 
 dotenv.config();
 
@@ -25,6 +26,8 @@ app.get("/api/health", (req, res) => {
 // Accounts (Phase 3) and cloud-sync of game progress (Phase 4).
 app.use("/api/auth", authRoutes);
 app.use("/api/progress", progressRoutes);
+// Reference catalog — atoms + molecules. Public; same data for everyone.
+app.use("/api/catalog", catalogRoutes);
 
 const PORT = process.env.PORT || 4000;
 

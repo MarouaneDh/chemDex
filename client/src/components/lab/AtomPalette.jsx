@@ -1,14 +1,15 @@
-import { ATOMS } from "../../data/gamedata.js";
+import { useCatalog } from "../../context/CatalogContext.jsx";
 import { useGame } from "../../context/GameContext.jsx";
 
 /* The atom palette. Locked atoms (the Atom Tech Tree) stay visible but
    greyed with a lock — the tease is the point — and can't be dragged. */
 export default function AtomPalette({ onAdd, onLockedClick }) {
+  const { atoms } = useCatalog();
   const { t, atomName, isAtomUnlocked } = useGame();
 
   return (
     <div id="palette" className="palette">
-      {ATOMS.map((atom) => {
+      {atoms.map((atom) => {
         const name = atomName(atom.symbol);
 
         if (!isAtomUnlocked(atom.symbol)) {

@@ -1,6 +1,7 @@
-import { RELATED, MOLECULES } from "../data/gamedata.js";
+import { RELATED } from "../data/gamedata.js";
 import { TIER_UNLOCK } from "../game/progression.js";
 import { CLUES } from "../game/clues.js";
+import { useCatalog } from "../context/CatalogContext.jsx";
 import { useGame } from "../context/GameContext.jsx";
 import Formula from "./Formula.jsx";
 import StructureImg from "./StructureImg.jsx";
@@ -81,8 +82,9 @@ function RelatedChip({ r }) {
 /* The "Related discoveries" row at the bottom of the molecule modal. */
 export default function RelatedSection({ m }) {
   const { t } = useGame();
+  const { molecules } = useCatalog();
   const ids = RELATED[m.id] || [];
-  const neighbors = ids.map((id) => MOLECULES.find((x) => x.id === id)).filter(Boolean);
+  const neighbors = ids.map((id) => molecules.find((x) => x.id === id)).filter(Boolean);
   if (neighbors.length === 0) return null;
 
   return (

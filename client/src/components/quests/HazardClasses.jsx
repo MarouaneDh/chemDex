@@ -1,4 +1,5 @@
 import { hazardStats } from "../../game/hazards.js";
+import { useCatalog } from "../../context/CatalogContext.jsx";
 import { useGame } from "../../context/GameContext.jsx";
 
 /* The Hazard Classes panel — brainstorm #10. Five collectible safety
@@ -6,7 +7,8 @@ import { useGame } from "../../context/GameContext.jsx";
    Dex filtered by that hazard. A complete set glows. */
 export default function HazardClasses() {
   const { t, L, discoveries, setActiveTab, setDexFilter } = useGame();
-  const stats = hazardStats(discoveries);
+  const { molecules } = useCatalog();
+  const stats = hazardStats(discoveries, molecules);
 
   const openWing = (id) => {
     setDexFilter("hazard:" + id);

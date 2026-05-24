@@ -1,6 +1,6 @@
-import { MOLECULES } from "../../data/gamedata.js";
 import { LEVELS, currentLevelIndex } from "../../game/progression.js";
 import { BADGES, MISSIONS, buildStats } from "../../game/content.js";
+import { useCatalog } from "../../context/CatalogContext.jsx";
 import { useGame } from "../../context/GameContext.jsx";
 import Buddy from "./Buddy.jsx";
 import HazardClasses from "./HazardClasses.jsx";
@@ -9,8 +9,9 @@ import HazardClasses from "./HazardClasses.jsx";
 export default function Quests() {
   const { t, L, discoveries, totalXP, earnedBadges, claimedMissions, unlockedAtoms } =
     useGame();
+  const { atoms, molecules } = useCatalog();
 
-  const stats = buildStats(discoveries, unlockedAtoms);
+  const stats = buildStats({ discoveries, unlockedAtoms, molecules, atoms });
   const idx = currentLevelIndex(totalXP);
   const level = LEVELS[idx];
   const next = LEVELS[idx + 1];
@@ -38,7 +39,7 @@ export default function Quests() {
         <div className="profile-stats">
           <div>
             <strong>
-              {stats.count}/{MOLECULES.length}
+              {stats.count}/{molecules.length}
             </strong>
             <span>{t("discovered")}</span>
           </div>

@@ -1,15 +1,16 @@
-import { MOLECULES } from "../../data/gamedata.js";
 import { CLUES } from "../../game/clues.js";
 import { atomRecipe } from "../../game/content.js";
+import { useCatalog } from "../../context/CatalogContext.jsx";
 import { useGame } from "../../context/GameContext.jsx";
 
 /* The daily-puzzle banner at the top of the Lab. One riddle per day;
    solving it in the Workbench is detected by the discovery flow. */
 export default function DailyPuzzle() {
   const { t, L, molField, dailyState, useDailyHint } = useGame();
+  const { molecules } = useCatalog();
 
   const m = dailyState.moleculeId
-    ? MOLECULES.find((x) => x.id === dailyState.moleculeId)
+    ? molecules.find((x) => x.id === dailyState.moleculeId)
     : null;
   const solved = !!dailyState.solvedAt;
 
