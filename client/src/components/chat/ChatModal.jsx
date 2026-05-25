@@ -4,6 +4,7 @@ import { useAuth } from "../../context/AuthContext.jsx";
 import { useFriends } from "../../context/FriendsContext.jsx";
 import { useGame } from "../../context/GameContext.jsx";
 import Formula from "../Formula.jsx";
+import Avatar from "../Avatar.jsx";
 
 /* Quick-reaction palette — common kid-friendly hits. */
 const QUICK_REACTS = ["👍", "❤️", "😂", "🤯", "🔥", "🎉"];
@@ -22,11 +23,13 @@ function MessageBubble({ m, withUser, onReact, onOpenCard }) {
   const [pickerOpen, setPickerOpen] = useState(false);
 
   const senderName = m.mine ? user?.displayName : withUser?.displayName;
+  const senderAvatar = m.mine ? user?.avatar : withUser?.avatar;
   const reactions = m.reactions || {};
 
   return (
     <div className={"chat-msg" + (m.mine ? " mine" : "")}>
       <div className="chat-msg-row">
+        <Avatar src={senderAvatar} size={24} className="chat-msg-avatar" />
         <div className={"chat-bubble" + (m.kind === "card" ? " card" : "")}>
           {m.kind === "text" ? (
             <span className="chat-msg-text">{m.text}</span>
@@ -162,7 +165,7 @@ export default function ChatModal() {
       <div className="modal chat-modal">
         <header className="chat-header">
           <div className="chat-header-info">
-            <span className="chat-header-avatar">🧑‍🔬</span>
+            <Avatar src={withUser?.avatar} size={36} className="chat-header-avatar" />
             <span className="chat-header-name">{withUser?.displayName}</span>
             <code className="chat-header-id">{withUser?.friendId}</code>
           </div>

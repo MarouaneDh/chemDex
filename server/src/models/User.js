@@ -58,6 +58,11 @@ const userSchema = new mongoose.Schema(
     // promote via `npm --prefix server run promote -- <email>` (server-side only)
     role: { type: String, enum: ["user", "admin"], default: "user" },
 
+    // Profile picture as a data URL (data:image/jpeg;base64,...).
+    // Client-resized to 256x256 JPEG before upload (~30-50KB typical).
+    // Stored inline so friend payloads can include it without a join.
+    avatar: { type: String, default: "" },
+
     // social — shareable code + friend graph + invites + inbox
     friendId: { type: String, unique: true, sparse: true, index: true },
     friends: {
@@ -104,6 +109,7 @@ userSchema.methods.toSafeJSON = function () {
     email: this.email,
     displayName: this.displayName,
     role: this.role || "user",
+    avatar: this.avatar || "",
     friendId: this.friendId,
     friendsCount: this.friends?.length || 0,
     incomingInvitesCount: this.incomingInvites?.length || 0,

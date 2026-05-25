@@ -3,6 +3,7 @@ import { useAuth } from "../../context/AuthContext.jsx";
 import { useFriends } from "../../context/FriendsContext.jsx";
 import { useGame } from "../../context/GameContext.jsx";
 import AddFriendDialog from "./AddFriendDialog.jsx";
+import Avatar from "../Avatar.jsx";
 
 const SYNC_LABEL = {
   syncing: "syncSyncing",
@@ -15,9 +16,13 @@ const SYNC_LABEL = {
    logged in it shows the account and cloud-sync status. Rendered at the
    app root (see App.jsx) so its fixed overlay covers the whole viewport. */
 export default function AuthModal() {
-  const { t, syncStatus, authOpen: open, closeAuth: onClose } = useGame();
-  const { isAuthed, user, register, login, logout } = useAuth();
+  const {
+    t, syncStatus, authOpen: open, closeAuth: onClose,
+    lang, setLang, muted, toggleMute, setActiveTab,
+  } = useGame();
+  const { isAuthed, isAdmin, user, register, login, logout, uploadAvatar } = useAuth();
   const friends = useFriends();
+  const [avatarError, setAvatarError] = useState("");
 
   const [mode, setMode] = useState("login"); // "login" | "register"
   const [form, setForm] = useState({ email: "", password: "", displayName: "" });
@@ -66,9 +71,24 @@ export default function AuthModal() {
         {isAuthed ? (
           /* ---- signed in: account + friends + sync status ---- */
           <div className="auth-account">
-            <div className="auth-avatar">🧑‍🔬</div>
-            <h2>{t("account")}</h2>
-            <p className="auth-name">{t("accountSignedIn", user.displayName)}</p>
+            <Avatar
+              src={user.avatar}
+              size={80}
+              editable
+              className="account-avatar-hero"
+              onUpload={async (dataURL) => {
+                setAvatarError("");
+                try {
+                  await uploadAvatar(dataURL);
+                } catch (err) {
+                  setAvatarError(err.message || "Upload failed");
+                  throw err;
+                }
+              }}
+              onError={(err) => setAvatarError(err.message)}
+            />
+            {avatarError && <p className="auth-error">{avatarError}</p>}
+            <p className="auth-name">{user.displayName}</p>
             <p className="auth-email">{user.email}</p>
 
             {/* My friend ID — shareable */}
@@ -199,7 +219,7 @@ export default function AuthModal() {
                             }
                           }}
                         >
-                          <span className="chat-row-avatar">🧑‍🔬</span>
+                          <Avatar src={c.withUser.avatar} size={36} className="chat-row-avatar" />
                           <span className="chat-row-text">
                             <span className="chat-row-line1">
                               <strong>{c.withUser.displayName}</strong>
@@ -282,6 +302,61 @@ export default function AuthModal() {
             </div>
 
             {actionError && <p className="auth-error">{actionError}</p>}
+
+            {/* Settings — lang + sound + (if admin) admin shortcut.
+                Brainstorm #100 / #101 — these used to live in the TopBar
+                buffet; they belong here so the bar can fit one row on
+                phones. */}
+            <div className="friends-section">
+              <div className="friends-section-title">{t("settingsTitle")}</div>
+
+              <div className="settings-row">
+                <div>
+                  <div className="settings-label">{t("settingsLanguage")}</div>
+                </div>
+                <div className="lang-switch">
+                  <button
+                    className={"lang" + (lang === "en" ? " active" : "")}
+                    onClick={() => setLang("en")}
+                  >
+                    EN
+                  </button>
+                  <button
+                    className={"lang" + (lang === "fr" ? " active" : "")}
+                    onClick={() => setLang("fr")}
+                  >
+                    FR
+                  </button>
+                </div>
+              </div>
+
+              <div className="settings-row">
+                <div>
+                  <div className="settings-label">{t("settingsSound")}</div>
+                  <div className="settings-hint">{t("settingsSoundHint")}</div>
+                </div>
+                <button
+                  type="button"
+                  role="switch"
+                  aria-checked={!muted}
+                  className={"settings-toggle" + (!muted ? " is-on" : "")}
+                  onClick={toggleMute}
+                  title={muted ? t("soundOn") : t("soundOff")}
+                />
+              </div>
+
+              {isAdmin && (
+                <button
+                  className="btn settings-admin-btn"
+                  onClick={() => {
+                    setActiveTab("admin");
+                    onClose();
+                  }}
+                >
+                  {t("settingsOpenAdmin")}
+                </button>
+              )}
+            </div>
 
             <div className="sync-line">
               <span className={"sync-dot sync-" + syncStatus} />

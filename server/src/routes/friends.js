@@ -91,8 +91,17 @@ router.use(requireAuth);
 
 /* ---------- helpers ---------- */
 
+// avatar travels with every friend payload so chat rows / brag cards
+// can show the right face without a second round-trip per user
 const publicFriend = (u) =>
-  u ? { id: u._id.toString(), displayName: u.displayName, friendId: u.friendId } : null;
+  u
+    ? {
+        id: u._id.toString(),
+        displayName: u.displayName,
+        friendId: u.friendId,
+        avatar: u.avatar || "",
+      }
+    : null;
 
 const idEq = (a, b) => a?.toString() === b?.toString();
 

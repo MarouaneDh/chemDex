@@ -1,43 +1,70 @@
+import { useEffect, useRef, useState } from "react";
 import { LEVELS, currentLevelIndex } from "../game/progression.js";
 import { SFX } from "../game/sfx.js";
-import { useCatalog } from "../context/CatalogContext.jsx";
 import { useGame } from "../context/GameContext.jsx";
 import { useAuth } from "../context/AuthContext.jsx";
 import { useFriends } from "../context/FriendsContext.jsx";
 import BrandLogo from "./BrandLogo.jsx";
+import Avatar from "./Avatar.jsx";
 
+/* Slim TopBar.
+   - Always-on "found/total" progress bar is gone; Quests has the full view.
+   - EN/FR switch, sound toggle and Admin tab moved into the account modal.
+   - Level chip merged into the account button: avatar + name + L# · rank.
+   - Mobile layout: brand on the left and account on the right share row 1,
+     with the tabs row underneath (CSS grid template-areas — see styles.css).
+   - The bar hides on scroll-down (past 60px) and reveals on scroll-up.
+*/
 const TABS = [
   { id: "lab", i18n: "tabLab" },
   { id: "sandbox", i18n: "tabSandbox" },
   { id: "dex", i18n: "tabDex" },
   { id: "quests", i18n: "tabQuests" },
 ];
-const ADMIN_TAB = { id: "admin", i18n: "tabAdmin" };
 
 export default function TopBar() {
-  const {
-    t, L, lang, setLang, muted, toggleMute,
-    discoveries, totalXP, activeTab, setActiveTab, syncStatus, openAuth,
-  } = useGame();
-  const { isAuthed, isAdmin, user } = useAuth();
+  const { t, L, totalXP, activeTab, setActiveTab, syncStatus, openAuth } = useGame();
+  const { isAuthed, user } = useAuth();
   const { totalUnread, incomingInvites } = useFriends();
-  const visibleTabs = isAdmin ? [...TABS, ADMIN_TAB] : TABS;
-  // anything that needs the player's attention — unread chat messages
-  // plus pending friend invitations — surfaces as one red badge
   const badge = (totalUnread || 0) + (incomingInvites.length || 0);
-  const { molecules } = useCatalog();
 
-  const found = molecules.filter((m) => discoveries[m.id]).length;
-  const total = molecules.length;
   const lvlIdx = currentLevelIndex(totalXP);
+  const rank = L(LEVELS[lvlIdx]);
 
   const go = (id) => {
     SFX.click();
     setActiveTab(id);
   };
 
+  // Autohide on scroll-down, reveal on scroll-up (brainstorm #38).
+  const [hidden, setHidden] = useState(false);
+  const lastY = useRef(0);
+  const rafId = useRef(null);
+  useEffect(() => {
+    const onScroll = () => {
+      if (rafId.current) return;
+      rafId.current = requestAnimationFrame(() => {
+        const y = window.scrollY;
+        if (y < 60) {
+          setHidden(false);
+        } else if (y > lastY.current + 4) {
+          setHidden(true);
+        } else if (y < lastY.current - 4) {
+          setHidden(false);
+        }
+        lastY.current = y;
+        rafId.current = null;
+      });
+    };
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      if (rafId.current) cancelAnimationFrame(rafId.current);
+    };
+  }, []);
+
   return (
-    <header className="topbar">
+    <header className={"topbar" + (hidden ? " topbar--hidden" : "")}>
       <div className="brand">
         <span className="logo">
           <BrandLogo size={28} title="Chemdex" />
@@ -51,7 +78,7 @@ export default function TopBar() {
       </div>
 
       <nav className="tabs">
-        {visibleTabs.map((tab) => (
+        {TABS.map((tab) => (
           <button
             key={tab.id}
             className={"tab" + (activeTab === tab.id ? " active" : "")}
@@ -62,20 +89,6 @@ export default function TopBar() {
         ))}
       </nav>
 
-      <button className="level-chip" onClick={() => go("quests")} title="Level">
-        <span className="lvl-num">{lvlIdx + 1}</span>
-        {L(LEVELS[lvlIdx])}
-      </button>
-
-      <div className="progress">
-        <span>
-          {found} / {total}
-        </span>
-        <div className="progress-bar">
-          <div id="progressFill" style={{ width: (found / total) * 100 + "%" }} />
-        </div>
-      </div>
-
       <button
         className="account-btn"
         onClick={() => {
@@ -84,9 +97,22 @@ export default function TopBar() {
         }}
         title={t("account")}
       >
-        <span className="account-icon">👤</span>
-        <span className="account-label">
-          {isAuthed ? user.displayName : t("signIn")}
+        <Avatar
+          src={user?.avatar}
+          size={36}
+          className="account-btn-avatar"
+          fallback="👤"
+        />
+        <span className="account-btn-text">
+          <span className="account-btn-name">
+            {isAuthed ? user.displayName : t("signIn")}
+          </span>
+          {isAuthed && (
+            <span className="account-btn-meta">
+              <span className="account-btn-lvl">L{lvlIdx + 1}</span>
+              <span className="account-btn-rank">{rank}</span>
+            </span>
+          )}
         </span>
         {isAuthed && <span className={"sync-dot sync-" + syncStatus} />}
         {isAuthed && badge > 0 && (
@@ -98,25 +124,6 @@ export default function TopBar() {
           </span>
         )}
       </button>
-
-      <button className="icon-btn" onClick={toggleMute} title="Sound">
-        {muted ? "🔇" : "🔊"}
-      </button>
-
-      <div className="lang-switch">
-        <button
-          className={"lang" + (lang === "en" ? " active" : "")}
-          onClick={() => setLang("en")}
-        >
-          EN
-        </button>
-        <button
-          className={"lang" + (lang === "fr" ? " active" : "")}
-          onClick={() => setLang("fr")}
-        >
-          FR
-        </button>
-      </div>
     </header>
   );
 }

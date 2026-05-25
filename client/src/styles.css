@@ -97,16 +97,38 @@ body {
   position: sticky;
   top: 0;
   z-index: 30;
-  display: flex;
+  /* Two-row grid at every viewport — guarantees the account button
+     sits on the same row as the brand and is pinned to the right
+     edge, with the tab nav living on the row below.
+       row 1: [brand]──────────[account]
+       row 2: [..........tabs..........]
+     On wider screens the middle column absorbs the extra space so
+     the brand stays left and the account stays right (space-between).
+     The mobile breakpoint below squeezes paddings and stretches tabs. */
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  grid-template-areas:
+    "brand   .       account"
+    "tabs    tabs    tabs";
   align-items: center;
-  gap: 28px;
+  column-gap: 28px;
+  row-gap: 10px;
   padding: 14px 26px;
   background: rgba(11, 14, 20, 0.72);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   border-bottom: 1px solid var(--border);
-  flex-wrap: wrap;
+  /* autohide on scroll-down (brainstorm #38) — transform-only so it's
+     GPU-friendly and never affects layout below it */
+  transition: transform 240ms var(--ease-out);
+  will-change: transform;
 }
+.topbar.topbar--hidden {
+  transform: translateY(-100%);
+}
+.topbar > .brand       { grid-area: brand; min-width: 0; }
+.topbar > .account-btn { grid-area: account; justify-self: end; }
+.topbar > .tabs        { grid-area: tabs; justify-self: center; }
 
 .brand { display: flex; align-items: center; gap: 13px; }
 .logo {
@@ -935,20 +957,33 @@ main { padding: 30px 26px 60px; max-width: 1180px; margin: 0 auto; }
    ============================================================ */
 
 /* phones */
-@media (max-width: 600px) {
+@media (max-width: 720px) {
+  /* Mobile topbar — same grid skeleton as desktop, just tighter and
+     with the tab strip stretched to fill the row instead of centered. */
   .topbar {
-    gap: 10px 12px;
+    grid-template-columns: 1fr auto;
+    grid-template-areas:
+      "brand   account"
+      "tabs    tabs";
+    column-gap: 12px;
+    row-gap: 10px;
     padding: 11px 14px;
   }
-  .brand { flex: 1 1 100%; }          /* brand on its own row */
-  .logo { width: 40px; height: 40px; font-size: 21px; }
+  .topbar > .tabs { justify-self: stretch; }
+  .topbar > .tabs .tab { flex: 1 1 0; text-align: center; }
+
+  .logo { width: 40px; height: 40px; }
   .brand-text h1 { font-size: 19px; }
   .tagline { font-size: 9px; letter-spacing: 1px; }
-  .tabs { flex: 0 0 auto; }
   .tab { padding: 7px 13px; font-size: 12.5px; }
-  .progress { gap: 8px; }
-  .progress-bar { width: 84px; }
-  .lang-switch { flex: 0 0 auto; }
+
+  /* the account button stays compact on tight viewports */
+  .account-btn { padding: 4px 10px 4px 4px; min-height: 44px; gap: 8px; }
+  .account-btn-name { max-width: 100px; font-size: 12.5px; }
+  .account-btn-rank { max-width: 70px; font-size: 10px; }
+}
+
+@media (max-width: 600px) {
 
   main { padding: 20px 14px 48px; }
   .panel { padding: 16px; border-radius: 15px; }
@@ -1144,6 +1179,71 @@ main { padding: 30px 26px 60px; max-width: 1180px; margin: 0 auto; }
 @keyframes bubble-in {
   from { opacity: 0; transform: scale(0.94) translateY(6px); transform-origin: bottom left; }
   to   { opacity: 1; transform: scale(1) translateY(0);      transform-origin: bottom left; }
+}
+
+/* Atomo — user-owned corner anchor (brainstorm #16).
+   The base .mascot rule sets a default position; these four modifiers
+   override it for whichever corner the user dragged to. Bubble
+   direction (above vs below the avatar) follows the vertical anchor;
+   horizontal alignment follows the horizontal anchor.
+   The .mascot--dragging modifier suppresses position transitions so
+   the element tracks the pointer 1:1 during a drag.                */
+.mascot {
+  transition: top 220ms var(--ease-spring),
+              left 220ms var(--ease-spring),
+              right 220ms var(--ease-spring),
+              bottom 220ms var(--ease-spring);
+  touch-action: none; /* let pointer events drive the drag, not the scroller */
+  cursor: grab;
+}
+.mascot.mascot--dragging {
+  cursor: grabbing;
+  transition: none;
+  opacity: 0.94;
+}
+
+/* The four corners */
+.mascot.mascot--bottom-left {
+  top: auto; right: auto;
+  bottom: 18px; left: 18px;
+  flex-direction: column;
+  align-items: flex-start;
+}
+.mascot.mascot--bottom-left .mascot-bubble { transform-origin: bottom left; }
+
+.mascot.mascot--bottom-right {
+  top: auto; left: auto;
+  bottom: 18px; right: 18px;
+  flex-direction: column;
+  align-items: flex-end;
+}
+.mascot.mascot--bottom-right .mascot-bubble { transform-origin: bottom right; }
+
+.mascot.mascot--top-left {
+  bottom: auto; right: auto;
+  top: 80px; left: 18px;
+  flex-direction: column-reverse;
+  align-items: flex-start;
+}
+.mascot.mascot--top-left .mascot-bubble { transform-origin: top left; }
+
+.mascot.mascot--top-right {
+  bottom: auto; left: auto;
+  top: 80px; right: 18px;
+  flex-direction: column-reverse;
+  align-items: flex-end;
+}
+.mascot.mascot--top-right .mascot-bubble { transform-origin: top right; }
+
+@media (max-width: 600px) {
+  .mascot.mascot--bottom-left,
+  .mascot.mascot--bottom-right { bottom: 14px; }
+  .mascot.mascot--bottom-left  { left: 12px; }
+  .mascot.mascot--bottom-right { right: 12px; }
+  .mascot.mascot--top-left,
+  .mascot.mascot--top-right { top: 110px; } /* clear the two-row mobile topbar */
+  .mascot.mascot--top-left  { left: 12px; }
+  .mascot.mascot--top-right { right: 12px; }
 }
 
 /* quests page */
@@ -1716,27 +1816,68 @@ main { padding: 30px 26px 60px; max-width: 1180px; margin: 0 auto; }
    ACCOUNTS & CLOUD SYNC  (Phase 4)
    ============================================================ */
 
-/* topbar account button */
+/* topbar account button — avatar + name + level/rank (level chip is gone,
+   the rank label lives here now). 44px+ tall to give the thumb a proper
+   target; the meta line stacks under the name. */
 .account-btn {
   display: flex;
   align-items: center;
-  gap: 7px;
-  padding: 0 12px;
-  height: 38px;
-  border-radius: 11px;
+  gap: 10px;
+  padding: 5px 12px 5px 5px;
+  min-height: 48px;
+  border-radius: 14px;
   border: 1px solid var(--border);
   background: var(--surface);
   color: var(--text);
   font-family: var(--font-display);
-  font-size: 13px;
   font-weight: 600;
   cursor: pointer;
   transition: border-color 160ms var(--ease-out), background 160ms var(--ease-out);
+  text-align: left;
 }
 .account-btn:hover { border-color: var(--border-hi); background: var(--surface-2); }
 .account-btn:active { transform: translateY(1px); }
-.account-icon { font-size: 15px; }
-.account-label {
+
+.account-btn-avatar {
+  /* size is set inline by the Avatar component; the bg gradient already
+     comes from .avatar, so we just keep this here for any layout-only
+     overrides per surface */
+}
+.account-btn-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+.account-btn-name {
+  font-size: 13px;
+  max-width: 140px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  line-height: 1.15;
+}
+.account-btn-meta {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.6px;
+  color: var(--muted);
+  line-height: 1;
+}
+.account-btn-lvl {
+  display: inline-block;
+  padding: 2px 6px;
+  border-radius: 6px;
+  background: linear-gradient(120deg, var(--accent), #5fe6d4);
+  color: #04231f;
+  font-weight: 700;
+  letter-spacing: 0.4px;
+}
+.account-btn-rank {
+  text-transform: uppercase;
   max-width: 120px;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -4062,3 +4203,154 @@ body.catch-shake { animation: catchShake 600ms var(--ease-out) both; }
   transition: background 120ms var(--ease-out), transform 120ms var(--ease-spring);
 }
 .bragcard-react-pick:hover { background: var(--surface); transform: scale(1.2); }
+
+/* ============================================================
+   ACCOUNT MODAL — SETTINGS SECTION
+   Houses what used to live in the TopBar: language, sound, admin.
+   Built on the existing .friends-section visual grammar so it
+   blends with the rest of the account dialog.
+   ============================================================ */
+.settings-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border);
+}
+.settings-row:last-of-type { border-bottom: none; }
+.settings-label {
+  font-family: var(--font-display);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+  text-align: left;
+  flex: 1;
+}
+.settings-hint {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--faint);
+  letter-spacing: 0.4px;
+  text-align: left;
+  margin-top: 2px;
+}
+
+/* on/off toggle for the sound setting */
+.settings-toggle {
+  position: relative;
+  width: 46px;
+  height: 26px;
+  border-radius: 99px;
+  background: var(--surface-2);
+  border: 1px solid var(--border-hi);
+  cursor: pointer;
+  transition: background-color 200ms var(--ease-out), border-color 200ms var(--ease-out);
+  flex: none;
+}
+.settings-toggle::after {
+  content: "";
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--text);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+  transition: transform 200ms var(--ease-spring), background-color 200ms var(--ease-out);
+}
+.settings-toggle.is-on {
+  background: linear-gradient(120deg, var(--accent), #5fe6d4);
+  border-color: transparent;
+}
+.settings-toggle.is-on::after {
+  transform: translateX(20px);
+  background: #04231f;
+}
+
+/* admin entry-point — tinted to match the existing admin chip feel */
+.settings-admin-btn {
+  width: 100%;
+  margin-top: 10px;
+  border-color: rgba(245, 196, 81, 0.35);
+  color: var(--role-rare);
+  background: rgba(245, 196, 81, 0.06);
+}
+.settings-admin-btn:hover {
+  border-color: var(--role-rare);
+  background: rgba(245, 196, 81, 0.12);
+}
+
+/* ============================================================
+   AVATAR — one component, many sizes.
+   Behaviour modifiers: --editable (file picker), --busy (uploading).
+   Used in: TopBar account button, account modal hero, chat rows,
+   chat header, message bubble senders.
+   ============================================================ */
+.avatar {
+  position: relative;
+  display: inline-grid;
+  place-items: center;
+  border-radius: 50%;
+  background: linear-gradient(150deg, rgba(45, 212, 191, 0.22), rgba(129, 140, 248, 0.22));
+  border: 1px solid var(--border-hi);
+  overflow: hidden;
+  flex: none;
+  /* size + emoji font-size come through inline style from the React side */
+  line-height: 1;
+  vertical-align: middle;
+  user-select: none;
+}
+.avatar-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.avatar-fallback {
+  /* font-size is set inline from `size` prop so the emoji scales with the circle */
+  filter: grayscale(0.05);
+  opacity: 0.92;
+}
+
+.avatar--editable {
+  cursor: pointer;
+  transition: transform 200ms var(--ease-spring), box-shadow 220ms var(--ease-out);
+}
+@media (hover: hover) and (pointer: fine) {
+  .avatar--editable:hover {
+    transform: scale(1.04);
+    box-shadow: 0 8px 22px -6px rgba(0, 0, 0, 0.5), 0 0 24px var(--glow);
+  }
+  .avatar--editable:hover .avatar-overlay { opacity: 1; }
+}
+.avatar--editable:active { transform: scale(0.97); }
+.avatar-overlay {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background: rgba(4, 6, 10, 0.55);
+  color: var(--text);
+  font-size: 22px;
+  opacity: 0;
+  transition: opacity 180ms var(--ease-out);
+  pointer-events: none;
+}
+.avatar--busy .avatar-overlay { opacity: 1; }
+.avatar-file {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  cursor: pointer;
+}
+.avatar-file:disabled { cursor: progress; }
+
+/* big hero variant used at the top of the account modal */
+.account-avatar-hero {
+  margin: 0 auto 6px;
+  border-width: 2px;
+}

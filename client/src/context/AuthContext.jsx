@@ -77,6 +77,18 @@ export function AuthProvider({ children }) {
     setUser(null);
   };
 
+  // Replace the avatar — server validates shape and size. Pass "" to clear.
+  // Returns the updated user, or throws.
+  const uploadAvatar = async (dataURL) => {
+    const data = await apiFetch("/auth/me/avatar", {
+      method: "PUT",
+      token,
+      body: { avatar: dataURL || "" },
+    });
+    setUser(data.user);
+    return data.user;
+  };
+
   const value = {
     token,
     user,
@@ -86,6 +98,7 @@ export function AuthProvider({ children }) {
     register,
     login,
     logout,
+    uploadAvatar,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

@@ -74,7 +74,10 @@ export function GameProvider({ children }) {
   const { atoms: catalogAtoms, molecules } = useCatalog();
 
   const [lang, setLang] = usePersistentState("chemdex.lang", "en");
-  const [muted, setMuted] = usePersistentState("chemdex.muted", false);
+  // Brainstorm #104 — SFX off by default on a fresh install. Existing
+  // players keep their stored preference; usePersistentState only uses
+  // the initial value when no localStorage entry exists.
+  const [muted, setMuted] = usePersistentState("chemdex.muted", true);
   const [discoveries, setDiscoveries] = usePersistentState("chemdex.discoveries", {});
   const [totalXP, setTotalXP] = usePersistentState("chemdex.xp", 0);
   const [earnedBadges, setEarnedBadges] = usePersistentState("chemdex.badges", []);
@@ -107,6 +110,12 @@ export function GameProvider({ children }) {
   );
   // Mad Science Sandbox — player-named fictional compounds (brainstorm #41)
   const [sandbox, setSandbox] = usePersistentState("chemdex.sandbox", []);
+  // Mascot anchor — one of "top-left" | "top-right" | "bottom-left" | "bottom-right".
+  // User drags Atomo to snap-set this; persisted so it sticks across sessions.
+  const [mascotAnchor, setMascotAnchor] = usePersistentState(
+    "chemdex.mascotAnchor",
+    "bottom-left"
+  );
 
   // which top-bar tab is showing
   const [activeTab, setActiveTab] = useState("lab");
@@ -804,6 +813,8 @@ export function GameProvider({ children }) {
     cinematic,
     dismissCinematic,
     resetProgress,
+    mascotAnchor,
+    setMascotAnchor,
   };
 
   return <GameContext.Provider value={value}>{children}</GameContext.Provider>;

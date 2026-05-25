@@ -94,4 +94,34 @@ router.get("/me", requireAuth, async (req, res) => {
   }
 });
 
+/* PUT /api/auth/me/avatar — replace the profile picture.
+
+   Accepts { avatar: "data:image/...;base64,..." } or { avatar: "" }
+   to clear. Client is expected to resize/encode to 256x256 JPEG
+   before upload — we just validate the shape and a generous size
+   ceiling so a hostile client can't push megabyte payloads. */
+const AVATAR_RE = /^data:image\/(png|jpe?g|webp);base64,[A-Za-z0-9+/=]+$/;
+const AVATAR_MAX = 250_000; // ~250KB after base64
+
+router.put("/me/avatar", requireAuth, async (req, res) => {
+  try {
+    const incoming = String(req.body.avatar || "");
+    if (incoming === "") {
+      // explicit clear
+    } else if (!AVATAR_RE.test(incoming)) {
+      return res.status(400).json({ error: "Avatar must be a data:image/* URL." });
+    } else if (incoming.length > AVATAR_MAX) {
+      return res.status(413).json({ error: "Avatar too large (max ~250KB)." });
+    }
+    const user = await User.findById(req.userId);
+    if (!user) return res.status(404).json({ error: "User not found" });
+    user.avatar = incoming;
+    await user.save();
+    res.json({ user: user.toSafeJSON() });
+  } catch (err) {
+    console.error("avatar update failed:", err);
+    res.status(500).json({ error: "Avatar update failed" });
+  }
+});
+
 export default router;
