@@ -1,0 +1,916 @@
+/* ============================================================
+   Landing — pre-auth marketing surface.
+
+   Lives outside the app shell. Inherits the molecular-lab dark
+   theme from :root (no new fonts/colours), but applies the
+   brainstorm rules with restraint:
+     · #3  one hero surface per section (no Glass Soup)
+     · #37 role-based accents — semantic, not decorative
+     · #80 single spring curve everywhere
+     · Mobile-first: stacks at <768px, 52px+ touch targets
+     · GPU-only motion (transform + opacity)
+   All CSS is scoped under .landing so it cannot leak into the app.
+   ============================================================ */
+
+.landing {
+  position: fixed;
+  inset: 0;
+  /* sits below modal-overlay (z-50) so the AuthModal can layer above
+     this surface when "Sign in" is tapped */
+  z-index: 10;
+  background:
+    radial-gradient(900px 600px at 8% -10%, rgba(45, 212, 191, 0.16), transparent 60%),
+    radial-gradient(720px 540px at 100% 4%, rgba(129, 140, 248, 0.14), transparent 60%),
+    radial-gradient(1000px 800px at 50% 120%, rgba(45, 212, 191, 0.08), transparent 60%),
+    var(--bg-0);
+  color: var(--text);
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+  /* honour iOS notch */
+  padding-top: env(safe-area-inset-top);
+  padding-bottom: env(safe-area-inset-bottom);
+
+  /* Single source of truth for horizontal gutters. Grows from 18px on
+     small phones to 48px on tablets/small laptops where the content
+     box hits the viewport edge before max-width kicks in. Above
+     ~1380px the page's own margin: 0 auto centers the wrap and the
+     viewport's natural gutter takes over. */
+  --lp-gutter: clamp(18px, 4.5vw, 48px);
+}
+
+/* one shared container — keeps margins predictable across sections.
+   Uses horizontal-axis longhand only so vertical-padding rules like
+   .lp-section / .lp-hero (declared later) don't wipe the gutter via
+   the `padding` shorthand. */
+.landing .lp-wrap {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding-left: var(--lp-gutter);
+  padding-right: var(--lp-gutter);
+}
+
+/* ============================================================
+   TOP STRIP — minimal nav with brand + sign-in
+   ============================================================ */
+.landing .lp-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px var(--lp-gutter);
+  max-width: 1180px;
+  margin: 0 auto;
+}
+.landing .lp-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.landing .lp-brand-name {
+  font-family: var(--font-display);
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: -0.2px;
+}
+.landing .lp-brand-name span {
+  background: linear-gradient(120deg, var(--accent), var(--accent-2));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.landing .lp-nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* ============================================================
+   HERO — asymmetric: copy left, atomic orbit right.
+   Drops to a single column on phones, orbit slides under copy.
+   ============================================================ */
+.landing .lp-hero {
+  min-height: calc(100dvh - 76px);
+  display: grid;
+  grid-template-columns: 1.05fr 0.95fr;
+  align-items: center;
+  gap: 48px;
+  /* longhand only — must not reset horizontal padding that
+     `.lp-wrap` is providing on the same element */
+  padding-top: 32px;
+  padding-bottom: 60px;
+}
+.landing .lp-hero-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+  max-width: 560px;
+}
+.landing .lp-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  align-self: flex-start;
+  padding: 6px 12px;
+  border-radius: 99px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 1.4px;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.landing .lp-eyebrow::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 99px;
+  background: var(--role-live);
+  box-shadow: 0 0 10px var(--role-live-glow);
+  animation: lp-pulse 1.8s ease-in-out infinite;
+}
+@keyframes lp-pulse {
+  0%, 100% { opacity: 0.4; transform: scale(0.85); }
+  50%      { opacity: 1;   transform: scale(1.1); }
+}
+
+.landing .lp-headline {
+  font-family: var(--font-display);
+  font-size: clamp(2.4rem, 6vw, 4.2rem);
+  font-weight: 700;
+  line-height: 1.02;
+  letter-spacing: -0.025em;
+}
+.landing .lp-headline .accent {
+  background: linear-gradient(120deg, var(--accent), var(--accent-2));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.landing .lp-subhead {
+  font-size: clamp(1rem, 1.5vw, 1.125rem);
+  line-height: 1.55;
+  color: var(--muted);
+  max-width: var(--max-text);
+}
+.landing .lp-cta-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 4px;
+}
+.landing .lp-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 18px;
+  margin-top: 8px;
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  color: var(--faint);
+  letter-spacing: 0.4px;
+}
+.landing .lp-meta span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.landing .lp-meta span::before {
+  content: "";
+  width: 4px; height: 4px;
+  border-radius: 99px;
+  background: var(--accent);
+  opacity: 0.7;
+}
+
+/* ============================================================
+   ATOM ORBIT — pure CSS, GPU-only (transform + opacity).
+   Three rings, each rotating at its own slow tempo.
+   Disabled under prefers-reduced-motion (mark stays, motion stops).
+   ============================================================ */
+.landing .lp-orbit {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1;
+  max-width: 460px;
+  margin: 0 auto;
+}
+.landing .lp-orbit::before {
+  /* soft glow halo behind the orbit */
+  content: "";
+  position: absolute;
+  inset: 18%;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(45, 212, 191, 0.18), transparent 65%);
+  filter: blur(20px);
+  z-index: 0;
+}
+.landing .lp-orbit-nucleus {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 96px;
+  height: 96px;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 32% 30%, #aef5e6, #2dd4bf 50%, #0f8a7d 100%);
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.12) inset,
+    0 0 40px var(--role-live-glow);
+  z-index: 2;
+}
+.landing .lp-orbit-nucleus::after {
+  content: "";
+  position: absolute;
+  inset: 14%;
+  border-radius: 50%;
+  background: radial-gradient(circle at 32% 28%, rgba(255,255,255,0.4), transparent 50%);
+}
+
+.landing .lp-orbit-ring {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  /* will-change limited to the actively animating prop */
+  transform-origin: center;
+  will-change: transform;
+}
+.landing .lp-orbit-ring--1 {
+  width: 60%; height: 60%;
+  margin-top: -30%; margin-left: -30%;
+  animation: lp-orbit 14s linear infinite;
+}
+.landing .lp-orbit-ring--2 {
+  width: 82%; height: 82%;
+  margin-top: -41%; margin-left: -41%;
+  animation: lp-orbit 22s linear infinite reverse;
+  border-color: rgba(129, 140, 248, 0.15);
+}
+.landing .lp-orbit-ring--3 {
+  width: 100%; height: 100%;
+  margin-top: -50%; margin-left: -50%;
+  animation: lp-orbit 34s linear infinite;
+  border-style: dashed;
+  border-color: rgba(255, 255, 255, 0.06);
+}
+@keyframes lp-orbit {
+  to { transform: rotate(360deg); }
+}
+
+.landing .lp-orbit-atom {
+  position: absolute;
+  border-radius: 50%;
+  box-shadow: 0 0 12px currentColor;
+  /* counter-rotate so the atom itself doesn't tumble */
+  animation: lp-orbit-cancel 14s linear infinite;
+}
+.landing .lp-orbit-ring--2 .lp-orbit-atom { animation-duration: 22s; animation-direction: reverse; }
+.landing .lp-orbit-ring--3 .lp-orbit-atom { animation-duration: 34s; }
+
+@keyframes lp-orbit-cancel {
+  to { transform: rotate(-360deg); }
+}
+
+.landing .lp-atom-live      { color: var(--role-live);      background: var(--role-live);      width: 14px; height: 14px; top: -7px; left: calc(50% - 7px); }
+.landing .lp-atom-locked    { color: var(--role-locked);    background: var(--role-locked);    width: 10px; height: 10px; top: -5px; left: calc(85% - 5px); }
+.landing .lp-atom-rare      { color: var(--role-rare);      background: var(--role-rare);      width: 18px; height: 18px; top: -9px; left: calc(50% - 9px); }
+.landing .lp-atom-forbidden { color: var(--role-forbidden); background: var(--role-forbidden); width: 12px; height: 12px; top: -6px; left: calc(15% - 6px); }
+.landing .lp-atom-inert     { color: var(--role-inert);     background: var(--role-inert);     width: 8px;  height: 8px;  top: -4px; left: calc(50% - 4px); }
+
+@media (prefers-reduced-motion: reduce) {
+  .landing .lp-orbit-ring,
+  .landing .lp-orbit-atom,
+  .landing .lp-eyebrow::before {
+    animation: none !important;
+  }
+}
+
+/* ============================================================
+   SECTION RHYTHM — eyebrow + heading + body for every section
+   ============================================================ */
+.landing .lp-section {
+  /* longhand only — see comment on .lp-hero. Combined classes like
+     `lp-wrap lp-section` rely on lp-wrap for horizontal gutter. */
+  padding-top: 96px;
+  padding-bottom: 96px;
+}
+.landing .lp-section-head {
+  max-width: 720px;
+  margin: 0 auto 56px;
+  text-align: center;
+}
+.landing .lp-section-eyebrow {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--accent);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-bottom: 14px;
+}
+.landing .lp-section-title {
+  font-family: var(--font-display);
+  font-size: clamp(1.75rem, 3.4vw, 2.6rem);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+  margin-bottom: 14px;
+}
+.landing .lp-section-sub {
+  color: var(--muted);
+  font-size: 1rem;
+  line-height: 1.55;
+  max-width: var(--max-text);
+  margin: 0 auto;
+}
+
+/* ============================================================
+   HOW IT WORKS — zig-zag rows (NOT the banned 3-card row).
+   Each row alternates image/copy sides; mobile collapses cleanly.
+   ============================================================ */
+.landing .lp-rows {
+  display: flex;
+  flex-direction: column;
+  gap: 80px;
+}
+.landing .lp-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+  gap: 56px;
+}
+.landing .lp-row.lp-row--flip .lp-row-visual { order: -1; }
+.landing .lp-step {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--accent);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-bottom: 12px;
+}
+.landing .lp-row-title {
+  font-family: var(--font-display);
+  font-size: clamp(1.5rem, 2.6vw, 2rem);
+  font-weight: 700;
+  letter-spacing: -0.015em;
+  line-height: 1.15;
+  margin-bottom: 14px;
+}
+.landing .lp-row-body {
+  color: var(--muted);
+  font-size: 1rem;
+  line-height: 1.6;
+  max-width: var(--max-text);
+}
+
+.landing .lp-row-visual {
+  position: relative;
+  aspect-ratio: 5 / 4;
+  border-radius: var(--radius-hero);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  box-shadow:
+    var(--shadow-tint),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  overflow: hidden;
+  display: grid;
+  place-items: center;
+  padding: 28px;
+}
+.landing .lp-row-visual::after {
+  /* inner refraction edge — premium glass treatment, restrained */
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+/* ============================================================
+   WORLDS — bento grid. Asymmetric on desktop, stacked on phone.
+   Lab is the hero tile; Dex is wide; Sandbox is compact.
+   ============================================================ */
+.landing .lp-bento {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr;
+  grid-template-rows: auto auto;
+  gap: 18px;
+}
+.landing .lp-bento-card {
+  position: relative;
+  padding: 32px;
+  border-radius: var(--radius-hero);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  overflow: hidden;
+  min-height: 240px;
+  transition:
+    transform 320ms var(--ease-spring),
+    border-color 220ms var(--ease-out),
+    box-shadow 320ms var(--ease-out);
+}
+.landing .lp-bento-card::before {
+  /* soft tinted glow specific to each card's role colour */
+  content: "";
+  position: absolute;
+  inset: -30%;
+  border-radius: 50%;
+  background: radial-gradient(circle, var(--card-glow, var(--role-live-glow)), transparent 65%);
+  opacity: 0.5;
+  z-index: 0;
+  filter: blur(40px);
+  pointer-events: none;
+}
+.landing .lp-bento-card::after {
+  /* inner refraction edge */
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+@media (hover: hover) and (pointer: fine) {
+  .landing .lp-bento-card:hover {
+    transform: translateY(-3px);
+    border-color: var(--border-hi);
+    box-shadow: var(--shadow-tint);
+  }
+}
+.landing .lp-bento-card > * { position: relative; z-index: 1; }
+
+.landing .lp-bento-card.is-lab     { grid-column: 1; grid-row: 1 / span 2; --card-glow: var(--role-live-glow); }
+.landing .lp-bento-card.is-dex     { grid-column: 2; grid-row: 1;          --card-glow: var(--role-locked-glow); }
+.landing .lp-bento-card.is-sandbox { grid-column: 2; grid-row: 2;          --card-glow: var(--role-rare-glow); }
+
+.landing .lp-bento-tag {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 1.6px;
+  text-transform: uppercase;
+  color: var(--card-tag, var(--accent));
+  margin-bottom: 10px;
+}
+.landing .lp-bento-title {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  font-weight: 700;
+  letter-spacing: -0.015em;
+  margin-bottom: 8px;
+}
+.landing .lp-bento-body {
+  color: var(--muted);
+  font-size: 0.95rem;
+  line-height: 1.5;
+  max-width: 38ch;
+}
+.landing .lp-bento-card.is-lab     { --card-tag: var(--role-live); }
+.landing .lp-bento-card.is-dex     { --card-tag: var(--role-locked); }
+.landing .lp-bento-card.is-sandbox { --card-tag: var(--role-rare); }
+
+.landing .lp-bento-mockup {
+  margin-top: 22px;
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+/* ============================================================
+   CATEGORIES — horizontal scroll strip with role-based color.
+   Edge fade hints at scrollability. Snap stops on each pill.
+   ============================================================ */
+.landing .lp-cat-strip {
+  display: flex;
+  gap: 14px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  /* bleed beyond the wrap padding so the strip kisses the viewport edge,
+     then add it back internally so the first/last card still sits inside
+     the gutter line of the rest of the page */
+  padding: 6px var(--lp-gutter) 14px;
+  margin: 0 calc(-1 * var(--lp-gutter));
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  mask-image: linear-gradient(90deg, transparent, #000 var(--lp-gutter), #000 calc(100% - var(--lp-gutter)), transparent);
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 var(--lp-gutter), #000 calc(100% - var(--lp-gutter)), transparent);
+}
+.landing .lp-cat-strip::-webkit-scrollbar { display: none; }
+.landing .lp-cat {
+  flex: 0 0 240px;
+  scroll-snap-align: start;
+  padding: 22px;
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-top: 3px solid var(--cat-color, var(--accent));
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  transition: transform 240ms var(--ease-spring), border-color 220ms var(--ease-out);
+}
+@media (hover: hover) and (pointer: fine) {
+  .landing .lp-cat:hover { transform: translateY(-2px); border-color: var(--border-hi); border-top-color: var(--cat-color); }
+}
+.landing .lp-cat-tag {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  letter-spacing: 1.6px;
+  text-transform: uppercase;
+  color: var(--cat-color);
+}
+.landing .lp-cat-title {
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+.landing .lp-cat-body {
+  font-size: 0.875rem;
+  color: var(--muted);
+  line-height: 1.5;
+}
+.landing .lp-cat.is-vitamins  { --cat-color: var(--role-live); }
+.landing .lp-cat.is-forbidden { --cat-color: var(--role-forbidden); }
+.landing .lp-cat.is-dangerous { --cat-color: var(--role-rare); }
+.landing .lp-cat.is-myths     { --cat-color: var(--role-locked); }
+
+/* ============================================================
+   BRAG CARD SAMPLE — pure CSS mockup of what gets shared in chat
+   ============================================================ */
+.landing .lp-brag {
+  max-width: 360px;
+  margin: 0 auto;
+  padding: 24px;
+  border-radius: var(--radius-lg);
+  background: linear-gradient(160deg, rgba(45, 212, 191, 0.08), rgba(129, 140, 248, 0.08));
+  border: 1px solid var(--border-hi);
+  border-top: 3px solid var(--role-rare);
+  box-shadow: var(--shadow-tint), 0 0 60px -20px var(--role-rare-glow);
+  position: relative;
+  overflow: hidden;
+}
+.landing .lp-brag::before {
+  /* holographic sheen */
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(120deg, transparent 30%, rgba(255, 255, 255, 0.08) 50%, transparent 70%);
+  animation: lp-sheen 6s var(--ease-in-out) infinite;
+  pointer-events: none;
+}
+@keyframes lp-sheen {
+  0%, 100% { transform: translateX(-100%); }
+  50%      { transform: translateX(100%); }
+}
+.landing .lp-brag-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--muted);
+  letter-spacing: 1px;
+  margin-bottom: 18px;
+}
+.landing .lp-brag-rarity {
+  padding: 3px 10px;
+  border-radius: 99px;
+  background: var(--role-rare);
+  color: #2a1d00;
+  font-weight: 700;
+}
+.landing .lp-brag-mol {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 16px;
+}
+.landing .lp-brag-glyph {
+  width: 56px; height: 56px;
+  display: grid; place-items: center;
+  border-radius: 16px;
+  background: rgba(245, 196, 81, 0.12);
+  border: 1px solid rgba(245, 196, 81, 0.3);
+  font-family: var(--font-mono);
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--role-rare);
+}
+.landing .lp-brag-name {
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+.landing .lp-brag-formula {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: var(--muted);
+  margin-top: 2px;
+}
+.landing .lp-brag-line {
+  font-size: 13.5px;
+  color: var(--text);
+  line-height: 1.5;
+}
+.landing .lp-brag-sender {
+  margin-top: 18px;
+  padding-top: 14px;
+  border-top: 1px solid var(--border);
+  font-size: 12px;
+  color: var(--faint);
+  font-family: var(--font-mono);
+  letter-spacing: 0.4px;
+}
+
+/* ============================================================
+   FINAL CTA — full-width band, single CTA, no extra noise
+   ============================================================ */
+.landing .lp-final {
+  text-align: center;
+  padding: 96px 0;
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  background:
+    radial-gradient(700px 360px at 50% 50%, rgba(45, 212, 191, 0.14), transparent 65%);
+}
+.landing .lp-final-title {
+  font-family: var(--font-display);
+  font-size: clamp(1.8rem, 3.6vw, 2.8rem);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  margin-bottom: 14px;
+}
+.landing .lp-final-sub {
+  color: var(--muted);
+  font-size: 1rem;
+  line-height: 1.5;
+  margin: 0 auto 32px;
+  max-width: 44ch;
+}
+.landing .lp-final-cta-row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px;
+}
+
+/* ============================================================
+   FOOTER — minimal, mono caption
+   ============================================================ */
+.landing .lp-footer {
+  padding: 36px var(--lp-gutter) 48px;
+  max-width: 1180px;
+  margin: 0 auto;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+}
+.landing .lp-footer-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 14px;
+}
+.landing .lp-footer-meta {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--faint);
+  letter-spacing: 0.6px;
+}
+.landing .lp-footer-pwa {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.landing .lp-footer-pwa::before {
+  content: "";
+  width: 6px; height: 6px;
+  border-radius: 99px;
+  background: var(--accent);
+  box-shadow: 0 0 8px var(--glow);
+}
+
+/* ============================================================
+   ENTER ANIMATION — gentle fade-up on first paint.
+   IntersectionObserver toggles .is-in for scroll-driven reveals
+   (see useInView in Landing.jsx).
+   ============================================================ */
+.landing .lp-reveal {
+  opacity: 0;
+  transform: translateY(18px);
+  transition:
+    opacity 700ms var(--ease-out),
+    transform 700ms var(--ease-spring);
+}
+.landing .lp-reveal.is-in {
+  opacity: 1;
+  transform: translateY(0);
+}
+.landing .lp-reveal[data-delay="1"] { transition-delay: 80ms; }
+.landing .lp-reveal[data-delay="2"] { transition-delay: 160ms; }
+.landing .lp-reveal[data-delay="3"] { transition-delay: 240ms; }
+.landing .lp-reveal[data-delay="4"] { transition-delay: 320ms; }
+
+@media (prefers-reduced-motion: reduce) {
+  .landing .lp-reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+  .landing .lp-brag::before { animation: none; }
+}
+
+/* ============================================================
+   RESPONSIVE — phone first (single column < 768px)
+   ============================================================ */
+@media (max-width: 900px) {
+  .landing .lp-hero {
+    grid-template-columns: 1fr;
+    gap: 36px;
+    padding-top: 12px;
+    padding-bottom: 48px;
+    min-height: calc(100dvh - 76px);
+  }
+  .landing .lp-orbit { max-width: 320px; }
+  .landing .lp-row {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+  /* on mobile, image always sits ABOVE copy for clean rhythm */
+  .landing .lp-row .lp-row-visual { order: -1; }
+  .landing .lp-row.lp-row--flip .lp-row-visual { order: -1; }
+  .landing .lp-bento {
+    grid-template-columns: 1fr;
+  }
+  .landing .lp-bento-card.is-lab,
+  .landing .lp-bento-card.is-dex,
+  .landing .lp-bento-card.is-sandbox {
+    grid-column: 1;
+    grid-row: auto;
+    min-height: 200px;
+  }
+  .landing .lp-section { padding-top: 64px; padding-bottom: 64px; }
+}
+
+@media (max-width: 520px) {
+  .landing .lp-nav { padding-top: 14px; padding-bottom: 14px; }
+  .landing .lp-hero { padding-top: 4px; gap: 24px; }
+  .landing .lp-orbit { max-width: 260px; }
+  .landing .lp-orbit-nucleus { width: 72px; height: 72px; }
+  .landing .lp-section { padding-top: 52px; padding-bottom: 52px; }
+  .landing .lp-section-head { margin-bottom: 36px; }
+  .landing .lp-rows { gap: 56px; }
+  .landing .lp-row-visual { padding: 18px; aspect-ratio: 4 / 3; }
+  .landing .lp-final { padding: 64px 0; }
+  .landing .lp-cat { flex-basis: 200px; }
+  .landing .lp-meta { gap: 12px; font-size: 11px; }
+  .landing .lp-cta-row { width: 100%; }
+  .landing .lp-cta-row > .btn { flex: 1; min-width: 140px; }
+  .landing .lp-footer { flex-direction: column; align-items: flex-start; gap: 10px; }
+}
+
+/* ============================================================
+   ROW-VISUAL MICRO-ILLUSTRATIONS (build / catch / share)
+   ============================================================ */
+
+/* — BUILD: bench tile with two atoms snapping into a bond — */
+.landing .lp-viz-build {
+  width: 100%; height: 100%;
+  display: grid;
+  place-items: center;
+  position: relative;
+}
+.landing .lp-viz-build .atom {
+  position: absolute;
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-size: 14px;
+  display: grid;
+  place-items: center;
+  color: #04231f;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.3);
+}
+.landing .lp-viz-build .atom.h1 { background: linear-gradient(160deg, #aef5e6, #2dd4bf); top: 30%; left: 14%; animation: lp-snap-left 4s var(--ease-spring) infinite; }
+.landing .lp-viz-build .atom.h2 { background: linear-gradient(160deg, #aef5e6, #2dd4bf); top: 70%; left: 14%; animation: lp-snap-left 4s var(--ease-spring) infinite 0.6s; }
+.landing .lp-viz-build .atom.o  { background: linear-gradient(160deg, #fda4af, #e11d48); color: #fff; top: 50%; left: 64%; animation: lp-snap-right 4s var(--ease-spring) infinite 1.2s; }
+.landing .lp-viz-build .bond {
+  position: absolute;
+  height: 2px;
+  background: linear-gradient(90deg, var(--accent), transparent);
+  transform-origin: left center;
+  opacity: 0;
+  animation: lp-bond 4s ease infinite 1.5s;
+}
+.landing .lp-viz-build .bond.b1 { top: 38%; left: 22%; width: 44%; }
+.landing .lp-viz-build .bond.b2 { top: 60%; left: 22%; width: 44%; }
+@keyframes lp-snap-left  { 0%, 60%, 100% { transform: translateX(0); } 75% { transform: translateX(14px); } }
+@keyframes lp-snap-right { 0%, 60%, 100% { transform: translateX(0); } 75% { transform: translateX(-14px); } }
+@keyframes lp-bond       { 0%, 50% { opacity: 0; } 75% { opacity: 0.8; } 100% { opacity: 0; } }
+.landing .lp-viz-build .label {
+  position: absolute;
+  bottom: 14px; left: 18px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--muted);
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+}
+
+/* — CATCH: cinematic burst (concentric rings + central glyph) — */
+.landing .lp-viz-catch {
+  width: 100%; height: 100%;
+  display: grid;
+  place-items: center;
+  position: relative;
+}
+.landing .lp-viz-catch .ring {
+  position: absolute;
+  border-radius: 50%;
+  border: 1px solid var(--role-live);
+  opacity: 0;
+  animation: lp-catch-ring 3.4s var(--ease-out) infinite;
+}
+.landing .lp-viz-catch .ring.r1 { width: 80px;  height: 80px; }
+.landing .lp-viz-catch .ring.r2 { width: 80px;  height: 80px; animation-delay: 0.7s; }
+.landing .lp-viz-catch .ring.r3 { width: 80px;  height: 80px; animation-delay: 1.4s; }
+@keyframes lp-catch-ring {
+  0%   { transform: scale(0.4); opacity: 1; }
+  100% { transform: scale(2.4); opacity: 0; }
+}
+.landing .lp-viz-catch .glyph {
+  position: relative;
+  z-index: 2;
+  width: 88px; height: 88px;
+  border-radius: 24px;
+  display: grid;
+  place-items: center;
+  background: linear-gradient(160deg, var(--role-rare), #c98a14);
+  box-shadow: 0 0 40px var(--role-rare-glow), inset 0 1px 0 rgba(255,255,255,0.3);
+  font-family: var(--font-display);
+  font-size: 28px;
+  font-weight: 700;
+  color: #2a1d00;
+  animation: lp-catch-glyph 3.4s var(--ease-spring) infinite;
+}
+@keyframes lp-catch-glyph {
+  0%, 100% { transform: scale(1); }
+  50%      { transform: scale(1.08); }
+}
+.landing .lp-viz-catch .label {
+  position: absolute;
+  bottom: 14px; left: 18px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--muted);
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+}
+
+/* — SHARE: stacked brag-card tiles fanning out — */
+.landing .lp-viz-share {
+  width: 100%; height: 100%;
+  display: grid;
+  place-items: center;
+  position: relative;
+}
+.landing .lp-viz-share .tile {
+  position: absolute;
+  width: 56%;
+  aspect-ratio: 4 / 3;
+  border-radius: 18px;
+  background: linear-gradient(160deg, rgba(45,212,191,0.16), rgba(129,140,248,0.16));
+  border: 1px solid var(--border-hi);
+  box-shadow: var(--shadow-tint);
+  padding: 16px;
+  font-family: var(--font-display);
+  font-weight: 700;
+  color: var(--text);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  transition: transform 600ms var(--ease-spring);
+}
+.landing .lp-viz-share .tile.t1 { transform: rotate(-8deg) translate(-22%, -8%);  border-top: 3px solid var(--role-locked); }
+.landing .lp-viz-share .tile.t2 { transform: rotate(2deg)  translate(0,    0);    border-top: 3px solid var(--role-rare); z-index: 2; }
+.landing .lp-viz-share .tile.t3 { transform: rotate(11deg) translate(22%,  -2%);  border-top: 3px solid var(--role-live); }
+.landing .lp-viz-share .tile .nm { font-size: 13px; }
+.landing .lp-viz-share .tile .fm { font-family: var(--font-mono); font-size: 11px; color: var(--muted); }
+.landing .lp-viz-share .label {
+  position: absolute;
+  bottom: 14px; left: 18px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--muted);
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+}

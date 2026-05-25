@@ -4,6 +4,7 @@ import { useCatalog } from "../context/CatalogContext.jsx";
 import { useGame } from "../context/GameContext.jsx";
 import { useAuth } from "../context/AuthContext.jsx";
 import { useFriends } from "../context/FriendsContext.jsx";
+import BrandLogo from "./BrandLogo.jsx";
 
 const TABS = [
   { id: "lab", i18n: "tabLab" },
@@ -38,7 +39,9 @@ export default function TopBar() {
   return (
     <header className="topbar">
       <div className="brand">
-        <span className="logo">⚗️</span>
+        <span className="logo">
+          <BrandLogo size={28} title="Chemdex" />
+        </span>
         <div className="brand-text">
           <h1>
             Chem<span>dex</span>

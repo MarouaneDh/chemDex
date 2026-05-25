@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none" aria-label="Chemdex">
+  <defs>
+    <linearGradient id="cdx-edge" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#2dd4bf"/>
+      <stop offset="100%" stop-color="#818cf8"/>
+    </linearGradient>
+    <radialGradient id="cdx-atom" cx="0.32" cy="0.28" r="0.78">
+      <stop offset="0%" stop-color="#aef5e6"/>
+      <stop offset="55%" stop-color="#2dd4bf"/>
+      <stop offset="100%" stop-color="#0f8a7d"/>
+    </radialGradient>
+  </defs>
+  <!-- hexagonal vessel: chemistry ring meets Dex silhouette -->
+  <polygon
+    points="32,8 52.78,20 52.78,44 32,56 11.22,44 11.22,20"
+    stroke="url(#cdx-edge)"
+    stroke-width="3"
+    stroke-linejoin="round"
+  />
+  <!-- bond from nucleus to the captured atom -->
+  <line x1="32" y1="32" x2="32" y2="14"
+    stroke="url(#cdx-edge)" stroke-width="2" opacity="0.55"/>
+  <!-- the catch: featured atom at the apex -->
+  <circle cx="32" cy="11" r="5.5" fill="url(#cdx-atom)"/>
+  <!-- inert nucleus dot -->
+  <circle cx="32" cy="32" r="2.6" fill="#818cf8"/>
+</svg>

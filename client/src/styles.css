@@ -22,11 +22,33 @@
   --accent-2:  #818cf8;
   --glow:      rgba(45, 212, 191, 0.35);
 
+  /* role-based accents (#37) — semantic palette, not decorative.
+     Use these in components instead of reaching for raw colors
+     so meaning travels with the hue. */
+  --role-live:      #2dd4bf;  /* live / discovery / active     */
+  --role-locked:    #818cf8;  /* known but not yet reachable    */
+  --role-rare:      #f5c451;  /* rare / milestone / shine       */
+  --role-forbidden: #fb7185;  /* forbidden shelf / hazard       */
+  --role-inert:     #94a3b8;  /* inert / common / placeholder   */
+  --role-live-glow:      rgba(45, 212, 191, 0.32);
+  --role-locked-glow:    rgba(129, 140, 248, 0.32);
+  --role-rare-glow:      rgba(245, 196, 81, 0.32);
+  --role-forbidden-glow: rgba(251, 113, 133, 0.32);
+
   /* rarity */
   --common:   #94a3b8;
   --uncommon: #34d399;
   --rare:     #38bdf8;
   --epic:     #c084fc;
+
+  /* foundation tokens for landing + future surfaces */
+  --radius-sm:    8px;
+  --radius:       14px;
+  --radius-lg:    22px;
+  --radius-hero:  32px;
+  --max-text:     62ch;       /* readable measure for body copy */
+  --shadow-tint:  0 24px 60px -28px rgba(2, 6, 12, 0.85);
+  --shadow-glow:  0 12px 36px -10px var(--glow);
 
   --font-display: "Space Grotesk", system-ui, sans-serif;
   --font-body:    "Inter", system-ui, -apple-system, sans-serif;
@@ -88,14 +110,17 @@ body {
 
 .brand { display: flex; align-items: center; gap: 13px; }
 .logo {
-  font-size: 24px;
+  /* Houses the inline <BrandLogo /> SVG mark. The tile stays so the
+     brand block reads as a unit next to the wordmark, but the bg fill
+     is dialed back so the SVG's own gradient does the heavy lifting. */
   width: 46px; height: 46px;
   display: grid; place-items: center;
   border-radius: 13px;
-  background: linear-gradient(150deg, rgba(45,212,191,0.28), rgba(129,140,248,0.28));
+  background: linear-gradient(150deg, rgba(45,212,191,0.10), rgba(129,140,248,0.10));
   border: 1px solid var(--border-hi);
-  box-shadow: 0 0 26px var(--glow), inset 0 1px 0 rgba(255,255,255,0.15);
+  box-shadow: 0 0 18px var(--glow), inset 0 1px 0 rgba(255,255,255,0.08);
 }
+.logo > .brand-logo { display: block; }
 .brand-text h1 {
   font-family: var(--font-display);
   font-size: 22px;
@@ -473,6 +498,48 @@ main { padding: 30px 26px 60px; max-width: 1180px; margin: 0 auto; }
 .btn-danger { color: #fb7185; border-color: rgba(251, 113, 133, 0.3); background: rgba(251,113,133,0.06); }
 @media (hover: hover) and (pointer: fine) {
   .btn-danger:hover { background: rgba(251, 113, 133, 0.14); border-color: #fb7185; }
+}
+
+/* --- 3-tier button system (brainstorm #24) ---
+   .btn-hero    — landing pages, onboarding, full-bleed CTAs
+   .btn         — default (above)
+   .btn-compact — dialog rows, dense surfaces, brag-card share lists
+   Tier classes layer on top of .btn and the colour modifiers
+   (.btn-primary / .btn-danger) — order doesn't matter.            */
+.btn-hero {
+  padding: 16px 28px;
+  font-size: 15px;
+  letter-spacing: 0.2px;
+  border-radius: 14px;
+  min-height: 52px;            /* iOS thumb-target */
+}
+.btn-hero.btn-primary {
+  box-shadow: 0 14px 36px -8px var(--glow), inset 0 1px 0 rgba(255,255,255,0.18);
+}
+@media (hover: hover) and (pointer: fine) {
+  .btn-hero.btn-primary:hover {
+    box-shadow: 0 18px 44px -8px var(--glow), inset 0 1px 0 rgba(255,255,255,0.22);
+  }
+}
+.btn-compact {
+  padding: 7px 12px;
+  font-size: 12.5px;
+  border-radius: 9px;
+  min-height: 32px;
+}
+/* ghost variant — outline only, lives well next to .btn-primary
+   in hero CTA pairs without competing for attention */
+.btn-ghost {
+  background: transparent;
+  border-color: var(--border-hi);
+  color: var(--text);
+}
+@media (hover: hover) and (pointer: fine) {
+  .btn-ghost:hover {
+    background: var(--surface);
+    border-color: var(--accent);
+    color: var(--accent);
+  }
 }
 
 /* ============================================================
