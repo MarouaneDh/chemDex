@@ -46,6 +46,31 @@ export const MOL_HAZARDS = {
   mol_028: ["corrosive"],                          // Formic acid
   mol_029: ["flammable"],                          // Ethylene
 
+  /* ----- everyday expansion ----- */
+  mol_031: ["toxic"],                              // Ozone
+  mol_032: ["toxic", "corrosive"],                 // Nitrogen dioxide
+  mol_038: ["flammable", "toxic"],                 // Toluene
+  mol_039: ["flammable"],                          // Isopropyl alcohol
+  mol_040: ["flammable", "explosive"],             // Acetylene
+  mol_041: ["flammable"],                          // Butane
+  mol_042: ["flammable"],                          // Octane
+  mol_043: ["flammable", "toxic"],                 // Naphthalene
+  mol_044: ["toxic"],                              // Chloroform
+  mol_045: ["flammable"],                          // Diethyl ether
+  mol_048: ["corrosive"],                          // Bleach (sodium hypochlorite)
+  mol_049: ["cryogenic"],                          // Nitrous oxide
+  mol_055: ["toxic"],                              // Nicotine
+  mol_061: ["corrosive"],                          // Phosphoric acid
+  mol_062: ["flammable", "toxic"],                 // White phosphorus
+  mol_063: ["corrosive"],                          // Phosphorus pentoxide
+  mol_065: ["corrosive"],                          // Potassium hydroxide
+  mol_066: ["explosive"],                          // Potassium nitrate
+  mol_068: ["corrosive"],                          // Quicklime
+  mol_069: ["corrosive"],                          // Slaked lime
+  mol_075: ["corrosive"],                          // Iron(III) chloride
+  mol_076: ["corrosive", "toxic"],                 // Hydrofluoric acid
+  mol_079: ["toxic", "corrosive"],                 // Fluorine
+
   /* ----- forbidden shelf ----- */
   mol_forbidden_001: ["toxic"],                                  // Hydrogen cyanide
   mol_forbidden_002: ["explosive", "toxic", "flammable"],        // Hydrazine

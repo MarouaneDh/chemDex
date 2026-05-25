@@ -37,7 +37,8 @@
       "Bash(ls client/public)",
       "Bash(git rm *)",
       "Bash(git *)",
-      "Bash(curl -s http://localhost:4000/api/catalog)"
+      "Bash(curl -s http://localhost:4000/api/catalog)",
+      "Bash(npm --prefix server run seed:catalog)"
     ]
   }
 }

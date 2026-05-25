@@ -263,9 +263,11 @@ main { padding: 30px 26px 60px; max-width: 1180px; margin: 0 auto; }
   gap: 20px;
 }
 
-/* Tablet + phone: stack to one column and turn the atom palette into a
-   horizontal scroll strip so the workbench + Combine button stay in view. */
-@media (max-width: 900px) {
+/* Tablet + phone (≤1024px): stack to one column and turn the atom palette
+   into a horizontal scroll strip so the workbench + Combine button stay
+   in view. Above 1024px, the original 296px + 1fr two-column lab-grid
+   keeps the palette as a dense 3-col grid inside its panel. */
+@media (max-width: 1024px) {
   .lab-grid { grid-template-columns: 1fr; gap: 14px; }
 
   /* Palette panel — shorter chrome */
@@ -605,10 +607,21 @@ main { padding: 30px 26px 60px; max-width: 1180px; margin: 0 auto; }
   box-shadow: 0 4px 14px var(--glow);
 }
 
+/* 3/5/7-across grid (brainstorm #21) — explicit column counts at each
+   breakpoint instead of auto-fill, so card density is predictable on
+   every device class. Mobile-first: 3 columns is the default, tablets
+   step up to 5 at ≥768px, desktops to 7 at ≥1024px. Each breakpoint is
+   sized so cards GAIN width at the step (no regression). */
 .dex-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(178px, 1fr));
-  gap: 16px;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+@media (min-width: 768px) {
+  .dex-grid { grid-template-columns: repeat(5, 1fr); gap: 12px; }
+}
+@media (min-width: 1024px) {
+  .dex-grid { grid-template-columns: repeat(7, 1fr); gap: 14px; }
 }
 /* stagger first row(s) so the grid feels alive without dragging out */
 .dex-grid > .dex-card:nth-child(1)  { animation-delay: 0ms; }
@@ -623,16 +636,27 @@ main { padding: 30px 26px 60px; max-width: 1180px; margin: 0 auto; }
 .dex-grid > .dex-card:nth-child(10) { animation-delay: 260ms; }
 .dex-grid > .dex-card:nth-child(n+11) { animation-delay: 280ms; }
 
+/* Symbol-only Dex card (brainstorm #20).
+   Formula is the hero; image lives in the detail modal. The card is a
+   centered flex column with the id pinned top-left, shiny/hazard pinned
+   top-right, and a tiny rarity tag at the bottom for redundancy with
+   the coloured top stripe. */
 .dex-card {
   position: relative;
   background: var(--surface);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   border: 1px solid var(--border);
-  border-radius: 16px;
-  padding: 15px;
+  border-radius: 14px;
+  padding: 14px 10px 10px;
   cursor: pointer;
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 124px;
+  text-align: center;
   transition:
     transform 220ms var(--ease-out),
     box-shadow 220ms var(--ease-out),
@@ -641,38 +665,93 @@ main { padding: 30px 26px 60px; max-width: 1180px; margin: 0 auto; }
   will-change: transform;
 }
 @media (hover: hover) and (pointer: fine) {
-  .dex-card:hover { transform: translateY(-5px); }
+  .dex-card:hover { transform: translateY(-4px); }
 }
-.dex-card:active { transform: scale(0.98); }
+.dex-card:active { transform: scale(0.97); }
 
-.dex-card .img-wrap {
-  height: 104px;
-  display: flex; align-items: center; justify-content: center;
-  background: #fff;
-  border-radius: 11px;
-  margin-bottom: 12px;
-}
-.dex-card .img-wrap img { max-height: 92px; max-width: 100%; }
+/* the legacy image plate is gone in symbol-only mode */
+.dex-card .img-wrap { display: none; }
 
-.dex-card .name {
+/* the hero: formula (or lock / mystery glyph) — large, centered,
+   font-display. Subscripts inherit a smaller scaled size from <sub>. */
+.dex-glyph {
   font-family: var(--font-display);
-  font-size: 14.5px;
-  font-weight: 600;
+  font-size: clamp(22px, 5.4vw, 30px);
+  font-weight: 700;
+  line-height: 1.05;
+  letter-spacing: -0.015em;
+  color: var(--text);
+  text-align: center;
+  /* leave room above for top-corner id + hazard */
+  margin-top: 6px;
+  margin-bottom: 6px;
+  white-space: nowrap;
+  overflow: hidden;
+  max-width: 100%;
 }
-.dex-card .formula {
-  font-family: var(--font-mono);
-  font-size: 12px;
+.dex-glyph sub {
+  font-size: 0.62em;
+  vertical-align: sub;
+  margin-left: -0.04em;
   color: var(--muted);
-  margin-top: 3px;
 }
+.dex-glyph--lock,
+.dex-glyph--mystery {
+  font-size: clamp(22px, 5vw, 28px);
+  color: var(--border-hi);
+}
+
 .dex-card .id {
   position: absolute;
-  top: 11px; right: 13px;
+  top: 8px; left: 10px;
   font-family: var(--font-mono);
-  font-size: 10px;
+  font-size: 9.5px;
+  letter-spacing: 0.4px;
   color: var(--faint);
   z-index: 2;
 }
+
+.dex-card-hazard {
+  position: absolute;
+  top: 6px; right: 8px;
+  font-size: 16px;
+  line-height: 1;
+  z-index: 2;
+  filter: drop-shadow(0 0 4px rgba(0,0,0,0.55));
+  pointer-events: none;
+}
+
+.dex-card .name {
+  font-family: var(--font-display);
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.7px;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  margin-top: 2px;
+}
+
+.dex-rarity-tag {
+  font-family: var(--font-mono);
+  font-size: 8.5px;
+  font-weight: 700;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  margin-top: 8px;
+  padding: 2px 8px;
+  border-radius: 99px;
+  /* colour comes from the rarity-* class on the same element */
+  background: color-mix(in srgb, currentColor 15%, transparent);
+}
+
+/* the old .formula sub-text inside the card is replaced by .dex-glyph;
+   keeping a small reset so any lingering reference stays harmless */
+.dex-card .formula { display: none; }
+.dex-card .badges  { display: none; }
 
 /* discovered — rarity glow */
 .dex-card.discovered { border-top: 2.5px solid; }
@@ -988,7 +1067,7 @@ main { padding: 30px 26px 60px; max-width: 1180px; margin: 0 auto; }
   main { padding: 20px 14px 48px; }
   .panel { padding: 16px; border-radius: 15px; }
 
-  /* keep the scrolling-strip behavior from the 900px block,
+  /* keep the scrolling-strip behavior from the 1024px block,
      just shrink atoms a touch more for phones */
   .palette { gap: 8px; }
   .atom { flex: 0 0 60px; width: 60px; }
@@ -1003,9 +1082,9 @@ main { padding: 30px 26px 60px; max-width: 1180px; margin: 0 auto; }
   .lab-actions .btn { flex: 1 1 auto; padding: 10px 14px; }
 
   .dex-controls { margin-bottom: 16px; }
-  .dex-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
-  .dex-card { padding: 12px; border-radius: 14px; }
-  .dex-card .img-wrap { height: 88px; }
+  /* mobile dex-grid is now 3 cols via mobile-first base rule — leave the
+     grid alone here; just trim card chrome a touch for tight phones */
+  .dex-card { padding: 12px 8px 8px; border-radius: 12px; min-height: 112px; }
 
   .modal { padding: 20px; border-radius: 16px; }
   .modal h2 { font-size: 21px; }
@@ -1017,9 +1096,14 @@ main { padding: 30px 26px 60px; max-width: 1180px; margin: 0 auto; }
   #lbImg { max-width: 94vw; max-height: 70vh; }
 }
 
-/* very small phones — keep the dex usable */
+/* very small phones — keep the symbol-only dex usable.
+   Cards are slim enough at 3-across down to ~340px; tighten the chrome
+   instead of dropping to fewer columns. */
 @media (max-width: 360px) {
-  .dex-grid { grid-template-columns: 1fr; }
+  .dex-grid { gap: 8px; }
+  .dex-card { padding: 10px 6px 6px; min-height: 100px; }
+  .dex-glyph { font-size: 20px; }
+  .dex-card-name { font-size: 10px; letter-spacing: 0.5px; }
   .tab { padding: 6px 10px; }
 }
 
@@ -4353,4 +4437,326 @@ body.catch-shake { animation: catchShake 600ms var(--ease-out) both; }
 .account-avatar-hero {
   margin: 0 auto 6px;
   border-width: 2px;
+}
+
+/* ============================================================
+   LAB STICKY ACTION BAR (brainstorm #11/#12)
+   Mobile-first: pins to the viewport bottom with backdrop blur.
+   Desktop: relaxes into a normal flow block right under the grid.
+   ============================================================ */
+.lab-action-bar {
+  margin-top: 18px;
+  /* mobile sticky bleed — uses the main padding so the bar visually
+     extends to the viewport edges. Adjusted per breakpoint below.    */
+  position: sticky;
+  bottom: 0;
+  z-index: 25;
+  margin-left: -26px;
+  margin-right: -26px;
+  margin-bottom: -60px;
+  padding: 12px 26px;
+  padding-bottom: max(12px, env(safe-area-inset-bottom));
+  background: linear-gradient(180deg, rgba(11, 14, 20, 0.6), rgba(11, 14, 20, 0.96) 60%);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border-top: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.lab-action-bar .lab-actions {
+  display: flex;
+  gap: 10px;
+}
+.lab-action-bar .lab-actions .btn {
+  flex: 1;
+  min-height: 48px;  /* thumb target on mobile */
+}
+.lab-action-bar .lab-message {
+  margin: 0;
+  font-size: 12.5px;
+  line-height: 1.4;
+  text-align: center;
+  color: var(--muted);
+}
+.lab-action-bar .lab-message.ok  { color: var(--accent); }
+.lab-action-bar .lab-message.bad { color: #fb7185; }
+@media (max-width: 600px) {
+  /* match main's tighter mobile padding so the bleed lines up */
+  .lab-action-bar {
+    margin-left: -14px;
+    margin-right: -14px;
+    margin-bottom: -48px;
+    padding-left: 14px;
+    padding-right: 14px;
+  }
+}
+@media (min-width: 1025px) {
+  /* on desktop the bar relaxes into the page flow — no sticky, no bleed,
+     buttons take their natural width side by side */
+  .lab-action-bar {
+    position: static;
+    margin: 18px 0 0;
+    padding: 0;
+    background: none;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    border-top: none;
+  }
+  .lab-action-bar .lab-actions .btn {
+    flex: 0 0 auto;
+    min-height: auto;
+  }
+  .lab-action-bar .lab-message {
+    text-align: left;
+  }
+}
+
+/* ============================================================
+   FILTER PILL — collapsed entry to the bottom sheet
+   ============================================================ */
+.dex-controls .filter-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-display);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 99px;
+  padding: 8px 14px 8px 12px;
+  cursor: pointer;
+  transition:
+    border-color 180ms var(--ease-out),
+    background-color 180ms var(--ease-out),
+    transform 140ms var(--ease-out);
+  min-height: 36px;
+}
+.dex-controls .filter-pill:hover { border-color: var(--border-hi); background: var(--surface-2); }
+.dex-controls .filter-pill:active { transform: scale(0.97); }
+.dex-controls .filter-pill.is-active {
+  border-color: var(--accent);
+  background: rgba(45, 212, 191, 0.08);
+}
+.filter-pill-icon { flex: none; color: var(--muted); }
+.filter-pill.is-active .filter-pill-icon { color: var(--accent); }
+.filter-pill-current {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.4px;
+  text-transform: capitalize;
+  padding: 3px 10px;
+  border-radius: 99px;
+  background: linear-gradient(120deg, var(--accent), #5fe6d4);
+  color: #04231f;
+  max-width: 140px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* active filter chip(s) shown above the grid (brainstorm #18). */
+.dex-active-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0 0 14px;
+}
+.dex-active-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  letter-spacing: 0.4px;
+  padding: 5px 8px 5px 12px;
+  border-radius: 99px;
+  background: rgba(45, 212, 191, 0.12);
+  border: 1px solid rgba(45, 212, 191, 0.35);
+  color: var(--text);
+  cursor: pointer;
+  transition: background-color 160ms var(--ease-out), border-color 160ms var(--ease-out);
+}
+.dex-active-chip:hover { background: rgba(45, 212, 191, 0.2); border-color: var(--accent); }
+.dex-active-chip-x {
+  display: inline-grid;
+  place-items: center;
+  width: 18px; height: 18px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.06);
+  font-size: 10px;
+  color: var(--text);
+}
+
+/* ============================================================
+   BOTTOM SHEET — generic drawer used by the filter picker
+   Mounted via portal so it sits above .modal-overlay siblings.
+   ============================================================ */
+.sheet-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(4, 6, 10, 0.6);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  z-index: 55;                        /* above .modal-overlay (50) */
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  animation: overlay-in 220ms var(--ease-out) both;
+}
+.sheet {
+  background: linear-gradient(180deg, rgba(20, 24, 32, 0.98), rgba(11, 14, 20, 0.98));
+  border-top: 1px solid var(--border-hi);
+  border-radius: 22px 22px 0 0;
+  width: 100%;
+  max-width: 720px;
+  max-height: 82vh;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  padding: 8px 22px max(18px, env(safe-area-inset-bottom));
+  box-shadow: 0 -20px 60px rgba(0, 0, 0, 0.55);
+  animation: sheet-rise 320ms var(--ease-spring) both;
+}
+@keyframes sheet-rise {
+  from { transform: translateY(100%); opacity: 0.4; }
+  to   { transform: translateY(0); opacity: 1; }
+}
+.sheet-handle {
+  width: 38px;
+  height: 4px;
+  border-radius: 2px;
+  background: var(--border-hi);
+  margin: 6px auto 10px;
+}
+.sheet-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding-bottom: 10px;
+  margin-bottom: 12px;
+  border-bottom: 1px solid var(--border);
+}
+.sheet-header h3 {
+  font-family: var(--font-display);
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+.sheet-close {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--muted);
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+}
+.sheet-close:hover { border-color: var(--border-hi); color: var(--text); }
+.sheet-body {
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  /* a hair of bottom space so the last option doesn't kiss the edge */
+  padding-bottom: 4px;
+}
+.sheet-section-title {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 1.4px;
+  color: var(--accent);
+  margin-bottom: 10px;
+}
+.sheet-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 8px;
+}
+.sheet-option {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-body);
+  font-size: 13px;
+  font-weight: 500;
+  text-transform: capitalize;
+  padding: 10px 14px;
+  border-radius: 12px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--muted);
+  cursor: pointer;
+  transition:
+    color 160ms var(--ease-out),
+    border-color 160ms var(--ease-out),
+    background-color 160ms var(--ease-out),
+    transform 140ms var(--ease-out);
+  text-align: left;
+}
+.sheet-option:hover { color: var(--text); border-color: var(--border-hi); }
+.sheet-option:active { transform: scale(0.97); }
+.sheet-option.active {
+  color: #04231f;
+  background: linear-gradient(120deg, var(--accent), #5fe6d4);
+  border-color: transparent;
+  box-shadow: 0 4px 14px var(--glow);
+}
+.sheet-option-icon { font-size: 16px; line-height: 1; }
+
+/* hazard "+N more" pill — same shape as a hazard tag, neutral palette
+   so it reads as a control, not a hazard category itself */
+.hazard-tag.hazard-more {
+  background: var(--surface);
+  border: 1px solid var(--border-hi);
+  color: var(--muted);
+  cursor: pointer;
+  font-family: var(--font-mono);
+  letter-spacing: 0.3px;
+  transition: color 160ms var(--ease-out), border-color 160ms var(--ease-out);
+}
+.hazard-tag.hazard-more:hover {
+  color: var(--text);
+  border-color: var(--accent);
+}
+
+
+/* Workbench atom count badge — appears when more than one of the same
+   atom sits on the bench. Pinned top-right of the spherical tile;
+   matches the visual register of small numeric tags elsewhere in the
+   app (sync badges, brag-card rarity stamps).                       */
+.bench-atom .bench-atom-count {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  min-width: 22px;
+  height: 22px;
+  padding: 0 6px;
+  border-radius: 999px;
+  background: linear-gradient(160deg, var(--accent), #5fe6d4);
+  color: #04231f;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow:
+    0 4px 10px rgba(0, 0, 0, 0.5),
+    0 0 0 2px var(--bg-1);
+  pointer-events: none;
+  /* a quick pop when the count changes so the badge feels responsive */
+  animation: bench-count-pop 240ms var(--ease-spring) both;
+}
+@keyframes bench-count-pop {
+  0%   { transform: scale(0.6); opacity: 0; }
+  60%  { transform: scale(1.15); opacity: 1; }
+  100% { transform: scale(1);    opacity: 1; }
 }

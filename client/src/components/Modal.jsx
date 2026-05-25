@@ -18,11 +18,15 @@ export default function Modal() {
   const [view, setView] = useState("2d");
   // sunlight-button state: idle | reading | dim | unsupported
   const [sunState, setSunState] = useState({ mode: "idle", lux: null });
+  // hazards collapse to the first 3 + a "+N" pill (brainstorm #23) —
+  // resets to collapsed whenever the molecule changes
+  const [showAllHazards, setShowAllHazards] = useState(false);
 
   const m = modal?.molecule;
   useEffect(() => {
     setView("2d"); // fresh 2D view whenever the molecule changes
     setSunState({ mode: "idle", lux: null });
+    setShowAllHazards(false);
   }, [m?.id]);
 
   if (!modal) return null;
@@ -193,19 +197,35 @@ export default function Modal() {
           </span>
         </div>
 
-        {hazards.length > 0 && (
-          <div className="hazard-row">
-            <span className="hazard-label">{t("hazardsLabel")}</span>
-            {hazards.map((hid) => {
-              const h = hazardById(hid);
-              return (
-                <span key={hid} className={"hazard-tag hazard-" + hid}>
-                  {h.icon} {L(h)}
-                </span>
-              );
-            })}
-          </div>
-        )}
+        {hazards.length > 0 && (() => {
+          // brainstorm #23 — show first 3, hide the rest behind a "+N" pill
+          // that expands on tap. Reset by the effect above on molecule change.
+          const visible = showAllHazards ? hazards : hazards.slice(0, 3);
+          const hiddenCount = hazards.length - 3;
+          return (
+            <div className="hazard-row">
+              <span className="hazard-label">{t("hazardsLabel")}</span>
+              {visible.map((hid) => {
+                const h = hazardById(hid);
+                return (
+                  <span key={hid} className={"hazard-tag hazard-" + hid}>
+                    {h.icon} {L(h)}
+                  </span>
+                );
+              })}
+              {hiddenCount > 0 && !showAllHazards && (
+                <button
+                  type="button"
+                  className="hazard-tag hazard-more"
+                  onClick={() => setShowAllHazards(true)}
+                  aria-label={t("showMoreHazards", hiddenCount)}
+                >
+                  +{hiddenCount} {t("more")}
+                </button>
+              )}
+            </div>
+          );
+        })()}
 
         <div className="section-title">{t("uses")}</div>
         <ul>

@@ -33,6 +33,7 @@ export const I18N = {
     zoomHint:       "🔍 tap image to zoom",
     imgUnavailable: "Structure image unavailable",
     removeAtom:     "Tap to remove",
+    removeOneAtom:  "Tap to remove one",
     uses:           "Real-world uses",
     tier:           "tier",
     molarMass:      "Molar mass:",
@@ -88,6 +89,13 @@ export const I18N = {
     settingsOpenAdmin:    "Open admin panel",
     soundOn:              "Turn sound on",
     soundOff:             "Turn sound off",
+    filter:               "Filter",
+    filterTitle:          "Filter the Dex",
+    filterCategories:     "Categories",
+    filterHazards:        "Hazards",
+    clearFilter:          "Clear filter",
+    more:                 "more",
+    showMoreHazards:      n => `Show ${n} more hazard${n === 1 ? "" : "s"}`,
     authLoginTitle: "Welcome back",
     authRegisterTitle: "Create your account",
     authSub:        "Your discoveries sync across every device.",
@@ -238,6 +246,7 @@ export const I18N = {
     zoomHint:       "🔍 touchez l'image pour zoomer",
     imgUnavailable: "Image de structure indisponible",
     removeAtom:     "Touchez pour retirer",
+    removeOneAtom:  "Touchez pour en retirer un",
     uses:           "Utilisations concrètes",
     tier:           "palier",
     molarMass:      "Masse molaire :",
@@ -293,6 +302,13 @@ export const I18N = {
     settingsOpenAdmin:    "Ouvrir l'admin",
     soundOn:              "Activer le son",
     soundOff:             "Couper le son",
+    filter:               "Filtre",
+    filterTitle:          "Filtrer le Dex",
+    filterCategories:     "Catégories",
+    filterHazards:        "Dangers",
+    clearFilter:          "Effacer le filtre",
+    more:                 "de plus",
+    showMoreHazards:      n => `Afficher ${n} danger${n === 1 ? "" : "s"} de plus`,
     authLoginTitle: "Bon retour",
     authRegisterTitle: "Crée ton compte",
     authSub:        "Tes découvertes se synchronisent sur tous tes appareils.",
@@ -639,6 +655,308 @@ export const MOL_FR = {
     description: "Le plus petit des 20 acides aminés qui composent toutes les protéines de ton corps. Légèrement sucrée au goût — son nom vient du grec signifiant doux.",
     uses: ["Brique élémentaire des protéines du vivant", "Édulcorant et exhausteur de goût alimentaire", "Neurotransmetteur inhibiteur dans la moelle épinière", "Tampon pharmaceutique"],
     funFact: "La glycine a été détectée sur des comètes et dans des nuages interstellaires — soutenant l'idée que les briques élémentaires du vivant pourraient venir de l'espace."
+  },
+
+  /* ----- Everyday expansion (mol_031 – mol_080) ----- */
+  mol_031: {
+    commonName: "Ozone", iupacName: "Trioxygène",
+    description: "Une forme d'oxygène bleu pâle à l'odeur piquante. Bienfaiteur dans la stratosphère ; irritant pulmonaire au niveau du sol.",
+    uses: ["Bouclier UV stratosphérique", "Désinfection de l'eau potable", "Purification de l'air", "Blanchiment industriel"],
+    funFact: "On peut sentir l'ozone après un orage — l'éclair brise l'O₂ et les atomes se recombinent en O₃."
+  },
+  mol_032: {
+    commonName: "Dioxyde d'azote", iupacName: "Dioxyde d'azote",
+    description: "Un gaz brun-rouge à l'odeur âcre, la partie visible du smog urbain et un puissant irritant pulmonaire.",
+    uses: ["Indicateur de pollution par combustion", "Oxydant pour propulseurs (avec N2O4)", "Production d'acide nitrique", "Intermédiaire de synthèse"],
+    funFact: "La brume brune au-dessus des grandes villes en été, c'est surtout du NO₂ issu des gaz d'échappement, cuit par le soleil."
+  },
+  mol_033: {
+    commonName: "Saccharose", iupacName: "α-D-Glucopyranosyl-(1→2)-β-D-fructofuranoside",
+    description: "Le bon vieux sucre de table — un glucose et un fructose collés ensemble. La chose la plus sucrée du placard moyen.",
+    uses: ["Édulcorant alimentaire et de boisson", "Substrat de fermentation", "Conservateur en confiture et sirop", "Caramélisation pour goût et couleur"],
+    funFact: "Un morceau de sucre pèse environ 4 g et contient près de 7×10²¹ molécules de saccharose — plus que d'étoiles dans l'univers visible."
+  },
+  mol_034: {
+    commonName: "Acide citrique", iupacName: "Acide 2-hydroxypropane-1,2,3-tricarboxylique",
+    description: "L'acidité piquante du citron et de la lime. Aussi le pivot moléculaire du cycle énergétique de toute cellule — le cycle de Krebs porte son nom.",
+    uses: ["Saveur acide en alimentation et sodas", "Détartrant ménager", "Conservateur en conserve", "Intermédiaire du cycle de Krebs"],
+    funFact: "L'acide citrique se faisait jadis en pressant de vrais citrons. Aujourd'hui, l'essentiel mondial vient de sucre fermenté par la moisissure Aspergillus niger."
+  },
+  mol_035: {
+    commonName: "Acide lactique", iupacName: "Acide 2-hydroxypropanoïque",
+    description: "Le piquant du yaourt et la brûlure des muscles après un sprint. Apparaît quand les sucres fermentent sans oxygène.",
+    uses: ["Fermentation du yaourt et du levain", "Marqueur de fatigue musculaire", "Plastique biodégradable PLA", "Exfoliant cosmétique"],
+    funFact: "L'idée que l'acide lactique cause les courbatures est à moitié un mythe — il disparaît en une heure. Les courbatures du lendemain viennent de micro-déchirures musculaires."
+  },
+  mol_036: {
+    commonName: "Urée", iupacName: "Carbamide",
+    description: "Le déchet azoté des mammifères — et le premier composé « organique » jamais synthétisé à partir d'ingrédients inorganiques, brisant en 1828 l'idée que le vivant était chimiquement spécial.",
+    uses: ["Engrais azoté (n°1 mondial)", "Hydratant en cosmétique", "AdBlue pour moteurs diesel", "Résines et adhésifs"],
+    funFact: "La synthèse accidentelle de l'urée par Friedrich Wöhler en 1828 a mis fin au « vitalisme » — la croyance que la chimie du vivant exigeait une source vivante."
+  },
+  mol_037: {
+    commonName: "Glycérol", iupacName: "Propane-1,2,3-triol",
+    description: "Un liquide épais, sucré et sirupeux qui forme la colonne vertébrale de chaque graisse et huile. Retient l'eau comme rien d'autre.",
+    uses: ["Hydratant en cosmétique et savons", "Édulcorant et humectant alimentaire", "Précurseur de la nitroglycérine", "Antigel et porteur pour cigarettes électroniques"],
+    funFact: "Le glycérol fait sourire les savonniers — c'est le sous-produit de la saponification et la raison pour laquelle les savons artisanaux sont plus doux."
+  },
+  mol_038: {
+    commonName: "Toluène", iupacName: "Méthylbenzène",
+    description: "Un solvant clair à l'odeur d'essence, cousin plus sûr du benzène. Le « T » du TNT.",
+    uses: ["Diluant à peinture et solvant", "Améliorant d'octane dans l'essence", "Précurseur du TNT", "Synthèse des polyuréthanes"],
+    funFact: "Le toluène a été isolé pour la première fois de l'arbre sud-américain Myroxylon balsamum — son nom vient de la ville colombienne de Tolú."
+  },
+  mol_039: {
+    commonName: "Isopropanol", iupacName: "Propan-2-ol",
+    description: "L'« alcool à friction » clair et piquant qu'on trouve dans toutes les armoires à pharmacie. Tue les microbes en perçant leurs membranes lipidiques.",
+    uses: ["Désinfectant cutané et de surfaces", "Nettoyage d'électronique", "Gel hydroalcoolique", "Solvant industriel"],
+    funFact: "L'isopropanol à 70 % tue mieux les bactéries que celui à 99 % — l'eau lui laisse le temps de rester en contact assez longtemps pour percer la membrane."
+  },
+  mol_040: {
+    commonName: "Acétylène", iupacName: "Éthyne",
+    description: "Le gaz combustible courant le plus chaud à brûler. Sa triple liaison est tendue comme un ressort comprimé — lâche-la, et elle brûle à plus de 3 000 °C.",
+    uses: ["Soudage et découpe oxyacétylénique", "Anciennes lampes de mineur au carbure", "Brique de synthèse chimique", "Mûrissement des fruits (comme l'éthylène)"],
+    funFact: "Jette du carbure de calcium dans l'eau et tu obtiens instantanément de l'acétylène — c'est ainsi qu'ont fonctionné les lampes des spéléologues pendant cent ans."
+  },
+  mol_041: {
+    commonName: "Butane", iupacName: "Butane",
+    description: "Un gaz à quatre carbones qui se liquéfie sous une pression modeste. Le carburant des briquets de poche et des réchauds de camping.",
+    uses: ["Carburant pour briquet", "Cartouches de réchaud portatif", "Fluide frigorigène (R-600)", "Propulseur d'aérosol"],
+    funFact: "Les réfrigérateurs modernes utilisent de l'isobutane au lieu des Fréons destructeurs d'ozone — un échange discret qui a réparé le trou dans la couche d'ozone."
+  },
+  mol_042: {
+    commonName: "Octane", iupacName: "Octane",
+    description: "Le carburant de référence qui donne à l'essence son « indice d'octane ». Plus elle brûle régulièrement, plus l'indice est élevé.",
+    uses: ["Référence pour l'indice d'octane", "Composant des carburants automobiles", "Essence d'aviation", "Solvant en laboratoire"],
+    funFact: "« 93 d'octane » à la pompe ne veut pas dire 93 % d'octane — mais que le carburant cogne aussi peu qu'un mélange de 93 % d'iso-octane et 7 % de n-heptane."
+  },
+  mol_043: {
+    commonName: "Naphtalène", iupacName: "Naphtalène",
+    description: "Deux cycles benzéniques fusionnés — les cristaux blancs des boules antimites d'autrefois. Sublime directement du solide au gaz à température ambiante.",
+    uses: ["Antimite et insectifuge", "Précurseur des colorants au goudron de houille", "Solvant en recherche", "Brique pour produits chimiques industriels"],
+    funFact: "Ouvrez le tiroir des lainages de mamie : cette odeur caractéristique EST du naphtalène — des molécules qui s'échappent des boules dans l'air."
+  },
+  mol_044: {
+    commonName: "Chloroforme", iupacName: "Trichlorométhane",
+    description: "Le liquide clair à l'odeur sucrée des romans policiers victoriens. Jadis utilisé pour endormir les patients avant l'arrivée d'anesthésiques plus sûrs.",
+    uses: ["Solvant en chimie organique", "Précurseur du fluide frigorigène R-22", "Extraction pharmaceutique", "Solvant pour RMN"],
+    funFact: "La reine Victoria reçut du chloroforme pour la naissance de ses deux derniers enfants dans les années 1850 — rendant à elle seule l'anesthésie respectable."
+  },
+  mol_045: {
+    commonName: "Éther diéthylique", iupacName: "Éthoxyéthane",
+    description: "L'« éther » classique de la chirurgie du XIXᵉ siècle — odeur sucrée, follement inflammable, et le premier anesthésique général largement utilisé.",
+    uses: ["Anesthésique chirurgical historique", "Solvant d'extraction en laboratoire", "Liquide de démarrage pour moteurs diesel", "Réfrigération spécialisée"],
+    funFact: "La première anesthésie publique à l'éther, le 16 octobre 1846, est rejouée chaque année à Boston comme « Ether Day » — la date est gravée dans un mémorial de granit."
+  },
+  mol_046: {
+    commonName: "Acide carbonique", iupacName: "Acide carbonique",
+    description: "La légère acidité de l'eau pétillante et la chimie derrière chaque bulle. Se forme quand le CO₂ se dissout dans l'eau — et se décompose dès qu'on ouvre la bouteille.",
+    uses: ["Chimie de la carbonatation des boissons", "Tampon du pH sanguin", "Érosion calcaire qui forme les grottes", "Stockage du carbone océanique"],
+    funFact: "L'essentiel de l'« acide carbonique » d'un soda reste en fait du CO₂ dissous — moins de 1 % des molécules deviennent vraiment H₂CO₃."
+  },
+  mol_047: {
+    commonName: "Cristaux de soude", iupacName: "Carbonate de sodium",
+    description: "Une poudre blanche utilisée depuis l'Égypte antique pour le savon, le verre et l'embaumement. L'arme secrète de la lessive à l'ancienne contre la graisse.",
+    uses: ["Fabrication du verre", "Adoucisseur d'eau en lessive", "Régulation du pH des piscines", "Tannage du cuir"],
+    funFact: "Les Égyptiens récoltaient le natron — du carbonate de sodium naturel — dans les lacs asséchés et l'utilisaient pour déshydrater les momies."
+  },
+  mol_048: {
+    commonName: "Eau de Javel", iupacName: "Hypochlorite de sodium",
+    description: "Le liquide jaune-vert de toute buanderie. Un oxydant puissant qui décape les couleurs et tue les microbes en quelques secondes.",
+    uses: ["Blanchiment du linge", "Désinfection de surfaces", "Traitement de l'eau potable et des piscines", "Blanchiment industriel de la pâte à papier"],
+    funFact: "Mélanger eau de Javel et ammoniaque libère des chloramines toxiques ; avec du vinaigre, du chlore gazeux — celui-là même utilisé en 1915. Ne jamais mélanger les produits."
+  },
+  mol_049: {
+    commonName: "Protoxyde d'azote", iupacName: "Monoxyde de diazote",
+    description: "Le gaz hilarant — un anesthésique sucré, le propulseur des bombes de chantilly, et un gaz à effet de serre 300× plus puissant que le CO₂.",
+    uses: ["Analgésique dentaire et chirurgical", "Propulseur de chantilly", "Oxydant pour fusées et dragsters", "Traceur en recherche atmosphérique"],
+    funFact: "Joseph Priestley a découvert le protoxyde d'azote en 1772, mais Humphry Davy et ses amis l'ont rendu célèbre en 1799 en l'inhalant lors de « soirées au gaz hilarant »."
+  },
+  mol_050: {
+    commonName: "Vanilline", iupacName: "4-Hydroxy-3-méthoxybenzaldéhyde",
+    description: "La seule molécule responsable du goût et de l'odeur de vanille. Plus facile à synthétiser qu'à cultiver.",
+    uses: ["Arôme vanille en alimentation", "Parfums et désodorisants", "Masquage de goût en pharmacie", "Référence olfactive en cours de chimie"],
+    funFact: "La plupart des arômes « vanille » des glaces bon marché ne viennent d'aucune gousse — c'est de la vanilline synthétique tirée de pâte à bois ou, de plus en plus, de sucre fermenté."
+  },
+  mol_051: {
+    commonName: "Menthol", iupacName: "(1R,2S,5R)-2-Isopropyl-5-méthylcyclohexan-1-ol",
+    description: "Le froid de la menthe poivrée — une molécule qui trompe les capteurs de froid de la peau sans que rien ne soit vraiment froid.",
+    uses: ["Pastilles pour la toux et baumes pectoraux", "Arôme dentifrice et chewing-gum", "Crèmes analgésiques topiques", "Aromathérapie et inhalateurs"],
+    funFact: "Le menthol détourne le récepteur TRPM8 — celui qui détecte le froid. C'est pourquoi une pastille mentholée semble glaciale même à température ambiante."
+  },
+  mol_052: {
+    commonName: "Limonène", iupacName: "(R)-(+)-Limonène",
+    description: "L'huile pétillante d'agrumes pressée de la peau d'orange. Si sûre et si parfumée qu'elle entre partout, du nettoyant au parfum.",
+    uses: ["Nettoyants et dégraissants aux agrumes", "Arôme et parfum alimentaires", "Solvant remplaçant des hydrocarbures plus durs", "Solvant de recyclage du plastique"],
+    funFact: "Le limonène existe en deux formes en miroir — la version R sent l'orange, la version S sent le citron ou la térébenthine. Mêmes atomes, mains opposées."
+  },
+  mol_053: {
+    commonName: "Cinnamaldéhyde", iupacName: "(2E)-3-Phénylprop-2-énal",
+    description: "La molécule de la cannelle — sucrée, chaude, légèrement épicée. Pressée de l'écorce, saupoudrée sur le pain grillé.",
+    uses: ["Arôme cannelle en alimentation", "Bain de bouche et dentifrice", "Parfumerie", "Insecticide et fongicide naturel"],
+    funFact: "Le cinnamaldéhyde représente environ 90 % de l'huile d'écorce de cannelle — quelques gouttes suffisent à tenir les fourmis hors de la cuisine."
+  },
+  mol_054: {
+    commonName: "Théobromine", iupacName: "3,7-Diméthyl-1H-purine-2,6-dione",
+    description: "La cousine plus douce de la caféine — l'excitation du chocolat. Plus lente que la caféine, et célèbrement toxique pour les chiens.",
+    uses: ["Composant naturel du cacao et du chocolat", "Stimulant et diurétique doux", "Cas d'école vétérinaire", "Recherche sur l'asthme"],
+    funFact: "Les chiens métabolisent la théobromine environ 6× plus lentement que les humains — quelques carrés de chocolat noir peuvent être une urgence vétérinaire sérieuse."
+  },
+  mol_055: {
+    commonName: "Nicotine", iupacName: "(S)-3-(1-Méthylpyrrolidin-2-yl)pyridine",
+    description: "Le composé qui rend les fumeurs accros — rapide, féroce, et l'un des insecticides naturels les plus puissants jamais découverts.",
+    uses: ["Drogue active du tabac et des vapes", "Patchs et gommes de sevrage", "Insecticide historique (largement interdit)", "Outil de recherche en neurosciences"],
+    funFact: "Une goutte de nicotine pure sur la peau peut être mortelle — le tabac l'a fait évoluer pour paralyser et tuer les insectes qui essaient de croquer ses feuilles."
+  },
+  mol_056: {
+    commonName: "Dopamine", iupacName: "4-(2-Aminoéthyl)benzène-1,2-diol",
+    description: "La molécule du « vouloir » du cerveau — l'étincelle de motivation, de récompense, de mouvement. La maladie de Parkinson, c'est ce qui arrive quand les cellules qui en fabriquent meurent.",
+    uses: ["Signalisation de récompense et motivation", "Contrôle du mouvement (perdu dans Parkinson)", "Soutien cardiaque en réanimation (IV)", "Recherche en neurosciences"],
+    funFact: "La dopamine ne franchit pas la barrière hémato-encéphalique — c'est pourquoi pour Parkinson on donne de la L-DOPA, le précurseur, que le cerveau convertit ensuite en dopamine."
+  },
+  mol_057: {
+    commonName: "Sérotonine", iupacName: "3-(2-Aminoéthyl)-1H-indol-5-ol",
+    description: "La molécule de l'humeur et de l'intestin. Environ 90 % de ta sérotonine vit dans tes intestins, pas dans ton cerveau.",
+    uses: ["Régulation de l'humeur, du sommeil et de l'appétit", "Cible des ISRS et antidépresseurs", "Signalisation de la motilité intestinale", "Fonction plaquettaire dans la coagulation"],
+    funFact: "La sérotonine doit son nom à son effet sur les vaisseaux : « séro-tonine » = sérum + tonus. Son rôle sur l'humeur a été découvert plus tard."
+  },
+  mol_058: {
+    commonName: "Adrénaline", iupacName: "(R)-4-(1-Hydroxy-2-(méthylamino)éthyl)benzène-1,2-diol",
+    description: "L'hormone du combat ou de la fuite. Le cœur s'emballe, les pupilles s'élargissent, les bronches s'ouvrent — en quelques secondes, à cause d'une seule molécule.",
+    uses: ["EpiPen contre le choc anaphylactique", "Médicament d'urgence cardiaque", "Vasoconstricteur en anesthésie locale", "Inhalateurs d'asthme (historique)"],
+    funFact: "Une piqûre d'EpiPen dans la cuisse libère l'adrénaline en quelques secondes — pour quelqu'un en anaphylaxie, c'est la différence entre arriver à l'hôpital ou pas."
+  },
+  mol_059: {
+    commonName: "Cholestérol", iupacName: "Cholest-5-én-3β-ol",
+    description: "Le stéroïde cireux dont ton corps ne peut pas se passer — il rigidifie les membranes cellulaires et donne naissance à toutes les hormones stéroïdes. Trop dans le sang, en revanche, bouche les artères.",
+    uses: ["Rigidité des membranes cellulaires", "Précurseur des hormones stéroïdes (œstrogène, testostérone)", "Production des acides biliaires", "Précurseur de la vitamine D"],
+    funFact: "Ton foie fabrique environ 80 % du cholestérol sanguin — l'alimentation y contribue bien moins que les publicités des années 1980 le laissaient entendre."
+  },
+  mol_060: {
+    commonName: "Capsaïcine", iupacName: "(E)-N-(4-Hydroxy-3-méthoxybenzyl)-8-méthylnon-6-énamide",
+    description: "La molécule qui fait brûler le piment. Elle se lie au même récepteur que la chaleur brûlante — trompant ta langue sans élever la température.",
+    uses: ["Définit l'échelle Scoville du piquant", "Crèmes analgésiques (arthrose)", "Gaz lacrymogène (pepper spray)", "Répulsif anti-écureuils"],
+    funFact: "Les oiseaux ne ressentent pas la brûlure de la capsaïcine — les piments ont fait évoluer leur piquant pour écarter les mammifères et laisser les oiseaux disperser les graines."
+  },
+  mol_061: {
+    commonName: "Acide phosphorique", iupacName: "Acide phosphorique",
+    description: "Un acide sirupeux et clair qui donne au cola son mordant et à l'engrais son apport en phosphate. Chaque gorgée de soda lui doit une part de sa fraîcheur.",
+    uses: ["Acidifiant des sodas (le mordant du cola)", "Convertisseur de rouille", "Matière première des engrais", "Décapant en dentisterie"],
+    funFact: "Environ 90 % de l'acide phosphorique mondial part directement dans les engrais — sans lui, impossible de nourrir la moitié de la planète."
+  },
+  mol_062: {
+    commonName: "Phosphore blanc", iupacName: "Tétraphosphore",
+    description: "Mou, cireux et si réactif qu'il brille dans l'air et s'enflamme spontanément. Conservé sous l'eau pour la sécurité.",
+    uses: ["Munitions incendiaires (controversé)", "Production d'acide phosphorique", "Chimie des têtes d'allumettes (aujourd'hui phosphore rouge)", "Écrans de fumée"],
+    funFact: "Le phosphore a été découvert par un alchimiste qui faisait bouillir 50 seaux d'urine en cherchant de l'or — il a obtenu un nouvel élément, lumineux et terrifiant."
+  },
+  mol_063: {
+    commonName: "Pentoxyde de phosphore", iupacName: "Pentoxyde de diphosphore",
+    description: "Une poudre blanche comme neige qui arrache littéralement l'eau à tout ce qu'elle touche — y compris la peau de tes doigts.",
+    uses: ["Dessicant le plus agressif au monde", "Agent déshydratant en synthèse", "Production d'acide phosphorique", "Verres et optiques spéciales"],
+    funFact: "Le pentoxyde de phosphore est si avide d'eau qu'il peut arracher H₂O à l'acide sulfurique — transformant H₂SO₄ en SO₃."
+  },
+  mol_064: {
+    commonName: "Chlorure de potassium", iupacName: "Chlorure de potassium",
+    description: "Le « substitut de sel » qui a un goût salé sans sodium. Vital pour tes cellules ; aussi le troisième produit d'une injection létale.",
+    uses: ["Substitut de sel pauvre en sodium", "Électrolyte cardiaque et IV", "Engrais (« potasse »)", "Arrêt cardiaque en injection létale"],
+    funFact: "Le chlorure de potassium a un goût « plutôt salé, avec une pointe métallique » — d'où les sels diététiques qui le mélangent au sel ordinaire au lieu de le remplacer."
+  },
+  mol_065: {
+    commonName: "Hydroxyde de potassium", iupacName: "Hydroxyde de potassium",
+    description: "Potasse caustique — une base forte utilisée pour les savons mous (liquides), et l'électrolyte des piles alcalines.",
+    uses: ["Fabrication des savons liquides", "Électrolyte des piles alcalines", "Production de biodiesel", "Étalon de titrage en laboratoire"],
+    funFact: "Les savons en pain sont à base de sodium ; les savons liquides, à base de potassium — KOH donne un sel d'acides gras plus mou qui reste fluide."
+  },
+  mol_066: {
+    commonName: "Salpêtre", iupacName: "Nitrate de potassium",
+    description: "Le cristal blanc qui a renversé l'Europe médiévale — l'oxydant de la poudre à canon. Sert aussi à saler le bacon et à fertiliser les champs.",
+    uses: ["Oxydant de la poudre noire (75 %)", "Composant des propulseurs solides", "Salaison du bacon et des saucissons", "Désouchant de jardin"],
+    funFact: "Les producteurs médiévaux de salpêtre le récoltaient dans des tas de fumier et d'urine — une activité puante qui a pourtant décidé du sort des empires."
+  },
+  mol_067: {
+    commonName: "Carbonate de calcium", iupacName: "Carbonate de calcium",
+    description: "Craie, calcaire, marbre, coquilles d'œuf, coquillages, et le blanc à l'intérieur d'un comprimé d'antiacide — tout est la même molécule.",
+    uses: ["Tableaux noirs et antiacides", "Ciment et construction calcaire", "Complément alimentaire de calcium", "Charge pour papier et peinture"],
+    funFact: "Les falaises blanches de Douvres, ce sont 100 millions d'années de squelettes d'algues microscopiques — du carbonate de calcium pur, empilé sur des centaines de mètres."
+  },
+  mol_068: {
+    commonName: "Chaux vive", iupacName: "Oxyde de calcium",
+    description: "Ce qu'on obtient en brûlant du calcaire — un solide blanc avide qui siffle et fume au contact de l'eau.",
+    uses: ["Production de ciment et de mortier", "Fondant en sidérurgie", "Correction du pH des sols agricoles", "Traitement de l'eau et des eaux usées"],
+    funFact: "Chaux vive + eau libère assez de chaleur pour cuire un œuf — les rations militaires autochauffantes utilisent la même réaction pour réchauffer un repas en 10 minutes."
+  },
+  mol_069: {
+    commonName: "Chaux éteinte", iupacName: "Hydroxyde de calcium",
+    description: "Mélange chaux vive et eau et tu obtiens ceci — une base crayeuse utilisée pour tout, du mortier aux tortillas de maïs.",
+    uses: ["Mortier et plâtre", "Nixtamalisation des tortillas (cuisine mexicaine)", "Traitement des eaux usées", "Crèmes dépilatoires"],
+    funFact: "Les Mésoaméricains trempaient leur maïs dans de l'eau de chaux il y a 3 500 ans — libérant sans le savoir la niacine et évitant les épidémies de pellagre qui ont frappé l'Europe."
+  },
+  mol_070: {
+    commonName: "Chlorure de calcium", iupacName: "Chlorure de calcium",
+    description: "Les petits cailloux blancs jetés sur les trottoirs verglacés — et le dessicant qui garde au sec tes sachets de viande séchée.",
+    uses: ["Déneigement des routes et trottoirs", "Limiteur de poussière sur pistes en terre", "Électrolyte des boissons sportives", "Agent raffermissant alimentaire (tofu, cornichons)"],
+    funFact: "Le chlorure de calcium abaisse la fusion de la glace jusqu'à environ -29 °C — beaucoup plus que le sel de table, d'où son usage par les aéroports."
+  },
+  mol_071: {
+    commonName: "Gypse", iupacName: "Sulfate de calcium",
+    description: "Le minéral tendre à l'intérieur de chaque cloison de ta maison. En poudre, cuit puis réhydraté, il prend en quelques minutes — c'est le plâtre de Paris.",
+    uses: ["Cloisons sèches et placoplâtre", "Plâtres pour fractures", "Régulateur de prise du ciment", "Coagulant du tofu"],
+    funFact: "Le « plâtre de Paris » tient son nom de Montmartre, dont les gigantesques gisements de gypse plâtraient les murs parisiens depuis des siècles."
+  },
+  mol_072: {
+    commonName: "Fluorite", iupacName: "Fluorure de calcium",
+    description: "Des cristaux vitreux qui fluorescent sous UV — et qui ont donné son nom au phénomène. La principale source industrielle de fluor.",
+    uses: ["Source de tout le fluor industriel", "Lentilles optiques transparentes aux UV", "Fondant en sidérurgie", "Matière première de l'acide fluorhydrique"],
+    funFact: "Le mot « fluorescence » a été inventé en 1852 pour la lueur bleue inquiétante des cristaux de fluorite sous UV — le minéral a baptisé le phénomène."
+  },
+  mol_073: {
+    commonName: "Rouille", iupacName: "Oxyde de fer(III)",
+    description: "L'effritement rouge-brun qui dévore voitures et ponts — le fer qui retourne à la forme minérale d'où il vient.",
+    uses: ["Pigment rouge (rouge à joues, peinture)", "Revêtement de bandes et disques magnétiques (forme γ)", "Source de minerai de fer", "Réaction thermite (avec aluminium)"],
+    funFact: "Mars paraît rouge parce que toute sa surface est saupoudrée d'oxyde de fer — la même chimie qui ruine un vélo oublié dans la cour."
+  },
+  mol_074: {
+    commonName: "Pyrite", iupacName: "Disulfure de fer(II)",
+    description: "L'or des fous — des cubes jaune cuivré qui ont trompé les prospecteurs pendant des siècles. Jette des étincelles si on le frappe contre de l'acier.",
+    uses: ["Production d'acide sulfurique (historique)", "Source industrielle de soufre", "Cathode de pile au lithium", "Bijoux et décoration"],
+    funFact: "Beaucoup d'« or » de la ruée vers l'or californienne était en fait de la pyrite. L'or vrai est tendre à griffer avec un ongle ; pas la pyrite."
+  },
+  mol_075: {
+    commonName: "Chlorure de fer(III)", iupacName: "Chlorure de fer(III)",
+    description: "Des cristaux noirs qui deviennent jaune-brun dans l'eau. Les photograveurs gravent leurs circuits avec ; les stations d'épuration s'en servent pour nettoyer les eaux usées.",
+    uses: ["Gravure des circuits imprimés en cuivre", "Floculant pour eaux usées et potables", "Catalyseur en synthèse", "Préservation du bois"],
+    funFact: "Les bricoleurs électroniques dissolvent le cuivre des circuits avec du chlorure ferrique pour fabriquer leurs propres cartes — la même chimie qu'utilisent les industriels."
+  },
+  mol_076: {
+    commonName: "Acide fluorhydrique", iupacName: "Fluorure d'hydrogène",
+    description: "Un acide faible en pH — mais le seul capable de ronger le verre. Traverse la peau et s'attaque directement aux os.",
+    uses: ["Gravure du verre et des puces de silicium", "Nettoyage des pièces inox", "Synthèse de fluorocarbures (frigorigènes, Téflon)", "Alkylation en raffinerie"],
+    funFact: "Les brûlures HF peuvent sembler indolores au début, puis attaquer le calcium des os des heures plus tard — des tubes de gluconate de calcium vivent dans toute trousse de fabrication de puces."
+  },
+  mol_077: {
+    commonName: "Fluorure de sodium", iupacName: "Fluorure de sodium",
+    description: "Le fluorure de ton dentifrice — et de la plupart des réseaux d'eau potable. Renforce l'émail dentaire contre les acides.",
+    uses: ["Anti-carie dans le dentifrice", "Fluoration de l'eau potable", "Additif au décapage de l'acier", "Pesticide (historique)"],
+    funFact: "Ajouter ~1 ppm de fluorure à l'eau potable a été désigné par le CDC comme l'une des dix plus grandes réussites de santé publique du XXᵉ siècle."
+  },
+  mol_078: {
+    commonName: "Hexafluorure de soufre", iupacName: "Hexafluorure de soufre",
+    description: "Un gaz lourd et inerte — cinq fois plus dense que l'air. Inhalez-en un peu et votre voix descend en basse comique.",
+    uses: ["Isolant électrique des postes haute tension", "Gaz de couverture en fonderie de magnésium", "Référence des gaz à effet de serre en climatologie", "Effet de voix pour démonstration"],
+    funFact: "Le SF₆ est 23 500× plus puissant que le CO₂ comme gaz à effet de serre — une seule fuite d'un poste électrique peut équivaloir à des années d'émissions automobiles."
+  },
+  mol_079: {
+    commonName: "Fluor", iupacName: "Difluor",
+    description: "Un gaz jaune pâle, l'élément le plus réactif du tableau périodique. Il brûle l'eau, le verre, et même le béton.",
+    uses: ["Enrichissement de l'uranium (procédé UF6)", "Production de plastiques fluorés", "Synthèse pharmaceutique industrielle", "Recherche sur les oxydants pour fusée"],
+    funFact: "Plusieurs chimistes du XIXᵉ siècle sont morts en essayant d'isoler le fluor. Henri Moissan y est finalement parvenu en 1886 — et a reçu le prix Nobel pour cet exploit."
+  },
+  mol_080: {
+    commonName: "Tétrafluorométhane", iupacName: "Tétrafluorure de carbone",
+    description: "La version fluorée du méthane — totalement ininflammable, presque totalement inerte, et un fluide frigorigène pour systèmes ultra-froids.",
+    uses: ["Gravure plasma des puces de silicium", "Frigorigène basse température (R-14)", "Gaz de nettoyage en électronique", "Traceur en chimie atmosphérique"],
+    funFact: "Le CF₄ persiste dans l'atmosphère plus de 50 000 ans — une fois relâché, il n'ira nulle part à l'échelle humaine."
   },
 
   /* ----- Myth Vault ----- */

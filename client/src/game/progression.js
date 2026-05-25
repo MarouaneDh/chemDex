@@ -6,14 +6,20 @@
 
 // Levels — reached at a cumulative XP threshold.
 export const LEVELS = [
-  { xp: 0, en: "Curious Kid", fr: "Petit curieux" },
-  { xp: 200, en: "Junior Chemist", fr: "Chimiste junior" },
-  { xp: 450, en: "Lab Assistant", fr: "Assistant de labo" },
-  { xp: 750, en: "Researcher", fr: "Chercheur" },
-  { xp: 1100, en: "Senior Chemist", fr: "Chimiste confirmé" },
-  { xp: 1550, en: "Mad Scientist", fr: "Savant fou" },
-  { xp: 2100, en: "Professor", fr: "Professeur" },
-  { xp: 2800, en: "Nobel Genius", fr: "Génie Nobel" },
+  { xp: 0,     en: "Curious Kid",     fr: "Petit curieux" },
+  { xp: 200,   en: "Junior Chemist",  fr: "Chimiste junior" },
+  { xp: 450,   en: "Lab Assistant",   fr: "Assistant de labo" },
+  { xp: 750,   en: "Researcher",      fr: "Chercheur" },
+  { xp: 1100,  en: "Senior Chemist",  fr: "Chimiste confirmé" },
+  { xp: 1550,  en: "Mad Scientist",   fr: "Savant fou" },
+  { xp: 2100,  en: "Professor",       fr: "Professeur" },
+  { xp: 2800,  en: "Nobel Genius",    fr: "Génie Nobel" },
+  // Expanded ranks — the catalog grew, so the ladder grew with it.
+  { xp: 3700,  en: "Lab Director",    fr: "Directeur de labo" },
+  { xp: 4800,  en: "Master Alchemist", fr: "Maître alchimiste" },
+  { xp: 6200,  en: "Renaissance Mind", fr: "Esprit universel" },
+  { xp: 8000,  en: "Periodic Legend",  fr: "Légende périodique" },
+  { xp: 10500, en: "Atom Whisperer",   fr: "Murmureur d'atomes" },
 ];
 
 export function currentLevelIndex(xp) {

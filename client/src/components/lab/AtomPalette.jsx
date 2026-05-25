@@ -2,7 +2,9 @@ import { useCatalog } from "../../context/CatalogContext.jsx";
 import { useGame } from "../../context/GameContext.jsx";
 
 /* The atom palette. Locked atoms (the Atom Tech Tree) stay visible but
-   greyed with a lock — the tease is the point — and can't be dragged. */
+   greyed with a lock — the tease is the point — and can't be dragged.
+   Tablet + phone breakpoints turn the grid into a horizontal scroll
+   strip so the workbench + Combine stay in view (see styles.css). */
 export default function AtomPalette({ onAdd, onLockedClick }) {
   const { atoms } = useCatalog();
   const { t, atomName, isAtomUnlocked } = useGame();

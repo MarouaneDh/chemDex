@@ -329,6 +329,14 @@ export function GameProvider({ children }) {
       confettiBurst(true);
       toast("⬆️", t("levelUp") + " " + L(LEVELS[afterLevel]));
     }
+    // Brainstorm #34 — confetti is reserved for rare+ catches and shinies.
+    // Commons and uncommons rely on the CatchMoment cinematic alone so the
+    // reward doesn't blur into noise when a player is chain-discovering.
+    // Epic + shiny get the big burst; rare gets the small one.
+    const isRarePlus = m.rarity === "rare" || m.rarity === "epic";
+    if (shiny || isRarePlus) {
+      confettiBurst(shiny || m.rarity === "epic");
+    }
     setCatchMoment({ molecule: m, shiny, rarity: m.rarity, xp: baseXP });
     resetIdle();
 

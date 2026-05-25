@@ -30,8 +30,16 @@ export default function Lab() {
     SFX.pop();
   };
 
-  const removeAtom = (index) => {
-    setWorkbench((w) => w.filter((_, i) => i !== index));
+  // Each tile in the workbench is now grouped by symbol with a ×N badge
+  // (see Workbench.jsx). Tapping a tile removes one instance of that
+  // symbol — we strip the most-recently-appended one so the visual
+  // count decrements predictably.
+  const removeAtom = (sym) => {
+    setWorkbench((w) => {
+      const idx = w.lastIndexOf(sym);
+      if (idx === -1) return w;
+      return w.filter((_, i) => i !== idx);
+    });
     clearMessage();
     SFX.place();
   };
@@ -105,15 +113,24 @@ export default function Lab() {
               <Formula text={liveFormula} />
             </strong>
           </div>
-          <div className="lab-actions">
-            <button className="btn btn-primary" onClick={combine}>
-              {t("combine")}
-            </button>
-            <button className="btn" onClick={clear}>
-              {t("clear")}
-            </button>
-          </div>
+        </div>
+      </div>
+
+      {/* Sticky contextual action bar (brainstorm #11/#12). On mobile this
+          bleeds to the viewport edges and pins to the bottom so Combine is
+          visible no matter how far the page has scrolled. On desktop it
+          relaxes into a normal flow block below the workbench. */}
+      <div className="lab-action-bar">
+        {message.text && (
           <p className={"lab-message " + message.kind}>{message.text}</p>
+        )}
+        <div className="lab-actions">
+          <button className="btn btn-primary" onClick={combine}>
+            {t("combine")}
+          </button>
+          <button className="btn" onClick={clear}>
+            {t("clear")}
+          </button>
         </div>
       </div>
     </>

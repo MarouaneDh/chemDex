@@ -7,13 +7,18 @@
 // The draggable atoms available in the Lab. `valence` is shown as
 // flavour info; matching is done purely on atom counts.
 export const ATOMS = [
-  { symbol: "H",  name: "Hydrogen", number: 1,  valence: 1, color: "#e8edf2", text: "#1a1d22" },
-  { symbol: "C",  name: "Carbon",   number: 6,  valence: 4, color: "#2b2f36", text: "#e8edf2" },
-  { symbol: "N",  name: "Nitrogen", number: 7,  valence: 5, color: "#4f7bd6", text: "#ffffff" },
-  { symbol: "O",  name: "Oxygen",   number: 8,  valence: 6, color: "#e0524f", text: "#ffffff" },
-  { symbol: "Na", name: "Sodium",   number: 11, valence: 1, color: "#a06bd6", text: "#ffffff" },
-  { symbol: "S",  name: "Sulfur",   number: 16, valence: 6, color: "#d6b94f", text: "#1a1d22" },
-  { symbol: "Cl", name: "Chlorine", number: 17, valence: 7, color: "#5fae5f", text: "#ffffff" }
+  { symbol: "H",  name: "Hydrogen",   number: 1,  valence: 1, color: "#e8edf2", text: "#1a1d22" },
+  { symbol: "C",  name: "Carbon",     number: 6,  valence: 4, color: "#2b2f36", text: "#e8edf2" },
+  { symbol: "N",  name: "Nitrogen",   number: 7,  valence: 5, color: "#4f7bd6", text: "#ffffff" },
+  { symbol: "O",  name: "Oxygen",     number: 8,  valence: 6, color: "#e0524f", text: "#ffffff" },
+  { symbol: "F",  name: "Fluorine",   number: 9,  valence: 7, color: "#7fd6c1", text: "#1a1d22" },
+  { symbol: "Na", name: "Sodium",     number: 11, valence: 1, color: "#a06bd6", text: "#ffffff" },
+  { symbol: "P",  name: "Phosphorus", number: 15, valence: 5, color: "#e08c3a", text: "#ffffff" },
+  { symbol: "S",  name: "Sulfur",     number: 16, valence: 6, color: "#d6b94f", text: "#1a1d22" },
+  { symbol: "Cl", name: "Chlorine",   number: 17, valence: 7, color: "#5fae5f", text: "#ffffff" },
+  { symbol: "K",  name: "Potassium",  number: 19, valence: 1, color: "#c96fa7", text: "#ffffff" },
+  { symbol: "Ca", name: "Calcium",    number: 20, valence: 2, color: "#cfd6dc", text: "#1a1d22" },
+  { symbol: "Fe", name: "Iron",       number: 26, valence: 3, color: "#8a5a3b", text: "#ffffff" }
 ];
 
 /* ---- Atom Tech Tree ----
@@ -22,11 +27,18 @@ export const ATOMS = [
    "Choose Your Path" pick. Each atom opens a themed branch of chemistry.
    Adding a new element later = one ATOMS entry + one ATOM_BRANCHES entry. */
 export const STARTER_ATOMS = ["H", "O", "C", "N"];
-export const ATOM_MILESTONES = [4, 9, 14];   // total-discovery counts that grant a pick
+// total-discovery counts that grant a "Choose Your Path" pick. One
+// entry per unlockable atom (12 total atoms − 4 starters = 8 picks).
+export const ATOM_MILESTONES = [4, 9, 14, 22, 32, 45, 60, 80];
 export const ATOM_BRANCHES = {
-  Na: { en: "Metals & Bases",    fr: "Métaux & bases" },
-  S:  { en: "Pungent Chemistry", fr: "Chimie piquante" },
-  Cl: { en: "Salts & Acids",     fr: "Sels & acides" }
+  Na: { en: "Metals & Bases",      fr: "Métaux & bases" },
+  S:  { en: "Pungent Chemistry",   fr: "Chimie piquante" },
+  Cl: { en: "Salts & Acids",       fr: "Sels & acides" },
+  F:  { en: "Halogen Frontier",    fr: "Frontière halogène" },
+  P:  { en: "Life's Phosphate",    fr: "Phosphates du vivant" },
+  K:  { en: "Garden & Cell Salts", fr: "Sels du jardin & de la cellule" },
+  Ca: { en: "Bones & Minerals",    fr: "Os & minéraux" },
+  Fe: { en: "Iron Age Chemistry",  fr: "Chimie de l'âge du fer" }
 };
 
 // The molecule "Dex". Matching uses the `atoms` count map, so the
@@ -361,6 +373,570 @@ export const MOLECULES = [
     smiles: "C(C(=O)O)N", inchiKey: "DHMQDGOQFOQNFH-UHFFFAOYSA-N", molarMass: 75.067,
     structureImage: "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/cid/750/PNG",
     funFact: "Glycine has been detected on comets and in interstellar dust clouds — supporting the idea that the building blocks of life could have arrived from space."
+  },
+
+  /* ============================================================
+     EVERYDAY EXPANSION — commonly known molecules across kitchen,
+     garden, garage and biology. A mix that builds with existing
+     starter atoms and introduces the new tech-tree elements
+     (F, P, K, Ca, Fe).
+     ============================================================ */
+  {
+    id: "mol_031", pubchemCid: 24823, formula: "O3",
+    commonName: "Ozone", iupacName: "Trioxygen",
+    atoms: { O: 3 },
+    description: "A pale-blue, sharp-smelling form of oxygen. Lifesaver in the stratosphere; lung irritant at street level.",
+    uses: ["Stratospheric UV shield", "Drinking-water disinfection", "Air purification", "Industrial bleaching"],
+    category: "inorganic", type: "element", rarity: "uncommon", tier: 2,
+    smiles: "[O-][O+]=O", inchiKey: "CBENFWSGALASAD-UHFFFAOYSA-N", molarMass: 47.998,
+    structureImage: "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/cid/24823/PNG",
+    funFact: "You can smell ozone after a lightning storm — the bolt rips O₂ apart and the atoms recombine into O₃."
+  },
+  {
+    id: "mol_032", pubchemCid: 3032552, formula: "NO2",
+    commonName: "Nitrogen Dioxide", iupacName: "Nitrogen dioxide",
+    atoms: { N: 1, O: 2 },
+    description: "A reddish-brown gas with a biting smell, the visible part of urban smog and a major lung irritant.",
+    uses: ["Indicator of combustion pollution", "Rocket-propellant oxidizer (with N2O4)", "Production of nitric acid", "Chemical synthesis intermediate"],
+    category: "inorganic", type: "oxide", rarity: "uncommon", tier: 2,
+    smiles: "N(=O)[O]", inchiKey: "JCXJVPUVTGWSNB-UHFFFAOYSA-N", molarMass: 46.006,
+    structureImage: "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/cid/3032552/PNG",
+    funFact: "The brown haze hanging over big cities on hot summer days is mostly NO₂ from car exhaust cooking in sunlight."
+  },
+  {
+    id: "mol_033", pubchemCid: 5988, formula: "C12H22O11",
+    commonName: "Sucrose", iupacName: "α-D-Glucopyranosyl-(1→2)-β-D-fructofuranoside",
+    atoms: { C: 12, H: 22, O: 11 },
+    description: "Plain old table sugar — a glucose and a fructose stuck together. The sweetest thing in the average pantry.",
+    uses: ["Sweetener in food and drink", "Substrate for fermentation", "Preservative in jams and syrups", "Caramelization for flavor and color"],
+    category: "organic", type: "sugar", rarity: "common", tier: 1,
+    smiles: "OC[C@H]1O[C@@](O[C@H]2OC(CO)[C@@H](O)[C@@H](O)[C@@H]2O)(CO)[C@@H](O)[C@@H]1O",
+    inchiKey: "CZMRCDWAGMRECN-UGDNZRGBSA-N", molarMass: 342.297,
+    structureImage: "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/cid/5988/PNG",
+    funFact: "A single sugar cube weighs about 4 g and contains roughly 7×10²¹ sucrose molecules — more than the number of stars in the visible universe."
+  },
+  {
+    id: "mol_034", pubchemCid: 311, formula: "C6H8O7",
+    commonName: "Citric Acid", iupacName: "2-Hydroxypropane-1,2,3-tricarboxylic acid",
+    atoms: { C: 6, H: 8, O: 7 },
+    description: "The sour zing of lemons and limes. Also the molecular hub of every cell's energy cycle — the Krebs cycle bears its name.",
+    uses: ["Sour flavor in food and soft drinks", "Cleaning agent (descaling kettles)", "Preservative in canning", "Krebs-cycle intermediate in metabolism"],
+    category: "organic", type: "acid", rarity: "common", tier: 1,
+    smiles: "OC(=O)CC(O)(CC(=O)O)C(=O)O",
+    inchiKey: "KRKNYBCHXYNGOX-UHFFFAOYSA-N", molarMass: 192.123,
+    structureImage: "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/cid/311/PNG",
+    funFact: "Citric acid was once made by squeezing actual lemons. Now most of the world's supply comes from sugar fermented by the mold Aspergillus niger."
+  },
+  {
+    id: "mol_035", pubchemCid: 612, formula: "C3H6O3",
+    commonName: "Lactic Acid", iupacName: "2-Hydroxypropanoic acid",
+    atoms: { C: 3, H: 6, O: 3 },
+    description: "The tang in yogurt and the burn in your muscles after a hard sprint. Made when sugars ferment without oxygen.",
+    uses: ["Yogurt and sourdough fermentation", "Muscle-fatigue marker", "Biodegradable PLA plastic feedstock", "Skin-care exfoliant"],
+    category: "organic", type: "acid", rarity: "uncommon", tier: 2,
+    smiles: "CC(O)C(=O)O", inchiKey: "JVTAAEKCZFNVCJ-UHFFFAOYSA-N", molarMass: 90.078,
+    structureImage: "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/cid/612/PNG",
+    funFact: "The old story that lactic acid causes muscle soreness is half-myth — it clears within an hour. The next-day ache comes from microscopic muscle tears."
+  },
+  {
+    id: "mol_036", pubchemCid: 1176, formula: "CH4N2O",
+    commonName: "Urea", iupacName: "Carbamide",
+    atoms: { C: 1, H: 4, N: 2, O: 1 },
+    description: "Mammal nitrogen waste — and the first 'organic' compound ever made from inorganic ingredients, shattering 1828's idea that living things were chemically special.",
+    uses: ["Nitrogen fertilizer (world's #1)", "Moisturizer in skin creams", "Diesel exhaust fluid (AdBlue)", "Resin and adhesive production"],
+    category: "organic", type: "amide", rarity: "uncommon", tier: 2,
+    smiles: "NC(=O)N", inchiKey: "XSQUKJJJFZCRTK-UHFFFAOYSA-N", molarMass: 60.06,
+    structureImage: "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/cid/1176/PNG",
+    funFact: "Friedrich Wöhler's 1828 accidental synthesis of urea from ammonium cyanate ended 'vitalism' — the belief that life-chemistry needed a living source."
+  },
+  {
+    id: "mol_037", pubchemCid: 753, formula: "C3H8O3",
+    commonName: "Glycerol", iupacName: "Propane-1,2,3-triol",
+    atoms: { C: 3, H: 8, O: 3 },
+    description: "A thick, sweet, syrupy liquid that's the backbone of every fat and oil. Holds onto water like nothing else.",
+    uses: ["Moisturizer in cosmetics and soaps", "Sweetener and humectant in food", "Nitroglycerin precursor", "Antifreeze and e-cigarette carrier"],
+    category: "organic", type: "alcohol", rarity: "common", tier: 1,
+    smiles: "OCC(O)CO", inchiKey: "PEDCQBHIVMGVHV-UHFFFAOYSA-N", molarMass: 92.094,
+    structureImage: "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/cid/753/PNG",
+    funFact: "Glycerol is what makes soap-makers smile — it's the by-product of saponification, and the reason handmade soaps feel softer than industrial bars."
+  },
+  {
+    id: "mol_038", pubchemCid: 1140, formula: "C7H8",
+    commonName: "Toluene", iupacName: "Methylbenzene",
+    atoms: { C: 7, H: 8 },
+    description: "A clear, gasoline-smelling solvent and benzene's safer cousin. The 'T' in the explosive TNT.",
+    uses: ["Paint thinner and solvent", "Octane booster in gasoline", "TNT precursor", "Synthesis of polyurethane plastics"],
+    category: "organic", type: "hydrocarbon", rarity: "uncommon", tier: 2,
+    smiles: "Cc1ccccc1", inchiKey: "YXFVVABEGXRONW-UHFFFAOYSA-N", molarMass: 92.141,
+    structureImage: "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/cid/1140/PNG",
+    funFact: "Toluene was first isolated from the South American tree Myroxylon balsamum — and gets its name from the Colombian town of Tolú."
+  },
+  {
+    id: "mol_039", pubchemCid: 3776, formula: "C3H8O",
+    commonName: "Isopropyl Alcohol", iupacName: "Propan-2-ol",
+    atoms: { C: 3, H: 8, O: 1 },
+    description: "The clear, sharp-smelling 'rubbing alcohol' in every medicine cabinet. Kills germs by ripping holes in their lipid membranes.",
+    uses: ["Skin and surface disinfectant", "Cleaning electronics", "Hand-sanitizer ingredient", "Industrial solvent"],
+    category: "organic", type: "alcohol", rarity: "common", tier: 1,
+    smiles: "CC(C)O", inchiKey: "KFZMGEQAYNKOFK-UHFFFAOYSA-N", molarMass: 60.096,
+    structureImage: "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/cid/3776/PNG",
+    funFact: "70% isopropanol kills bacteria better than 99% — the water lets the alcohol stay in contact long enough to disrupt the cell membrane."
+  },
+  {
+    id: "mol_040", pubchemCid: 6326, formula: "C2H2",
+    commonName: "Acetylene", iupacName: "Ethyne",
+    atoms: { C: 2, H: 2 },
+    description: "The hottest-burning common fuel gas. Its triple bond is taut as a stretched spring — let it loose, and it burns at over 3,000 °C.",
+    uses: ["Oxy-acetylene welding and cutting", "Lighting in old miners' carbide lamps", "Chemical-synthesis building block", "Ripening fruit (like ethylene)"],
+    category: "organic", type: "hydrocarbon", rarity: "uncommon", tier: 2,
+    smiles: "C#C", inchiKey: "HSFWRNGVRCDJHI-UHFFFAOYSA-N", molarMass: 26.038,
+    structureImage: "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/cid/6326/PNG",
+    funFact: "Drop calcium carbide into water and you get acetylene gas instantly — that's how cavers' lamps worked for a hundred years."
+  },
+  {
+    id: "mol_041", pubchemCid: 7843, formula: "C4H10",
+    commonName: "Butane", iupacName: "Butane",
+    atoms: { C: 4, H: 10 },
+    description: "A four-carbon gas that liquefies under modest pressure. The fuel in pocket lighters and portable camping stoves.",
+    uses: ["Cigarette-lighter fuel", "Portable camping-stove canisters", "Refrigerant (R-600)", "Aerosol propellant"],
+    category: "organic", type: "hydrocarbon", rarity: "common", tier: 1,
+    smiles: "CCCC", inchiKey: "IJDNQMDRQITEOD-UHFFFAOYSA-N", molarMass: 58.124,
+    structureImage: "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/cid/7843/PNG",
+    funFact: "Modern fridges use isobutane instead of ozone-eating Freons — a quiet swap that fixed the hole in the ozone layer."
+  },
+  {
+    id: "mol_042", pubchemCid: 356, formula: "C8H18",
+    commonName: "Octane", iupacName: "Octane",
+    atoms: { C: 8, H: 18 },
+    description: "The reference fuel that gives gasoline its 'octane number'. The smoother it burns, the higher the rating.",
+    uses: ["Reference for gasoline-octane rating", "Component of automotive fuel", "Aviation gasoline", "Solvent in chemistry labs"],
+    category: "organic", type: "hydrocarbon", rarity: "uncommon", tier: 2,
+    smiles: "CCCCCCCC", inchiKey: "TVMXDCGIABBOFY-UHFFFAOYSA-N", molarMass: 114.232,
+    structureImage: "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/cid/356/PNG",
+    funFact: "'93 octane' gasoline at the pump doesn't mean 93% octane — it means it knocks as little as a fuel that's 93% iso-octane and 7% n-heptane."
+  },
+  {
+    id: "mol_043", pubchemCid: 931, formula: "C10H8",
+    commonName: "Naphthalene", iupacName: "Naphthalene",
+    atoms: { C: 10, H: 8 },
+    description: "Two fused benzene rings — the white crystals in old-fashioned mothballs. Sublimes straight from solid to gas at room temperature.",
+    uses: ["Moth and pest repellent", "Coal-tar dye precursor", "Solvent in research labs", "Building block for industrial chemicals"],
+    category: "organic", type: "hydrocarbon", rarity: "uncommon", tier: 2,
+    smiles: "c1ccc2ccccc2c1", inchiKey: "UFWIBTONFRDIAS-UHFFFAOYSA-N", molarMass: 128.174,
+    structureImage: "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/cid/931/PNG",
+    funFact: "Open a drawer of grandma's woolens and that distinctive smell IS naphthalene — molecules drifting off the mothballs and into the air."
+  },
+  {
+    id: "mol_044", pubchemCid: 6212, formula: "CHCl3",
+    commonName: "Chloroform", iupacName: "Trichloromethane",
+    atoms: { C: 1, H: 1, Cl: 3 },
+    description: "The sweet-smelling clear liquid of Victorian crime novels. Once used to knock out surgical patients before safer drugs arrived.",
+    uses: ["Lab solvent for organic chemistry", "Refrigerant precursor (R-22)", "Pharmaceutical extraction", "NMR-spectroscopy solvent"],
+    category: "organic", type: "hydrocarbon", rarity: "uncommon", tier: 2,
+    smiles: "ClC(Cl)Cl", inchiKey: "HEDRZPFGACZZDS-UHFFFAOYSA-N", molarMass: 119.378,
+    structureImage: "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/cid/6212/PNG",
+    funFact: "Queen Victoria was given chloroform for the births of her last two children in the 1850s — almost single-handedly making anesthesia respectable."
+  },
+  {
+    id: "mol_045", pubchemCid: 3283, formula: "C4H10O",
+    commonName: "Diethyl Ether", iupacName: "Ethoxyethane",
+    atoms: { C: 4, H: 10, O: 1 },
+    description: "The classic 'ether' of 19th-century surgery — sweet-smelling, wildly flammable, and the first widely used general anesthetic.",
+    uses: ["Historic surgical anesthetic", "Lab extraction solvent", "Starter fluid for diesel engines", "Refrigeration in special applications"],
+    category: "organic", type: "alcohol", rarity: "uncommon", tier: 2,
+    smiles: "CCOCC", inchiKey: "RTZKZFJDLAIYFH-UHFFFAOYSA-N", molarMass: 74.123,
+    structureImage: "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/cid/3283/PNG",
+    funFact: "The first public ether anesthesia, on October 16, 1846, is reenacted every year in Boston as 'Ether Day' — the date is etched into a granite memorial."
+  },
+  {
+    id: "mol_046", pubchemCid: 767, formula: "H2CO3",
+    commonName: "Carbonic Acid", iupacName: "Carbonic acid",
+    atoms: { H: 2, C: 1, O: 3 },
+    description: "The faint sourness of fizzy water and the chemistry behind every bubble. Forms when CO₂ dissolves in water — and decomposes the moment you open the bottle.",
+    uses: ["Carbonation chemistry in beverages", "Blood pH buffering", "Cave-forming weathering of limestone", "Ocean carbon storage"],
+    category: "inorganic", type: "acid", rarity: "common", tier: 1,
+    smiles: "OC(=O)O", inchiKey: "BVKZGUZCCUSVTD-UHFFFAOYSA-N", molarMass: 62.025,
+    structureImage: "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/cid/767/PNG",
+    funFact: "Most of the 'carbonic acid' in a soda is actually still dissolved CO₂ — fewer than 1% of the molecules ever bother forming H₂CO₃."
+  },
+  {
+    id: "mol_047", pubchemCid: 10340, formula: "Na2CO3",
+    commonName: "Washing Soda", iupacName: "Sodium carbonate",
+    atoms: { Na: 2, C: 1, O: 3 },
+    description: "A white powder used since ancient Egypt for soap, glass, and embalming. Old-school laundry's secret weapon for grease.",
+    uses: ["Glass manufacturing", "Laundry water softener", "pH control in pools", "Tanning leather"],
+    category: "inorganic", type: "base", rarity: "common", tier: 1,
+    smiles: "[Na+].[Na+].[O-]C(=O)[O-]",
+    inchiKey: "CDBYLPFSWZWCQE-UHFFFAOYSA-L", molarMass: 105.988,
+    structureImage: "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/cid/10340/PNG",
+    funFact: "The Egyptians harvested natron — natural sodium carbonate — from dry lake beds and used it to dehydrate mummies for the afterlife."
+  },
+  {
+    id: "mol_048", pubchemCid: 23665760, formula: "NaClO",
+    commonName: "Bleach", iupacName: "Sodium hypochlorite",
+    atoms: { Na: 1, Cl: 1, O: 1 },
+    description: "The yellow-green liquid in every laundry-room cabinet. A powerful oxidizer that strips colors and kills microbes in seconds.",
+    uses: ["Household laundry whitening", "Surface disinfection", "Pool and drinking-water treatment", "Industrial pulp bleaching"],
+    category: "inorganic", type: "salt", rarity: "common", tier: 1,
+    smiles: "[Na+].[O-]Cl", inchiKey: "SUKJFIGYRHOWBL-UHFFFAOYSA-N", molarMass: 74.442,
+    structureImage: "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/cid/23665760/PNG",
+    funFact: "Mixing bleach with ammonia makes toxic chloramines, and with vinegar makes chlorine gas — the same gas used as a WWI weapon. Never mix cleaning products."
+  },
+  {
+    id: "mol_049", pubchemCid: 948, formula: "N2O",
+    commonName: "Nitrous Oxide", iupacName: "Dinitrogen monoxide",
+    atoms: { N: 2, O: 1 },
+    description: "Laughing gas — a sweet-smelling anesthetic, the propellant in whipped-cream cans, and a 300×-stronger greenhouse gas than CO₂.",
+    uses: ["Dental and surgical analgesia", "Whipped-cream propellant", "Rocket and racing-car oxidizer", "Atmospheric-research tracer"],
+    category: "inorganic", type: "oxide", rarity: "uncommon", tier: 2,
+    smiles: "N#[N+][O-]", inchiKey: "GQPLMRYTRLFLPF-UHFFFAOYSA-N", molarMass: 44.013,
+    structureImage: "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/cid/948/PNG",
+    funFact: "Joseph Priestley discovered nitrous oxide in 1772, but Humphry Davy and his friends made it famous in 1799 by inhaling it at giddy 'laughing-gas parties'."
+  },
+  {
+    id: "mol_050", pubchemCid: 1183, formula: "C8H8O3",
+    commonName: "Vanillin", iupacName: "4-Hydroxy-3-methoxybenzaldehyde",
+    atoms: { C: 8, H: 8, O: 3 },
+    description: "The single molecule responsible for the smell and taste of vanilla. Easier to synthesize than to grow.",
+    uses: ["Vanilla flavoring in food", "Perfumes and air fresheners", "Pharmaceutical flavor masking", "Chemistry-class fragrance reference"],
+    category: "organic", type: "aldehyde", rarity: "uncommon", tier: 2,
+    smiles: "COc1cc(C=O)ccc1O", inchiKey: "MWOOGOJBHIARFG-UHFFFAOYSA-N", molarMass: 152.149,
+    structureImage: "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/cid/1183/PNG",
+    funFact: "Most 'vanilla' flavoring in cheap ice cream isn't from a vanilla bean at all — it's synthetic vanillin made from wood pulp or, increasingly, from fermented sugar."
+  },
+  {
+    id: "mol_051", pubchemCid: 1254, formula: "C10H20O",
+    commonName: "Menthol", iupacName: "(1R,2S,5R)-2-Isopropyl-5-methylcyclohexan-1-ol",
+    atoms: { C: 10, H: 20, O: 1 },
+    description: "The chill of peppermint — a molecule that tricks your skin's cold receptors into firing without anything actually being cold.",
+    uses: ["Cough drops and chest rubs", "Flavoring in toothpaste and gum", "Topical-analgesic creams", "Aromatherapy and inhalers"],
+    category: "organic", type: "alcohol", rarity: "uncommon", tier: 2,
+    smiles: "CC(C)C1CCC(C)CC1O", inchiKey: "NOOLISFMXDJSKH-UTLUCORTSA-N", molarMass: 156.269,
+    structureImage: "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/cid/1254/PNG",
+    funFact: "Menthol hijacks the TRPM8 receptor — the same one cold weather activates. That's why a menthol cough drop feels icy even at room temperature."
+  },
+  {
+    id: "mol_052", pubchemCid: 22311, formula: "C10H16",
+    commonName: "Limonene", iupacName: "(R)-(+)-Limonene",
+    atoms: { C: 10, H: 16 },
+    description: "The cheerful citrus oil pressed from orange peel. So safe and so fragrant it goes into everything from cleaners to perfumes.",
+    uses: ["Citrus-scented cleaners and degreasers", "Flavor and fragrance in food", "Solvent replacing harsher hydrocarbons", "Plastic-recycling solvent"],
+    category: "organic", type: "hydrocarbon", rarity: "uncommon", tier: 2,
+    smiles: "CC(=C)C1CCC(C)=CC1", inchiKey: "XMGQYMWWDOXHJM-JTQLQIEISA-N", molarMass: 136.234,
+    structureImage: "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/cid/22311/PNG",
+    funFact: "Limonene comes in two mirror-image forms — the R-version smells like oranges, the S-version smells like lemons or turpentine. Same atoms, opposite hands."
+  },
+  {
+    id: "mol_053", pubchemCid: 637511, formula: "C9H8O",
+    commonName: "Cinnamaldehyde", iupacName: "(2E)-3-Phenylprop-2-enal",
+    atoms: { C: 9, H: 8, O: 1 },
+    description: "The molecule of cinnamon — sweet, warm, slightly spicy. Pressed from bark, sprinkled on toast.",
+    uses: ["Cinnamon flavor in food", "Mouthwash and toothpaste flavoring", "Fragrance in perfumes", "Natural insecticide and fungicide"],
+    category: "organic", type: "aldehyde", rarity: "uncommon", tier: 2,
+    smiles: "O=C/C=C/c1ccccc1", inchiKey: "KJPRLNWUNMBNBZ-QPJJXVBHSA-N", molarMass: 132.16,
+    structureImage: "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/cid/637511/PNG",
+    funFact: "Cinnamaldehyde is roughly 90% of the oil in cinnamon bark — and a few drops are powerful enough to deter ants from invading a kitchen."
+  },
+  {
+    id: "mol_054", pubchemCid: 5429, formula: "C7H8N4O2",
+    commonName: "Theobromine", iupacName: "3,7-Dimethyl-1H-purine-2,6-dione",
+    atoms: { C: 7, H: 8, N: 4, O: 2 },
+    description: "Caffeine's gentler cousin — the buzz in chocolate. Slower-acting than caffeine, and famously toxic to dogs.",
+    uses: ["Natural component of cocoa and chocolate", "Mild stimulant and diuretic", "Veterinary cautionary case", "Asthma research"],
+    category: "organic", type: "alkaloid", rarity: "rare", tier: 3,
+    smiles: "Cn1cnc2c1c(=O)[nH]c(=O)n2C",
+    inchiKey: "YAPQBXQYLJRXSA-UHFFFAOYSA-N", molarMass: 180.164,
+    structureImage: "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/cid/5429/PNG",
+    funFact: "Dogs metabolize theobromine roughly 6× slower than humans — that's why a few squares of dark chocolate can be a serious vet emergency."
+  },
+  {
+    id: "mol_055", pubchemCid: 89594, formula: "C10H14N2",
+    commonName: "Nicotine", iupacName: "(S)-3-(1-Methylpyrrolidin-2-yl)pyridine",
+    atoms: { C: 10, H: 14, N: 2 },
+    description: "The compound that hooks smokers — fast, fierce, and one of the most powerful natural insecticides ever discovered.",
+    uses: ["Active drug in tobacco and vapes", "Nicotine-replacement patches and gum", "Historic insecticide (banned in most uses)", "Neuroscience research tool"],
+    category: "organic", type: "alkaloid", rarity: "rare", tier: 3,
+    smiles: "CN1CCC[C@H]1c1cccnc1", inchiKey: "SNICXCGAKADSCV-JTQLQIEISA-N", molarMass: 162.236,
+    structureImage: "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/cid/89594/PNG",
+    funFact: "A drop of pure nicotine on the skin can be fatal — tobacco plants evolved it to paralyze and kill the insects that try to chew their leaves."
+  },
+  {
+    id: "mol_056", pubchemCid: 681, formula: "C8H11NO2",
+    commonName: "Dopamine", iupacName: "4-(2-Aminoethyl)benzene-1,2-diol",
+    atoms: { C: 8, H: 11, N: 1, O: 2 },
+    description: "The brain's 'wanting' molecule — the spark of motivation, reward, and movement. Parkinson's disease is what happens when the cells that make it die.",
+    uses: ["Reward and motivation signaling", "Movement control (lost in Parkinson's)", "Heart-rate support in critical care (IV)", "Neuroscience research"],
+    category: "organic", type: "alkaloid", rarity: "epic", tier: 4,
+    smiles: "NCCc1ccc(O)c(O)c1", inchiKey: "VYFYYTLLBUKUHU-UHFFFAOYSA-N", molarMass: 153.181,
+    structureImage: "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/cid/681/PNG",
+    funFact: "Dopamine doesn't cross the blood-brain barrier — so for Parkinson's, doctors give L-DOPA, the precursor, which the brain converts into dopamine on arrival."
+  },
+  {
+    id: "mol_057", pubchemCid: 5202, formula: "C10H12N2O",
+    commonName: "Serotonin", iupacName: "3-(2-Aminoethyl)-1H-indol-5-ol",
+    atoms: { C: 10, H: 12, N: 2, O: 1 },
+    description: "The mood-and-gut molecule. About 90% of your serotonin lives in your intestines, not your brain.",
+    uses: ["Mood, sleep, and appetite regulation", "Target of SSRIs and antidepressants", "Gut-motility signaling", "Platelet function in clotting"],
+    category: "organic", type: "alkaloid", rarity: "epic", tier: 4,
+    smiles: "NCCc1c[nH]c2cc(O)ccc12", inchiKey: "QZAYGJVTTNCVMB-UHFFFAOYSA-N", molarMass: 176.219,
+    structureImage: "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/cid/5202/PNG",
+    funFact: "Serotonin is named for what it does to blood vessels: 'sero-tonin' = serum + tone. The mood-lifting role was discovered later."
+  },
+  {
+    id: "mol_058", pubchemCid: 5816, formula: "C9H13NO3",
+    commonName: "Adrenaline", iupacName: "(R)-4-(1-Hydroxy-2-(methylamino)ethyl)benzene-1,2-diol",
+    atoms: { C: 9, H: 13, N: 1, O: 3 },
+    description: "The fight-or-flight hormone. Pulse hammers, pupils widen, airways open — all in seconds, all because of this one molecule.",
+    uses: ["EpiPen for anaphylactic shock", "Cardiac-arrest emergency drug", "Local-anesthetic vasoconstrictor", "Asthma rescue inhalers (historic)"],
+    category: "organic", type: "alkaloid", rarity: "epic", tier: 4,
+    smiles: "CNC[C@@H](O)c1ccc(O)c(O)c1", inchiKey: "UCTWMZQNUQWSLP-VIFPVBQESA-N", molarMass: 183.207,
+    structureImage: "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/cid/5816/PNG",
+    funFact: "An EpiPen jab into the thigh delivers adrenaline in seconds — for someone in anaphylaxis it's the difference between making it to hospital and not."
+  },
+  {
+    id: "mol_059", pubchemCid: 5997, formula: "C27H46O",
+    commonName: "Cholesterol", iupacName: "Cholest-5-en-3β-ol",
+    atoms: { C: 27, H: 46, O: 1 },
+    description: "The waxy steroid your body can't live without — it stiffens cell membranes and seeds every steroid hormone. Too much in your blood, though, clogs arteries.",
+    uses: ["Cell-membrane stiffening", "Precursor to steroid hormones (estrogen, testosterone)", "Bile acid production", "Vitamin D synthesis precursor"],
+    category: "organic", type: "alcohol", rarity: "rare", tier: 3,
+    smiles: "C[C@H](CCCC(C)C)[C@H]1CC[C@@H]2[C@@]1(CC[C@H]3[C@H]2CC=C4[C@@]3(CC[C@@H](C4)O)C)C",
+    inchiKey: "HVYWMOMLDIMFJA-DPAQBDIFSA-N", molarMass: 386.654,
+    structureImage: "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/cid/5997/PNG",
+    funFact: "Your liver makes about 80% of your blood cholesterol — diet contributes far less than 1980s public-health ads suggested."
+  },
+  {
+    id: "mol_060", pubchemCid: 1548943, formula: "C18H27NO3",
+    commonName: "Capsaicin", iupacName: "(E)-N-(4-Hydroxy-3-methoxybenzyl)-8-methylnon-6-enamide",
+    atoms: { C: 18, H: 27, N: 1, O: 3 },
+    description: "The molecule that makes chili peppers burn. It binds to the same receptor that detects scalding heat — tricking your tongue without raising the temperature.",
+    uses: ["Defining the Scoville scale of pepper heat", "Topical pain-relief creams (arthritis)", "Pepper-spray active ingredient", "Pest deterrent for squirrels"],
+    category: "organic", type: "alkaloid", rarity: "rare", tier: 3,
+    smiles: "COc1cc(CNC(=O)CCCC/C=C/C(C)C)ccc1O",
+    inchiKey: "YKPUWZUDDOIDPM-SOFGYWHQSA-N", molarMass: 305.418,
+    structureImage: "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/cid/1548943/PNG",
+    funFact: "Birds don't feel capsaicin's burn — chilies evolved their heat specifically to push mammals away while letting birds spread the seeds."
+  },
+  {
+    id: "mol_061", pubchemCid: 1004, formula: "H3PO4",
+    commonName: "Phosphoric Acid", iupacName: "Phosphoric acid",
+    atoms: { H: 3, P: 1, O: 4 },
+    description: "A clear syrupy acid that gives cola its bite and fertilizer its phosphate punch. Every soda you've ever sipped owes part of its tang to this molecule.",
+    uses: ["Acidulant in soft drinks (cola tang)", "Rust converter for metalwork", "Fertilizer feedstock", "Etching agent for dentistry"],
+    category: "inorganic", type: "acid", rarity: "common", tier: 1,
+    smiles: "OP(=O)(O)O", inchiKey: "NBIIXXVUZAFLBC-UHFFFAOYSA-N", molarMass: 97.994,
+    structureImage: "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/cid/1004/PNG",
+    funFact: "About 90% of the world's phosphoric acid goes straight into fertilizer — without it, you couldn't feed half the planet."
+  },
+  {
+    id: "mol_062", pubchemCid: 123286, formula: "P4",
+    commonName: "White Phosphorus", iupacName: "Tetraphosphorus",
+    atoms: { P: 4 },
+    description: "Soft, waxy, and so reactive it glows in air and spontaneously catches fire. Stored under water for safety.",
+    uses: ["Incendiary munitions (controversial)", "Production of phosphoric acid", "Match-head chemistry (now red phosphorus)", "Smoke screens"],
+    category: "inorganic", type: "element", rarity: "rare", tier: 3,
+    smiles: "P12P3P1P23", inchiKey: "OAICVXFJPJFONN-UHFFFAOYSA-N", molarMass: 123.895,
+    structureImage: "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/cid/123286/PNG",
+    funFact: "Phosphorus was discovered by an alchemist boiling down 50 buckets of urine, looking for gold — instead he got a glowing, terrifying new element."
+  },
+  {
+    id: "mol_063", pubchemCid: 14812, formula: "P2O5",
+    commonName: "Phosphorus Pentoxide", iupacName: "Diphosphorus pentoxide",
+    atoms: { P: 2, O: 5 },
+    description: "A snow-white powder that snatches water out of literally anything — including the skin off your fingers if you touch it.",
+    uses: ["World's most aggressive desiccant", "Dehydrating agent in chemical synthesis", "Phosphoric-acid production", "Glass and optical manufacturing"],
+    category: "inorganic", type: "oxide", rarity: "rare", tier: 3,
+    smiles: "O=P12OP3(=O)OP(=O)(O1)OP(=O)(O2)O3",
+    inchiKey: "DLYUQMMRRRQYAE-UHFFFAOYSA-N", molarMass: 141.944,
+    structureImage: "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/cid/14812/PNG",
+    funFact: "Phosphorus pentoxide is so hungry for water it can pull H₂O out of sulfuric acid — turning H₂SO₄ into SO₃."
+  },
+  {
+    id: "mol_064", pubchemCid: 4873, formula: "KCl",
+    commonName: "Potassium Chloride", iupacName: "Potassium chloride",
+    atoms: { K: 1, Cl: 1 },
+    description: "The 'salt substitute' that tastes salty without the sodium. Essential to your cells; also the third drug in lethal injections.",
+    uses: ["Low-sodium table-salt substitute", "Cardiac and IV electrolyte replacement", "Fertilizer ('potash')", "Heart-stopping drug in lethal injection"],
+    category: "inorganic", type: "salt", rarity: "common", tier: 1,
+    smiles: "[K+].[Cl-]", inchiKey: "WCUXLLCKKVVCTB-UHFFFAOYSA-M", molarMass: 74.551,
+    structureImage: "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/cid/4873/PNG",
+    funFact: "Potassium chloride tastes 'sort of salty plus a little metallic' — which is why low-sodium salts mix it with table salt instead of replacing it outright."
+  },
+  {
+    id: "mol_065", pubchemCid: 14797, formula: "KOH",
+    commonName: "Potassium Hydroxide", iupacName: "Potassium hydroxide",
+    atoms: { K: 1, O: 1, H: 1 },
+    description: "Caustic potash — a strong base used to make soft (liquid) soaps, and the electrolyte inside alkaline batteries.",
+    uses: ["Liquid-soap manufacture", "Alkaline-battery electrolyte", "Biodiesel production", "Lab pH titration standard"],
+    category: "inorganic", type: "base", rarity: "uncommon", tier: 2,
+    smiles: "[K+].[OH-]", inchiKey: "KWYUFKZDYYNOTN-UHFFFAOYSA-M", molarMass: 56.106,
+    structureImage: "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/cid/14797/PNG",
+    funFact: "Bar soap is sodium-based; liquid soap is potassium-based — KOH makes a softer salt of fatty acids that stays pourable."
+  },
+  {
+    id: "mol_066", pubchemCid: 24434, formula: "KNO3",
+    commonName: "Saltpeter", iupacName: "Potassium nitrate",
+    atoms: { K: 1, N: 1, O: 3 },
+    description: "The white crystal that turned medieval Europe upside down — the oxidizer in gunpowder. Also cures bacon and feeds fields.",
+    uses: ["Gunpowder oxidizer (75% of black powder)", "Solid-rocket propellant component", "Bacon and salami curing", "Stump-removal product"],
+    category: "inorganic", type: "salt", rarity: "uncommon", tier: 2,
+    smiles: "[K+].[O-][N+]([O-])=O", inchiKey: "FGIUAXJPYTZDNR-UHFFFAOYSA-N", molarMass: 101.103,
+    structureImage: "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/cid/24434/PNG",
+    funFact: "Medieval saltpeter farmers harvested it from soaked piles of manure and urine — a stinky business that nonetheless decided the fate of empires."
+  },
+  {
+    id: "mol_067", pubchemCid: 10112, formula: "CaCO3",
+    commonName: "Calcium Carbonate", iupacName: "Calcium carbonate",
+    atoms: { Ca: 1, C: 1, O: 3 },
+    description: "Chalk, limestone, marble, eggshells, seashells, and the white inside a Tums tablet — all the same molecule.",
+    uses: ["Chalkboards and antacids", "Cement and limestone construction", "Calcium dietary supplement", "Paper and paint filler"],
+    category: "inorganic", type: "salt", rarity: "common", tier: 1,
+    smiles: "[Ca+2].[O-]C(=O)[O-]", inchiKey: "VTYYLEPIZMXCLO-UHFFFAOYSA-L", molarMass: 100.087,
+    structureImage: "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/cid/10112/PNG",
+    funFact: "The White Cliffs of Dover are 100 million years of microscopic algae skeletons — pure calcium carbonate, piled hundreds of meters thick."
+  },
+  {
+    id: "mol_068", pubchemCid: 14778, formula: "CaO",
+    commonName: "Quicklime", iupacName: "Calcium oxide",
+    atoms: { Ca: 1, O: 1 },
+    description: "What you get when you burn limestone — a hungry white solid that hisses and steams when it meets water.",
+    uses: ["Cement and mortar production", "Steelmaking flux", "Soil pH correction in farming", "Water and sewage treatment"],
+    category: "inorganic", type: "oxide", rarity: "uncommon", tier: 2,
+    smiles: "[O-2].[Ca+2]", inchiKey: "ODINCKMPIJJUCX-UHFFFAOYSA-N", molarMass: 56.077,
+    structureImage: "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/cid/14778/PNG",
+    funFact: "Quicklime + water releases enough heat to boil eggs — self-heating military rations use the same reaction to warm a meal in 10 minutes."
+  },
+  {
+    id: "mol_069", pubchemCid: 14777, formula: "Ca(OH)2",
+    commonName: "Slaked Lime", iupacName: "Calcium hydroxide",
+    atoms: { Ca: 1, O: 2, H: 2 },
+    description: "Mix quicklime with water and you get this — a chalky base used for everything from mortar to corn tortillas.",
+    uses: ["Mortar and plaster", "Tortilla nixtamalization (Mexican cuisine)", "Sewage and water treatment", "Skin-care depilatory creams"],
+    category: "inorganic", type: "base", rarity: "uncommon", tier: 2,
+    smiles: "[OH-].[OH-].[Ca+2]", inchiKey: "AXCZMVOFGPJBDE-UHFFFAOYSA-L", molarMass: 74.093,
+    structureImage: "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/cid/14777/PNG",
+    funFact: "Mesoamericans soaked corn in slaked-lime water 3,500 years ago — without realizing it, they were unlocking niacin and preventing the pellagra epidemics that hit Europe."
+  },
+  {
+    id: "mol_070", pubchemCid: 5284359, formula: "CaCl2",
+    commonName: "Calcium Chloride", iupacName: "Calcium chloride",
+    atoms: { Ca: 1, Cl: 2 },
+    description: "The white pellets thrown on icy sidewalks — and the desiccant that keeps your jerky packets dry.",
+    uses: ["De-icing roads and sidewalks", "Dust control on dirt roads", "Sports-drink electrolyte", "Food firming agent (tofu, pickles)"],
+    category: "inorganic", type: "salt", rarity: "common", tier: 1,
+    smiles: "[Cl-].[Cl-].[Ca+2]", inchiKey: "UXVMQQNJUSDDNG-UHFFFAOYSA-L", molarMass: 110.984,
+    structureImage: "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/cid/5284359/PNG",
+    funFact: "Calcium chloride drops the melting point of ice down to about -29 °C — much further than table salt, which is why airports use it."
+  },
+  {
+    id: "mol_071", pubchemCid: 24497, formula: "CaSO4",
+    commonName: "Gypsum", iupacName: "Calcium sulfate",
+    atoms: { Ca: 1, S: 1, O: 4 },
+    description: "The soft mineral inside every wall in your house. Powdered, baked, and rehydrated, it sets in minutes — plaster of Paris.",
+    uses: ["Drywall and plasterboard", "Plaster casts for broken bones", "Cement set-time regulator", "Tofu coagulant"],
+    category: "inorganic", type: "salt", rarity: "common", tier: 1,
+    smiles: "[Ca+2].[O-]S(=O)(=O)[O-]", inchiKey: "OSGAYBCDTDRGGQ-UHFFFAOYSA-L", molarMass: 136.139,
+    structureImage: "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/cid/24497/PNG",
+    funFact: "'Plaster of Paris' is named for Montmartre, where huge gypsum deposits were mined to plaster Parisian walls for centuries."
+  },
+  {
+    id: "mol_072", pubchemCid: 24617, formula: "CaF2",
+    commonName: "Fluorite", iupacName: "Calcium fluoride",
+    atoms: { Ca: 1, F: 2 },
+    description: "Glassy crystals that fluoresce under UV — and gave the phenomenon its name. Industry's main source of fluorine.",
+    uses: ["Source of all industrial fluorine", "UV-transparent optical lenses", "Steelmaking flux", "Hydrofluoric-acid feedstock"],
+    category: "inorganic", type: "salt", rarity: "uncommon", tier: 2,
+    smiles: "[F-].[F-].[Ca+2]", inchiKey: "WUKWITHWXAAZEY-UHFFFAOYSA-L", molarMass: 78.075,
+    structureImage: "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/cid/24617/PNG",
+    funFact: "The word 'fluorescence' was coined in 1852 for the eerie blue glow of fluorite crystals under UV light — the mineral named the phenomenon."
+  },
+  {
+    id: "mol_073", pubchemCid: 518696, formula: "Fe2O3",
+    commonName: "Rust", iupacName: "Iron(III) oxide",
+    atoms: { Fe: 2, O: 3 },
+    description: "The red-brown crumble that eats cars and bridges — iron returning to the mineral form it came from.",
+    uses: ["Red pigment (rouge, paint, makeup)", "Magnetic-tape and disk coating (γ-form)", "Iron-ore source", "Thermite reaction (with aluminum)"],
+    category: "inorganic", type: "oxide", rarity: "common", tier: 1,
+    smiles: "O=[Fe]O[Fe]=O", inchiKey: "JEIPFZHSYJVQDO-UHFFFAOYSA-N", molarMass: 159.687,
+    structureImage: "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/cid/518696/PNG",
+    funFact: "Mars looks red because its entire surface is dusted with iron oxide — the same chemistry that ruins a forgotten bicycle in your back yard."
+  },
+  {
+    id: "mol_074", pubchemCid: 14788, formula: "FeS2",
+    commonName: "Pyrite", iupacName: "Iron(II) disulfide",
+    atoms: { Fe: 1, S: 2 },
+    description: "Fool's gold — brassy yellow cubes that fooled prospectors for centuries. Strikes sparks if you smack it against steel.",
+    uses: ["Sulfuric-acid production (historic)", "Sulfur source for industry", "Lithium-battery cathode", "Specimen jewelry and decoration"],
+    category: "inorganic", type: "salt", rarity: "uncommon", tier: 2,
+    smiles: "S=[Fe]=S", inchiKey: "NIFLFHGRMQKJDM-UHFFFAOYSA-N", molarMass: 119.975,
+    structureImage: "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/cid/14788/PNG",
+    funFact: "Many California gold-rush 'gold' samples were actually pyrite — fool's gold. Real gold is soft enough to dent with a fingernail; pyrite isn't."
+  },
+  {
+    id: "mol_075", pubchemCid: 24380, formula: "FeCl3",
+    commonName: "Iron(III) Chloride", iupacName: "Iron(III) chloride",
+    atoms: { Fe: 1, Cl: 3 },
+    description: "Black crystals that turn yellow-brown in water. Photoengravers etch circuit boards with it; water plants use it to clean sewage.",
+    uses: ["Etching copper PCB circuit boards", "Sewage and drinking-water flocculant", "Synthetic-chemistry catalyst", "Wood preservation"],
+    category: "inorganic", type: "salt", rarity: "uncommon", tier: 2,
+    smiles: "Cl[Fe](Cl)Cl", inchiKey: "RBTARNINKXHZNM-UHFFFAOYSA-K", molarMass: 162.204,
+    structureImage: "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/cid/24380/PNG",
+    funFact: "DIY electronics hobbyists eat through copper boards with ferric chloride to make their own circuits — the same chemistry that's used industrially worldwide."
+  },
+  {
+    id: "mol_076", pubchemCid: 14917, formula: "HF",
+    commonName: "Hydrofluoric Acid", iupacName: "Hydrogen fluoride",
+    atoms: { H: 1, F: 1 },
+    description: "A weak acid by pH — but the only one that can eat through glass. Sneaks through skin and goes straight for the bones.",
+    uses: ["Etching glass and silicon chips", "Cleaning stainless-steel parts", "Fluorocarbon synthesis (refrigerants, Teflon)", "Oil-refinery alkylation"],
+    category: "inorganic", type: "acid", rarity: "rare", tier: 3,
+    smiles: "F", inchiKey: "KRHYYFGTRYWZRS-UHFFFAOYSA-N", molarMass: 20.006,
+    structureImage: "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/cid/14917/PNG",
+    funFact: "HF burns can feel painless at first, then attack the calcium in your bones hours later — antidote tubes of calcium gluconate gel live in every silicon-fab medical kit."
+  },
+  {
+    id: "mol_077", pubchemCid: 5235, formula: "NaF",
+    commonName: "Sodium Fluoride", iupacName: "Sodium fluoride",
+    atoms: { Na: 1, F: 1 },
+    description: "The fluoride in your toothpaste — and in most public water supplies. Hardens tooth enamel against acid.",
+    uses: ["Toothpaste cavity-fighter", "Public-water fluoridation", "Steel-pickling additive", "Pesticide (historical)"],
+    category: "inorganic", type: "salt", rarity: "common", tier: 1,
+    smiles: "[F-].[Na+]", inchiKey: "PUZPDOWCWNUUKD-UHFFFAOYSA-M", molarMass: 41.988,
+    structureImage: "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/cid/5235/PNG",
+    funFact: "Adding ~1 ppm fluoride to drinking water was named by the CDC as one of the ten greatest public-health achievements of the 20th century."
+  },
+  {
+    id: "mol_078", pubchemCid: 17358, formula: "SF6",
+    commonName: "Sulfur Hexafluoride", iupacName: "Sulfur hexafluoride",
+    atoms: { S: 1, F: 6 },
+    description: "A heavy, inert gas — five times denser than air. Inhale a little and your voice drops to a comic basso profundo.",
+    uses: ["Electrical-grid insulator in switchgear", "Magnesium smelting cover gas", "Reference greenhouse gas in climate science", "Voice-changing party trick"],
+    category: "inorganic", type: "element", rarity: "rare", tier: 3,
+    smiles: "FS(F)(F)(F)(F)F", inchiKey: "SFZCNBIFKDRMGX-UHFFFAOYSA-N", molarMass: 146.055,
+    structureImage: "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/cid/17358/PNG",
+    funFact: "SF₆ is 23,500× more potent than CO₂ as a greenhouse gas — a single leak from a power substation can equal years of car emissions."
+  },
+  {
+    id: "mol_079", pubchemCid: 24524, formula: "F2",
+    commonName: "Fluorine", iupacName: "Difluorine",
+    atoms: { F: 2 },
+    description: "A pale-yellow gas, the most reactive element on the periodic table. It will burn water, glass, even concrete.",
+    uses: ["Uranium enrichment (UF6 process)", "Fluorocarbon plastic production", "Industrial pharmaceutical synthesis", "Rocket-oxidizer research"],
+    category: "inorganic", type: "element", rarity: "rare", tier: 3,
+    smiles: "FF", inchiKey: "PXGOKWXKJXAPGV-UHFFFAOYSA-N", molarMass: 37.997,
+    structureImage: "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/cid/24524/PNG",
+    funFact: "Several 19th-century chemists died trying to isolate fluorine. Henri Moissan finally cracked it in 1886 — and won a Nobel Prize for the feat."
+  },
+  {
+    id: "mol_080", pubchemCid: 6392, formula: "CF4",
+    commonName: "Tetrafluoromethane", iupacName: "Carbon tetrafluoride",
+    atoms: { C: 1, F: 4 },
+    description: "The fluorine version of methane — completely non-flammable, almost completely inert, and a refrigerant for ultra-cold systems.",
+    uses: ["Plasma-etching of silicon chips", "Low-temperature refrigerant (R-14)", "Electronics-industry cleaning gas", "Atmospheric-chemistry tracer"],
+    category: "inorganic", type: "hydrocarbon", rarity: "uncommon", tier: 2,
+    smiles: "FC(F)(F)F", inchiKey: "TXEYQDLBPFQVAA-UHFFFAOYSA-N", molarMass: 88.004,
+    structureImage: "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/cid/6392/PNG",
+    funFact: "CF₄ persists in the atmosphere for over 50,000 years — once you release it, it's not going anywhere on a human timescale."
   },
 
   /* ============================================================
