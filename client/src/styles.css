@@ -880,6 +880,75 @@ main { padding: 30px 26px 60px; max-width: 1180px; margin: 0 auto; }
   color: #99a; font-size: 13px;
 }
 
+/* --- Live 3D molecule viewer (brainstorm #85) ------------------
+   The host swaps the white static-image background for a dark
+   in-modal stage so the WebGL atoms read clearly. The viewer
+   element handles its own drag/pinch — cursor sticks at "grab"
+   to advertise the interaction. The corner play/pause toggle is
+   the only chrome we layer on top.                                */
+.modal .struct.struct-3d {
+  background: radial-gradient(
+    circle at 50% 40%,
+    rgba(45, 212, 191, 0.10),
+    rgba(11, 14, 20, 0.95) 70%
+  );
+  cursor: grab;
+}
+.modal .struct.struct-3d:active { cursor: grabbing; }
+.mol3d {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+.mol3d-host {
+  width: 100%;
+  height: 100%;
+  /* the 3Dmol canvas is positioned absolutely inside this host —
+     give it a stacking context so the play/pause sits above */
+  position: relative;
+}
+.mol3d-host canvas {
+  display: block;
+}
+.mol3d-state {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  color: var(--muted);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.4px;
+  pointer-events: none;
+}
+.mol3d-spin {
+  position: absolute;
+  bottom: 8px;
+  right: 8px;
+  z-index: 2;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: rgba(11, 14, 20, 0.7);
+  border: 1px solid var(--border-hi);
+  color: var(--text);
+  font-size: 11px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  transition:
+    border-color 160ms var(--ease-out),
+    color 160ms var(--ease-out),
+    transform 140ms var(--ease-out);
+}
+@media (hover: hover) and (pointer: fine) {
+  .mol3d-spin:hover { border-color: var(--accent); color: var(--accent); }
+}
+.mol3d-spin:active { transform: scale(0.92); }
+
 .struct-tools {
   display: flex; align-items: center; gap: 6px;
   margin-bottom: 18px;
@@ -908,6 +977,24 @@ main { padding: 30px 26px 60px; max-width: 1180px; margin: 0 auto; }
   color: #04231f;
   background: linear-gradient(120deg, var(--accent), #5fe6d4);
   border-color: transparent;
+}
+/* Disabled — no 3D record available for this molecule. The native
+   `title` attr surfaces the explanation on desktop hover; aria-disabled
+   carries the same signal for assistive tech. Hover/active transforms
+   are suppressed so the disabled chip doesn't react to the cursor.    */
+.seg:disabled,
+.seg[aria-disabled="true"] {
+  opacity: 0.4;
+  cursor: not-allowed;
+  color: var(--muted);
+  background: var(--surface-2);
+}
+.seg:disabled:hover,
+.seg[aria-disabled="true"]:hover,
+.seg:disabled:active,
+.seg[aria-disabled="true"]:active {
+  color: var(--muted);
+  transform: none;
 }
 .zoom-hint { font-size: 11px; color: var(--faint); margin-left: auto; }
 
@@ -958,7 +1045,9 @@ main { padding: 30px 26px 60px; max-width: 1180px; margin: 0 auto; }
   font-size: 11px; color: var(--faint);
   margin-top: 10px;
 }
-.modal .modal-close { margin-top: 20px; width: 100%; }
+/* (legacy .modal .modal-close rule removed — every .modal-close now
+   lives inside a .modal-actions flex row, which sizes the button via
+   the rule below. The old margin-top/width:100% misaligned it.)      */
 
 /* ============================================================
    LIGHTBOX
@@ -1003,7 +1092,62 @@ main { padding: 30px 26px 60px; max-width: 1180px; margin: 0 auto; }
   font-size: 13px;
   color: var(--muted);
 }
-.lb-close { margin-left: auto; }
+/* Universal neon-red close X. Used by every overlay-corner dismissal —
+   .lb-close in the Lightbox toolbar, .lb-close.chat-close in the chat
+   header, .lb-close.auth-x in the auth modal. One affordance everywhere
+   so users learn a single shape: "the red circle dismisses the overlay".
+   Selector is `button.lb-close` so it ties .lightbox-toolbar button on
+   specificity and wins by source order; the per-host modifiers below
+   (.chat-close, .auth-x) only touch positioning and don't fight.       */
+button.lb-close {
+  margin-left: auto;     /* lightbox toolbar layout — no-op in flex hosts */
+  appearance: none;
+  background: rgba(255, 59, 92, 0.10);
+  border: 1px solid rgba(255, 59, 92, 0.55);
+  color: #ff3b5c;
+  width: 36px;
+  min-width: 36px;
+  height: 36px;
+  padding: 0;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-display);
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1;
+  cursor: pointer;
+  box-shadow:
+    0 0 14px rgba(255, 59, 92, 0.32),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  transition:
+    background-color 160ms var(--ease-out),
+    border-color 160ms var(--ease-out),
+    color 160ms var(--ease-out),
+    box-shadow 220ms var(--ease-out),
+    transform 140ms var(--ease-out);
+}
+@media (hover: hover) and (pointer: fine) {
+  button.lb-close:hover {
+    background: rgba(255, 59, 92, 0.20);
+    border-color: #ff5a72;
+    color: #ff8095;
+    box-shadow:
+      0 0 22px rgba(255, 59, 92, 0.55),
+      inset 0 1px 0 rgba(255, 255, 255, 0.10);
+  }
+}
+button.lb-close:active {
+  transform: scale(0.92);
+  box-shadow:
+    0 0 10px rgba(255, 59, 92, 0.40),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+button.lb-close:focus-visible {
+  outline: 2px solid #ff5a72;
+  outline-offset: 2px;
+}
 
 .lightbox-stage {
   flex: 1;
@@ -1328,6 +1472,20 @@ main { padding: 30px 26px 60px; max-width: 1180px; margin: 0 auto; }
   .mascot.mascot--top-right { top: 110px; } /* clear the two-row mobile topbar */
   .mascot.mascot--top-left  { left: 12px; }
   .mascot.mascot--top-right { right: 12px; }
+}
+
+/* Action-aware lift (brainstorm #16). When Lab is the visible tab the
+   .lab-action-bar pins the Combine CTA to the viewport bottom; bottom-
+   anchored Atomo would otherwise sit on top of it. Lift to clear the
+   bar's worst-case height (message line + 48px button + padding +
+   1px border) plus safe-area. Gated to viewports where the bar is
+   actually sticky — desktop (≥1025px) relaxes the bar into static flow
+   so no lift is needed there. */
+@media (max-width: 1024px) {
+  .mascot.mascot--avoid-cta.mascot--bottom-left,
+  .mascot.mascot--avoid-cta.mascot--bottom-right {
+    bottom: calc(100px + env(safe-area-inset-bottom));
+  }
 }
 
 /* quests page */
@@ -2271,8 +2429,19 @@ body.catch-shake { animation: catchShake 600ms var(--ease-out) both; }
   display: flex;
   gap: 10px;
   margin-top: 4px;
+  align-items: center;       /* keeps all buttons baselined at the same height */
 }
-.modal-actions .btn { flex: 1; }
+/* Every button in a modal-actions row matches the neon-red .lb-close
+   close button (36px) so the brag card, send, publish, close, etc.
+   all read as a single rhythm. Wins over .btn-compact by specificity. */
+.modal-actions .btn {
+  flex: 1;
+  min-height: 36px;
+  height: 36px;
+  padding: 0 14px;
+  font-size: 12.5px;
+  border-radius: 9px;
+}
 
 @media (prefers-reduced-motion: reduce) {
   .catch-ring, .catch-core-glyph, .holo-foil { animation: none; }

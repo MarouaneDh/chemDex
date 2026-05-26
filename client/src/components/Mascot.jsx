@@ -16,7 +16,7 @@ import { useGame } from "../context/GameContext.jsx";
 const DRAG_THRESHOLD = 8;  // px movement before a press becomes a drag
 
 export default function Mascot() {
-  const { mascot, showHint, mascotAnchor, setMascotAnchor } = useGame();
+  const { mascot, showHint, mascotAnchor, setMascotAnchor, activeTab } = useGame();
 
   const rootRef = useRef(null);
   const pressRef = useRef(null);              // { startX, startY, offsetX, offsetY, moved, id }
@@ -96,8 +96,18 @@ export default function Mascot() {
       }
     : undefined;
 
+  // Action-aware lift: on the Lab tab the sticky bottom bar holds the
+  // Combine CTA, so bottom-anchored Atomo would sit on top of it. The
+  // CSS rule keyed on this class adds clearance — gated by media query
+  // so it's a no-op on desktop where the bar isn't sticky.
+  const avoidCta =
+    activeTab === "lab" && validAnchor.startsWith("bottom") && !dragPos;
+
   const cls =
-    "mascot mascot--" + validAnchor + (dragPos ? " mascot--dragging" : "");
+    "mascot mascot--" +
+    validAnchor +
+    (dragPos ? " mascot--dragging" : "") +
+    (avoidCta ? " mascot--avoid-cta" : "");
 
   return (
     <div

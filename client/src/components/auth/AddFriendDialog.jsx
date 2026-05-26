@@ -66,10 +66,10 @@ export default function AddFriendDialog({ onClose }) {
           {success && <p className="auth-success">{success}</p>}
 
           <div className="modal-actions">
-            <button type="submit" className="btn btn-primary" disabled={busy}>
+            <button type="submit" className="btn btn-compact btn-primary" disabled={busy}>
               {busy ? t("authBusy") : t("sendInvite")}
             </button>
-            <button type="button" className="btn modal-close" onClick={onClose}>
+            <button type="button" className="btn btn-compact modal-close" onClick={onClose}>
               {t("close")}
             </button>
           </div>

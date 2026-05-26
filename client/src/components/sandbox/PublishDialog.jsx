@@ -92,10 +92,10 @@ export default function PublishDialog({ formula, atoms, onClose, onPublish }) {
           {error && <p className="auth-error">{error}</p>}
 
           <div className="modal-actions">
-            <button type="submit" className="btn btn-primary">
+            <button type="submit" className="btn btn-compact btn-primary">
               {t("sbPublish")}
             </button>
-            <button type="button" className="btn modal-close" onClick={onClose}>
+            <button type="button" className="btn btn-compact modal-close" onClick={onClose}>
               {t("close")}
             </button>
           </div>

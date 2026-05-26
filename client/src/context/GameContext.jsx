@@ -7,7 +7,7 @@
    mascot) lives here too — `discover` runs the full reward flow.
    ============================================================ */
 
-import { createContext, useContext, useEffect, useMemo, useRef, useState } from "react";
+import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
 import {
   STARTER_ATOMS,
   ATOM_MILESTONES,
@@ -44,6 +44,21 @@ import { apiFetch } from "../api/client.js";
 import { useAuth } from "./AuthContext.jsx";
 
 const GameContext = createContext(null);
+
+/* URL ↔ tab routing.
+   The shell renders every tab simultaneously and toggles `.view.active`
+   to preserve cross-tab state, so we can't lean on a real router that
+   mounts/unmounts. Instead we sync `activeTab` to `window.location`
+   manually: first path segment maps to a tab, unknown paths fall back
+   to lab. /admin is allowed at the URL level; the App-level guard
+   demotes non-admins back to /lab if they deep-link there.            */
+const VALID_TABS = ["lab", "sandbox", "dex", "quests", "admin"];
+const DEFAULT_TAB = "lab";
+
+function pathToTab(pathname) {
+  const seg = (pathname || "").replace(/^\/+/, "").split("/")[0];
+  return VALID_TABS.includes(seg) ? seg : DEFAULT_TAB;
+}
 
 // A piece of state backed by localStorage. The new client runs on a
 // fresh origin (localhost), so every key uses clean JSON — no need to
@@ -117,8 +132,31 @@ export function GameProvider({ children }) {
     "bottom-left"
   );
 
-  // which top-bar tab is showing
-  const [activeTab, setActiveTab] = useState("lab");
+  // which top-bar tab is showing — bound to the URL so /lab, /sandbox,
+  // /dex, /quests (and /admin for admins) deep-link straight into each
+  // section. setActiveTab pushes a new history entry; back/forward and
+  // direct loads sync back into state via the popstate listener below.
+  const [activeTab, setActiveTabState] = useState(() =>
+    pathToTab(window.location.pathname)
+  );
+  const setActiveTab = useCallback((tab) => {
+    setActiveTabState(tab);
+    const newPath = "/" + tab;
+    if (window.location.pathname !== newPath) {
+      window.history.pushState({ tab }, "", newPath);
+    }
+  }, []);
+  useEffect(() => {
+    // Normalise "/" to "/lab" on first load so the URL bar reflects
+    // the rendered tab from first paint. replaceState (not pushState)
+    // so the back button doesn't trap the user on an empty path.
+    if (window.location.pathname === "/" || window.location.pathname === "") {
+      window.history.replaceState({ tab: DEFAULT_TAB }, "", "/" + DEFAULT_TAB);
+    }
+    const onPop = () => setActiveTabState(pathToTab(window.location.pathname));
+    window.addEventListener("popstate", onPop);
+    return () => window.removeEventListener("popstate", onPop);
+  }, []);
   // current Dex category filter — kept in context so other components
   // (e.g. the breached Leak) can deep-link straight into a Dex wing
   const [dexFilter, setDexFilter] = useState("all");

@@ -2,8 +2,10 @@ import { useEffect, useState } from "react";
 import { hazardsOf, hazardById } from "../game/hazards.js";
 import { readSunlight } from "../game/sunlight.js";
 import { useGame } from "../context/GameContext.jsx";
+import { probeSdf, getSdfStatus } from "../game/sdfCache.js";
 import Formula from "./Formula.jsx";
 import StructureImg from "./StructureImg.jsx";
+import Molecule3D from "./Molecule3D.jsx";
 import RelatedSection from "./RelatedSection.jsx";
 import EvolutionChain from "./EvolutionChain.jsx";
 
@@ -21,13 +23,35 @@ export default function Modal() {
   // hazards collapse to the first 3 + a "+N" pill (brainstorm #23) —
   // resets to collapsed whenever the molecule changes
   const [showAllHazards, setShowAllHazards] = useState(false);
+  // 3D availability — null while we're probing PubChem for an SDF
+  // record, true if one exists, false if not. Drives the disabled
+  // state + "no 3D model" tooltip on the 3D segment button.
+  const [has3D, setHas3D] = useState(null);
 
   const m = modal?.molecule;
   useEffect(() => {
     setView("2d"); // fresh 2D view whenever the molecule changes
     setSunState({ mode: "idle", lux: null });
     setShowAllHazards(false);
-  }, [m?.id]);
+
+    // Probe for a 3D model. Myth molecules have no CID, so skip them.
+    // Hydrated cache hits resolve synchronously and we never flicker
+    // the button through a null state.
+    if (!m || !m.pubchemCid || m.category === "myth") {
+      setHas3D(false);
+      return;
+    }
+    const cached = getSdfStatus(m.pubchemCid);
+    if (cached === "ok") { setHas3D(true);  return; }
+    if (cached === "none") { setHas3D(false); return; }
+
+    setHas3D(null);
+    let cancelled = false;
+    probeSdf(m.pubchemCid).then((sdf) => {
+      if (!cancelled) setHas3D(!!sdf);
+    });
+    return () => { cancelled = true; };
+  }, [m?.id, m?.pubchemCid, m?.category]);
 
   if (!modal) return null;
 
@@ -98,9 +122,19 @@ export default function Modal() {
           </div>
         ) : (
           <>
-            <div className="struct" title={t("clickZoom")} onClick={() => openLightbox(m, view)}>
-              <StructureImg cid={m.pubchemCid} view={view} alt={name} />
-            </div>
+            {view === "3d" ? (
+              /* Live WebGL viewer — drag rotates, pinch zooms, the
+                 corner button toggles auto-spin. onFallback flips us
+                 back to the static 2D image if PubChem has no 3D
+                 record or 3Dmol fails to load.                      */
+              <div className="struct struct-3d">
+                <Molecule3D cid={m.pubchemCid} onFallback={() => setView("2d")} />
+              </div>
+            ) : (
+              <div className="struct" title={t("clickZoom")} onClick={() => openLightbox(m, view)}>
+                <StructureImg cid={m.pubchemCid} view={view} alt={name} />
+              </div>
+            )}
             <div className="struct-tools">
               <button
                 className={"seg" + (view === "2d" ? " active" : "")}
@@ -111,10 +145,15 @@ export default function Modal() {
               <button
                 className={"seg" + (view === "3d" ? " active" : "")}
                 onClick={() => setView("3d")}
+                disabled={has3D === false}
+                title={has3D === false ? t("no3dModel") : undefined}
+                aria-disabled={has3D === false}
               >
                 3D
               </button>
-              <span className="zoom-hint">{t("zoomHint")}</span>
+              <span className="zoom-hint">
+                {view === "3d" ? t("rotateHint") : t("zoomHint")}
+              </span>
             </div>
           </>
         )}

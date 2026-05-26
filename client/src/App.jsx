@@ -30,7 +30,7 @@ import { useGame } from "./context/GameContext.jsx";
    AuthModal lives at the root regardless so the landing's CTAs can
    pop it without rendering its own copy of the auth flow. */
 export default function App() {
-  const { activeTab, modal, lightbox, bragCard, closeMolecule, closeLightbox, closeBragCard, openAuth } =
+  const { activeTab, setActiveTab, modal, lightbox, bragCard, closeMolecule, closeLightbox, closeBragCard, openAuth } =
     useGame();
   const { isAdmin, isAuthed } = useAuth();
 
@@ -45,6 +45,15 @@ export default function App() {
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
   }, [bragCard, lightbox, modal, closeBragCard, closeLightbox, closeMolecule]);
+
+  // /admin deep-link guard: an authed non-admin landing on /admin would
+  // otherwise see a blank <main> because no section's .active class
+  // matches. Quietly demote to /lab; admins pass through untouched.
+  useEffect(() => {
+    if (isAuthed && !isAdmin && activeTab === "admin") {
+      setActiveTab("lab");
+    }
+  }, [isAuthed, isAdmin, activeTab, setActiveTab]);
 
   const showLanding = !isAuthed;
 

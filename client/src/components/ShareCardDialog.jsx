@@ -86,7 +86,7 @@ export default function ShareCardDialog({ molecule, onClose }) {
         <div className="modal-actions">
           {sentTo == null && friends.length > 0 && (
             <button
-              className="btn btn-primary"
+              className="btn btn-compact btn-primary"
               onClick={send}
               disabled={busy || selected.size === 0}
             >
@@ -95,7 +95,7 @@ export default function ShareCardDialog({ molecule, onClose }) {
                 : t("shareSendCta", selected.size)}
             </button>
           )}
-          <button className="btn modal-close" onClick={onClose}>
+          <button className="btn btn-compact modal-close" onClick={onClose}>
             {t("close")}
           </button>
         </div>
