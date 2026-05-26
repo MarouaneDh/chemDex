@@ -3,10 +3,10 @@ import { countAtoms, countsEqual, hillFormula } from "../../game/rules.js";
 import { SFX } from "../../game/sfx.js";
 import { mascotLine } from "../../game/content.js";
 import { useGame } from "../../context/GameContext.jsx";
+import { useAuth } from "../../context/AuthContext.jsx";
 import AtomPalette from "./AtomPalette.jsx";
 import Workbench from "./Workbench.jsx";
 import DailyPuzzle from "./DailyPuzzle.jsx";
-import Capsule from "./Capsule.jsx";
 import Leak from "./Leak.jsx";
 import Formula from "../Formula.jsx";
 
@@ -18,8 +18,16 @@ export default function Lab() {
     t, lang, molField, discoveries, discover, isAtomUnlocked, mascotSay,
     combineMolecule, leakAppeared,
   } = useGame();
+  const { isGuest } = useAuth();
   const [workbench, setWorkbench] = useState([]);
   const [message, setMessage] = useState({ text: "", kind: "" });
+
+  // Guest onboarding (brainstorm #29 / #50) — show a one-line coach
+  // hint while there are no discoveries yet, and pulse the Combine
+  // button to advertise the next tap once the workbench has atoms.
+  const noDiscoveriesYet = Object.keys(discoveries).length === 0;
+  const isGuestOnboarding = isGuest && noDiscoveriesYet;
+  const combineCtaGlow = isGuestOnboarding && workbench.length > 0;
 
   const clearMessage = () => setMessage({ text: "", kind: "" });
 
@@ -91,10 +99,21 @@ export default function Lab() {
 
   return (
     <>
-      <div className="heartbeat-row">
-        <DailyPuzzle />
-        <Capsule />
-      </div>
+      {isGuestOnboarding && (
+        <div className="guest-coach" role="status">
+          <span className="guest-coach-spark" aria-hidden="true">✦</span>
+          <span className="guest-coach-text">{t("guestCoachHint")}</span>
+        </div>
+      )}
+
+      {/* Daily puzzle belongs to the long-term retention loop — hide
+          it from guests entirely so the first surface stays focused
+          on the one verb (combine) that earns them a discovery. */}
+      {!isGuest && (
+        <div className="heartbeat-row">
+          <DailyPuzzle />
+        </div>
+      )}
 
       <div className="lab-grid">
         <div className="panel">
@@ -125,7 +144,10 @@ export default function Lab() {
           <p className={"lab-message " + message.kind}>{message.text}</p>
         )}
         <div className="lab-actions">
-          <button className="btn btn-primary" onClick={combine}>
+          <button
+            className={"btn btn-primary" + (combineCtaGlow ? " combine-glow" : "")}
+            onClick={combine}
+          >
             {t("combine")}
           </button>
           <button className="btn" onClick={clear}>

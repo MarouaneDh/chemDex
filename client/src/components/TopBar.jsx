@@ -24,9 +24,13 @@ const TABS = [
 
 export default function TopBar() {
   const { t, L, totalXP, activeTab, setActiveTab, syncStatus, openAuth } = useGame();
-  const { isAuthed, user } = useAuth();
+  const { isAuthed, user, isGuest } = useAuth();
   const { totalUnread, incomingInvites } = useFriends();
   const badge = (totalUnread || 0) + (incomingInvites.length || 0);
+  // Guest mode (brainstorm #51) — hide every tab except Lab until
+  // the visitor signs up. Keeps the first-session surface focused
+  // on the one verb that earns them a discovery.
+  const tabs = isGuest ? TABS.filter((tab) => tab.id === "lab") : TABS;
 
   const lvlIdx = currentLevelIndex(totalXP);
   const rank = L(LEVELS[lvlIdx]);
@@ -78,7 +82,7 @@ export default function TopBar() {
       </div>
 
       <nav className="tabs">
-        {TABS.map((tab) => (
+        {tabs.map((tab) => (
           <button
             key={tab.id}
             className={"tab" + (activeTab === tab.id ? " active" : "")}
@@ -89,41 +93,54 @@ export default function TopBar() {
         ))}
       </nav>
 
-      <button
-        className="account-btn"
-        onClick={() => {
-          SFX.click();
-          openAuth();
-        }}
-        title={t("account")}
-      >
-        <Avatar
-          src={user?.avatar}
-          size={36}
-          className="account-btn-avatar"
-          fallback="👤"
-        />
-        <span className="account-btn-text">
-          <span className="account-btn-name">
-            {isAuthed ? user.displayName : t("signIn")}
+      {isGuest ? (
+        /* Guest mode: account chip becomes a compact Sign-up CTA so
+           the visitor always has a visible path to saving their finds.
+           Brainstorm #28 — the upgrade-to-real-account ask should
+           never be more than one tap away while exploring. */
+        <button
+          className="btn btn-compact btn-primary topbar-guest-cta"
+          onClick={() => { SFX.click(); openAuth(); }}
+        >
+          {t("guestSignUpCta")}
+        </button>
+      ) : (
+        <button
+          className="account-btn"
+          onClick={() => {
+            SFX.click();
+            openAuth();
+          }}
+          title={t("account")}
+        >
+          <Avatar
+            src={user?.avatar}
+            size={36}
+            className="account-btn-avatar"
+            fallback="👤"
+          />
+          <span className="account-btn-text">
+            <span className="account-btn-name">
+              {isAuthed ? user.displayName : t("signIn")}
+            </span>
+            {isAuthed && (
+              <span className="account-btn-meta">
+                <span className="account-btn-lvl">L{lvlIdx + 1}</span>
+                <span className="account-btn-rank">{rank}</span>
+              </span>
+            )}
           </span>
-          {isAuthed && (
-            <span className="account-btn-meta">
-              <span className="account-btn-lvl">L{lvlIdx + 1}</span>
-              <span className="account-btn-rank">{rank}</span>
+          {isAuthed && <span className={"sync-dot sync-" + syncStatus} />}
+          {isAuthed && badge > 0 && (
+            <span
+              className="account-badge"
+              aria-label={t("notificationsAria", badge)}
+            >
+              {badge > 9 ? "9+" : badge}
             </span>
           )}
-        </span>
-        {isAuthed && <span className={"sync-dot sync-" + syncStatus} />}
-        {isAuthed && badge > 0 && (
-          <span
-            className="account-badge"
-            aria-label={t("notificationsAria", badge)}
-          >
-            {badge > 9 ? "9+" : badge}
-          </span>
-        )}
-      </button>
+        </button>
+      )}
     </header>
   );
 }

@@ -27,6 +27,10 @@ export const ATOMS = [
    "Choose Your Path" pick. Each atom opens a themed branch of chemistry.
    Adding a new element later = one ATOMS entry + one ATOM_BRANCHES entry. */
 export const STARTER_ATOMS = ["H", "O", "C", "N"];
+// Guest mode (brainstorm #50) — the first session shows only H + O so
+// the 30-second onboarding has exactly one viable target: water (H₂O).
+// Upgraded to STARTER_ATOMS the moment the visitor signs up.
+export const GUEST_ATOMS = ["H", "O"];
 // total-discovery counts that grant a "Choose Your Path" pick. One
 // entry per unlockable atom (12 total atoms − 4 starters = 8 picks).
 export const ATOM_MILESTONES = [4, 9, 14, 22, 32, 45, 60, 80];

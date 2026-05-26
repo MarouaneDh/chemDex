@@ -32,7 +32,7 @@ import { useGame } from "./context/GameContext.jsx";
 export default function App() {
   const { activeTab, setActiveTab, modal, lightbox, bragCard, closeMolecule, closeLightbox, closeBragCard, openAuth } =
     useGame();
-  const { isAdmin, isAuthed } = useAuth();
+  const { isAdmin, isAuthed, isGuest, enterGuestMode } = useAuth();
 
   // Escape unwinds the overlays from the top: brag card, lightbox, modal
   useEffect(() => {
@@ -55,12 +55,27 @@ export default function App() {
     }
   }, [isAuthed, isAdmin, activeTab, setActiveTab]);
 
-  const showLanding = !isAuthed;
+  // Guest mode (brainstorm #51): the visitor only ever sees the Lab —
+  // every other tab is hidden until they sign up. If they land on a
+  // deep-link like /dex while in guest mode, route them back to /lab.
+  useEffect(() => {
+    if (isGuest && activeTab !== "lab") {
+      setActiveTab("lab");
+    }
+  }, [isGuest, activeTab, setActiveTab]);
+
+  // Guest mode (brainstorm #28) lets a visitor enter the shell without
+  // signing in. The auth modal is still reachable via the topbar; we
+  // just don't force it as a wall on first paint.
+  const showLanding = !isAuthed && !isGuest;
 
   return (
     <>
       {showLanding ? (
-        <Landing onSignIn={openAuth} />
+        <Landing
+          onSignIn={openAuth}
+          onTryLab={() => { enterGuestMode(); }}
+        />
       ) : (
         <>
           <TopBar />

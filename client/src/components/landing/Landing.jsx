@@ -73,7 +73,7 @@ function AtomOrbit() {
   );
 }
 
-export default function Landing({ onSignIn }) {
+export default function Landing({ onSignIn, onTryLab }) {
   // year computed once — avoids the "© 2024 forever" trap when the
   // app outlives the build it shipped in
   const [year] = useState(() => new Date().getFullYear());
@@ -112,11 +112,11 @@ export default function Landing({ onSignIn }) {
             venoms, even the molecules a textbook won&apos;t name.
           </Reveal>
           <Reveal className="lp-cta-row" delay={3}>
-            <button className="btn btn-hero btn-primary" onClick={onSignIn}>
-              Sign in to play
+            <button className="btn btn-hero btn-primary" onClick={onTryLab}>
+              Try the lab — no signup
             </button>
             <button className="btn btn-hero btn-ghost" onClick={onSignIn}>
-              Create account
+              Sign in
             </button>
           </Reveal>
           <Reveal as="div" className="lp-meta" delay={4}>
@@ -356,11 +356,11 @@ export default function Landing({ onSignIn }) {
             cards to friends. Thirty seconds to your first molecule.
           </p>
           <div className="lp-final-cta-row">
-            <button className="btn btn-hero btn-primary" onClick={onSignIn}>
-              Sign in to play
+            <button className="btn btn-hero btn-primary" onClick={onTryLab}>
+              Try the lab — no signup
             </button>
             <button className="btn btn-hero btn-ghost" onClick={onSignIn}>
-              Create account
+              Sign in
             </button>
           </div>
         </Reveal>

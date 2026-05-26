@@ -486,6 +486,65 @@ main { padding: 30px 26px 60px; max-width: 1180px; margin: 0 auto; }
 .lab-message.info { color: var(--muted);   background: var(--surface); }
 
 /* ============================================================
+   GUEST ONBOARDING (brainstorm #28, #29, #50)
+   ============================================================ */
+
+/* One-line coach card pinned above the lab grid for the guest's
+   first session. Disappears the instant they land their first catch
+   (component-level logic). Keeps the visual weight low so it reads
+   as a hint, not a tutorial wall.                                   */
+.guest-coach {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  margin: 0 0 14px;
+  border: 1px solid rgba(45, 212, 191, 0.35);
+  background: linear-gradient(
+    180deg,
+    rgba(45, 212, 191, 0.10),
+    rgba(11, 14, 20, 0.55)
+  );
+  border-radius: 12px;
+  font-family: var(--font-display);
+  font-size: 13.5px;
+  color: var(--text);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+.guest-coach-spark {
+  color: var(--accent);
+  font-size: 16px;
+  filter: drop-shadow(0 0 6px rgba(45, 212, 191, 0.6));
+  animation: guestCoachSparkPulse 2.6s ease-in-out infinite;
+}
+.guest-coach-text { flex: 1; min-width: 0; }
+@keyframes guestCoachSparkPulse {
+  0%, 100% { opacity: 0.65; transform: scale(1);    }
+  50%      { opacity: 1;    transform: scale(1.18); }
+}
+
+/* Brainstorm #50 — glow the Combine button while a guest has atoms
+   on the bench and zero discoveries. A teal halo that breathes so
+   the next action reads at a glance without screaming. Only applied
+   conditionally via the `.combine-glow` class.                       */
+.btn-primary.combine-glow {
+  animation: combineCtaPulse 1.6s ease-in-out infinite;
+}
+@keyframes combineCtaPulse {
+  0%, 100% { box-shadow: 0 8px 22px var(--glow); }
+  50%      { box-shadow: 0 10px 32px var(--glow), 0 0 22px rgba(45, 212, 191, 0.55); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .guest-coach-spark { animation: none; }
+  .btn-primary.combine-glow { animation: none; box-shadow: 0 10px 28px rgba(45, 212, 191, 0.55); }
+}
+
+/* Topbar's guest sign-up CTA — slot in alongside the existing grid
+   areas the topbar uses for the account button. Same column, just a
+   compact button instead of the rich avatar chip.                    */
+.topbar > .topbar-guest-cta { grid-area: account; justify-self: end; align-self: center; }
+
+/* ============================================================
    BUTTONS
    ============================================================ */
 .btn {
@@ -1723,7 +1782,6 @@ button.lb-close:focus-visible {
   position: relative;
   border-radius: 18px;
   padding: 18px 20px;
-  margin-bottom: 20px;
   background:
     radial-gradient(600px 200px at 0% 0%, rgba(45,212,191,0.10), transparent 60%),
     radial-gradient(500px 200px at 100% 100%, rgba(129,140,248,0.10), transparent 60%),
@@ -2457,7 +2515,6 @@ body.catch-shake { animation: catchShake 600ms var(--ease-out) both; }
   display: flex;
   gap: 14px;
   flex-wrap: wrap;
-  margin-bottom: 14px;
 }
 .heartbeat-row > * { flex: 1 1 320px; }
 
@@ -2929,31 +2986,15 @@ body.catch-shake { animation: catchShake 600ms var(--ease-out) both; }
 }
 .leak:focus-visible { outline: 2px solid #fb7185; outline-offset: 4px; border-radius: 6px; }
 
-.leak-crack {
+/* SVG fracture — sized to the .leak button box. The viewBox handles
+   the actual geometry; CSS just pins the inline SVG to the panel edge
+   and stacks it under the rising smoke wisps.                         */
+.leak-svg {
   position: absolute;
-  left: 28px;
-  top: 6px;
-  width: 1.5px;
-  height: 28px;
-  background: linear-gradient(
-    180deg,
-    rgba(220, 38, 38, 0) 0%,
-    rgba(220, 38, 38, 0.95) 30%,
-    rgba(220, 38, 38, 0.6) 60%,
-    rgba(220, 38, 38, 0) 100%
-  );
-  filter: drop-shadow(0 0 6px rgba(220, 38, 38, 0.85));
-  transform: rotate(8deg);
-}
-.leak-crack::after {
-  content: "";
-  position: absolute;
-  left: -3px;
-  top: 12px;
-  width: 1px;
-  height: 10px;
-  background: linear-gradient(180deg, rgba(220, 38, 38, 0.8), rgba(220, 38, 38, 0));
-  transform: rotate(-20deg);
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
 }
 .leak-smoke {
   position: absolute;
@@ -3076,34 +3117,33 @@ body.catch-shake { animation: catchShake 600ms var(--ease-out) both; }
   top: -10px;
   right: 10px;
 }
-.leak.leak-wide:hover { transform: scale(1.06); }
-.leak.leak-wide { transition: transform 200ms var(--ease-spring); }
+/* Hover lights the fracture instead of resizing it — a CSS drop-shadow
+   layers on top of the SVG's own inner gaussian glow, so the crack
+   reads as bleeding more red light outward without any layout jump.
+   Pre-breach gets a subtle bump; the breached version pushes harder
+   with a double-layered halo for the "panel is glowing" effect.       */
+.leak-svg { transition: filter 220ms var(--ease-out); }
+@media (hover: hover) and (pointer: fine) {
+  .leak:hover .leak-svg {
+    filter: drop-shadow(0 0 8px rgba(220, 38, 38, 0.65));
+  }
+  .leak.leak-wide:hover .leak-svg {
+    filter:
+      drop-shadow(0 0 14px rgba(220, 38, 38, 0.85))
+      drop-shadow(0 0 24px rgba(251, 113, 133, 0.5));
+  }
+}
 
-.leak.leak-wide .leak-crack {
-  left: 38px;
-  top: 4px;
-  width: 4px;
-  height: 44px;
-  background: linear-gradient(
-    180deg,
-    rgba(220, 38, 38, 0) 0%,
-    rgba(220, 38, 38, 1) 30%,
-    rgba(251, 113, 133, 0.85) 60%,
-    rgba(220, 38, 38, 0) 100%
-  );
-  filter: drop-shadow(0 0 12px rgba(220, 38, 38, 0.95));
-  animation: leakCrackPulse 1.8s ease-in-out infinite;
+/* Breathing pulse on the breached fracture's stroke group only — we
+   vary opacity (cheap) instead of re-running an SVG filter every
+   frame (expensive on cheap mobile GPUs).                              */
+.leak-svg-pulse {
+  animation: leakFracturePulse 1.8s ease-in-out infinite;
+  transform-origin: 50% 8%;
 }
-.leak.leak-wide .leak-crack::after {
-  left: -5px;
-  top: 16px;
-  width: 2.5px;
-  height: 18px;
-  background: linear-gradient(180deg, rgba(220, 38, 38, 0.95), rgba(220, 38, 38, 0));
-}
-@keyframes leakCrackPulse {
-  0%, 100% { filter: drop-shadow(0 0 10px rgba(220, 38, 38, 0.85)); opacity: 0.9; }
-  50%      { filter: drop-shadow(0 0 22px rgba(251, 113, 133, 1));  opacity: 1; }
+@keyframes leakFracturePulse {
+  0%, 100% { opacity: 0.88; transform: scale(1);    }
+  50%      { opacity: 1;    transform: scale(1.015); }
 }
 
 /* fatter, slower smoke for the breached leak */
@@ -3126,7 +3166,7 @@ body.catch-shake { animation: catchShake 600ms var(--ease-out) both; }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .leak.leak-wide .leak-crack { animation: none; }
+  .leak-svg-pulse { animation: none; opacity: 0.95; transform: none; }
 }
 
 /* ============================================================

@@ -11,6 +11,7 @@ import { apiFetch } from "../api/client.js";
 
 const AuthContext = createContext(null);
 const TOKEN_KEY = "chemdex.token";
+const GUEST_KEY = "chemdex.guestMode";
 
 export function AuthProvider({ children }) {
   const [token, setToken] = useState(() => {
@@ -23,6 +24,24 @@ export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   // "loading" while a stored token is being validated, then "ready"
   const [status, setStatus] = useState(token ? "loading" : "ready");
+
+  // Guest mode (brainstorm #28) — the visitor opted to try the lab
+  // without an account. Persisted across reloads so a refresh during
+  // the first-catch flow doesn't kick them back to Landing. Cleared
+  // automatically on register/login/logout below.
+  const [guestMode, setGuestMode] = useState(() => {
+    try {
+      return localStorage.getItem(GUEST_KEY) === "1";
+    } catch {
+      return false;
+    }
+  });
+  useEffect(() => {
+    try {
+      if (guestMode) localStorage.setItem(GUEST_KEY, "1");
+      else localStorage.removeItem(GUEST_KEY);
+    } catch { /* storage unavailable */ }
+  }, [guestMode]);
 
   // mirror the token to localStorage
   useEffect(() => {
@@ -54,11 +73,13 @@ export function AuthProvider({ children }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // accept the { token, user } payload returned by register / login
+  // accept the { token, user } payload returned by register / login —
+  // also drops guestMode since the visitor now has a real account
   const adopt = (data) => {
     setToken(data.token);
     setUser(data.user);
     setStatus("ready");
+    setGuestMode(false);
   };
 
   const register = async ({ email, password, displayName }) => {
@@ -75,7 +96,11 @@ export function AuthProvider({ children }) {
   const logout = () => {
     setToken(null);
     setUser(null);
+    setGuestMode(false); // logout always returns to Landing
   };
+
+  const enterGuestMode = () => setGuestMode(true);
+  const exitGuestMode = () => setGuestMode(false);
 
   // Replace the avatar — server validates shape and size. Pass "" to clear.
   // Returns the updated user, or throws.
@@ -89,12 +114,20 @@ export function AuthProvider({ children }) {
     return data.user;
   };
 
+  const isAuthed = !!token && !!user;
   const value = {
     token,
     user,
     status,
-    isAuthed: !!token && !!user,
+    isAuthed,
     isAdmin: user?.role === "admin",
+    // Guest mode applies only when the visitor is NOT authed — a real
+    // account always wins, so consumers can branch on isGuest alone
+    // instead of repeating the !isAuthed && guestMode check.
+    guestMode,
+    isGuest: guestMode && !isAuthed,
+    enterGuestMode,
+    exitGuestMode,
     register,
     login,
     logout,

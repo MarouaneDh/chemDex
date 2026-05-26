@@ -10,6 +10,7 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
 import {
   STARTER_ATOMS,
+  GUEST_ATOMS,
   ATOM_MILESTONES,
   ATOM_BRANCHES,
 } from "../data/gamedata.js";
@@ -83,7 +84,7 @@ function usePersistentState(key, initial) {
 }
 
 export function GameProvider({ children }) {
-  const { token, user } = useAuth();
+  const { token, user, isGuest } = useAuth();
   // live atoms + molecules — starts as the bundled copy, swapped with the
   // server's catalog as soon as /api/catalog answers (offline-safe)
   const { atoms: catalogAtoms, molecules } = useCatalog();
@@ -178,6 +179,11 @@ export function GameProvider({ children }) {
   const [cinematic, setCinematic] = useState(null); // { symbol, branch } | null
   // The Forbidden Shelf breach cinematic — set true while it plays
   const [breachCinematic, setBreachCinematic] = useState(false);
+  // brainstorm #28 — when a guest scores their first-ever discovery
+  // we hand them the auth modal at the delight peak (right after the
+  // molecule modal closes). One-shot per guest session; cleared the
+  // moment the prompt fires.
+  const [pendingGuestAuth, setPendingGuestAuth] = useState(false);
 
   // keep the audio module's mute flag in step with state
   useEffect(() => {
@@ -203,10 +209,15 @@ export function GameProvider({ children }) {
   const discoveredCount = molecules.filter((m) => discoveries[m.id]).length;
   const tierUnlocked = (tier) => discoveredCount >= (TIER_UNLOCK[tier] || 0);
 
-  /* --- Atom Tech Tree helpers (bound to current unlockedAtoms) --- */
-  const isAtomUnlocked = (sym) => unlockedAtoms.includes(sym);
+  /* --- Atom Tech Tree helpers (bound to current unlockedAtoms) ---
+     Guest mode (brainstorm #50) shadows the stored unlock set with the
+     two-atom guest list — the player still has STARTER_ATOMS sitting
+     in localStorage waiting for them, we just don't surface anything
+     past H + O until they sign up.                                    */
+  const activeAtoms = isGuest ? GUEST_ATOMS : unlockedAtoms;
+  const isAtomUnlocked = (sym) => activeAtoms.includes(sym);
   const moleculeBuildable = (m) =>
-    Object.keys(m.atoms).every((s) => unlockedAtoms.includes(s));
+    Object.keys(m.atoms).every((s) => activeAtoms.includes(s));
 
   /* --- molecule detail modal + structure lightbox --- */
   const openMolecule = (m, isNew = false) => setModal({ molecule: m, isNew });
@@ -214,6 +225,13 @@ export function GameProvider({ children }) {
   const closeMolecule = () => {
     setModal(null);
     maybeOfferAtomPick();
+    // brainstorm #28 — auth nudge at the delight peak. We wait until
+    // the molecule modal is dismissed so the player gets the catch
+    // moment and reward modal first, THEN the "save this find" ask.
+    if (pendingGuestAuth) {
+      setPendingGuestAuth(false);
+      setAuthOpen(true);
+    }
   };
   const openLightbox = (m, view) => setLightbox({ molecule: m, view });
   const closeLightbox = () => setLightbox(null);
@@ -300,6 +318,10 @@ export function GameProvider({ children }) {
      ============================================================ */
   const discover = (m) => {
     const shiny = Math.random() < 0.1;
+    // First-ever discovery is the delight peak we use to surface auth
+    // to guests — captured BEFORE we mutate the discoveries map.
+    const wasFirstEver = Object.keys(discoveries).length === 0;
+    if (isGuest && wasFirstEver) setPendingGuestAuth(true);
     const nextDiscoveries = {
       ...discoveries,
       [m.id]: { date: new Date().toISOString(), shiny },
