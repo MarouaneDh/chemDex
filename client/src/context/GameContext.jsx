@@ -55,10 +55,20 @@ const GameContext = createContext(null);
    demotes non-admins back to /lab if they deep-link there.            */
 const VALID_TABS = ["lab", "sandbox", "dex", "quests", "admin"];
 const DEFAULT_TAB = "lab";
+// Molecule deep-link (brainstorm #65) — /m/:id opens the molecule
+// modal as soon as the catalog finishes loading, regardless of which
+// tab the visitor lands on. Used by share-card links so a recipient
+// taps once and sees the molecule.
+const MOLECULE_PATH_RE = /^\/m\/([^/]+)\/?$/;
 
 function pathToTab(pathname) {
   const seg = (pathname || "").replace(/^\/+/, "").split("/")[0];
   return VALID_TABS.includes(seg) ? seg : DEFAULT_TAB;
+}
+
+function pathToMoleculeId(pathname) {
+  const match = (pathname || "").match(MOLECULE_PATH_RE);
+  return match ? decodeURIComponent(match[1]) : null;
 }
 
 // A piece of state backed by localStorage. The new client runs on a
@@ -151,10 +161,16 @@ export function GameProvider({ children }) {
     // Normalise "/" to "/lab" on first load so the URL bar reflects
     // the rendered tab from first paint. replaceState (not pushState)
     // so the back button doesn't trap the user on an empty path.
-    if (window.location.pathname === "/" || window.location.pathname === "") {
+    // /m/:id deep-links are left alone — the resolver effect picks
+    // them up once the catalog is ready.
+    const path = window.location.pathname;
+    if (path === "/" || path === "") {
       window.history.replaceState({ tab: DEFAULT_TAB }, "", "/" + DEFAULT_TAB);
     }
-    const onPop = () => setActiveTabState(pathToTab(window.location.pathname));
+    const onPop = () => {
+      setActiveTabState(pathToTab(window.location.pathname));
+      setPendingMoleculeId(pathToMoleculeId(window.location.pathname));
+    };
     window.addEventListener("popstate", onPop);
     return () => window.removeEventListener("popstate", onPop);
   }, []);
@@ -184,6 +200,16 @@ export function GameProvider({ children }) {
   // molecule modal closes). One-shot per guest session; cleared the
   // moment the prompt fires.
   const [pendingGuestAuth, setPendingGuestAuth] = useState(false);
+  // brainstorm #65 — a molecule id parsed from the URL (/m/:id) that
+  // we want to open as soon as the catalog finishes loading. The
+  // resolver effect below watches it; null clears the pending request.
+  const [pendingMoleculeId, setPendingMoleculeId] = useState(() =>
+    pathToMoleculeId(window.location.pathname)
+  );
+  // brainstorm #67 — a "Catch this too" recipe queued from a friend's
+  // brag card. Lab.jsx reads this on mount and seeds its workbench.
+  // Array of atom symbols (e.g. ["H","H","O"]) or null when empty.
+  const [pendingWorkbench, setPendingWorkbench] = useState(null);
 
   // keep the audio module's mute flag in step with state
   useEffect(() => {
@@ -221,6 +247,49 @@ export function GameProvider({ children }) {
 
   /* --- molecule detail modal + structure lightbox --- */
   const openMolecule = (m, isNew = false) => setModal({ molecule: m, isNew });
+
+  /* Push a /m/:id URL and queue the molecule to open as soon as the
+     catalog is ready. Used by external/share-card deep links and by
+     in-app "open this molecule" affordances that want the URL to
+     reflect the destination (so refresh re-opens the same molecule). */
+  const goToMolecule = (id) => {
+    if (!id) return;
+    const newPath = "/m/" + encodeURIComponent(id);
+    if (window.location.pathname !== newPath) {
+      window.history.pushState({ moleculeId: id }, "", newPath);
+    }
+    setPendingMoleculeId(id);
+  };
+
+  /* Resolve /m/:id — runs whenever the pending id or the catalog
+     changes. Waits for the catalog to populate so a cold deep-link
+     load doesn't no-op against an empty molecules array.            */
+  useEffect(() => {
+    if (!pendingMoleculeId) return;
+    if (!molecules || molecules.length === 0) return;
+    const target = molecules.find((x) => x.id === pendingMoleculeId);
+    if (target) openMolecule(target, false);
+    setPendingMoleculeId(null);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pendingMoleculeId, molecules]);
+
+  /* Brainstorm #67 — "Catch this too". Expand a molecule's atom-count
+     map ({ H: 2, O: 1 }) into a flat workbench seed (["H","H","O"]),
+     stash it for Lab.jsx to pick up on its next render, close the
+     brag-card overlay, and route to the Lab tab. Lab's effect will
+     clear the pending value once it's consumed.                      */
+  const loadWorkbenchRecipe = (m) => {
+    if (!m || !m.atoms) return;
+    const flat = [];
+    Object.entries(m.atoms).forEach(([sym, count]) => {
+      for (let i = 0; i < count; i++) flat.push(sym);
+    });
+    setPendingWorkbench(flat);
+    setBragCard(null);
+    setModal(null);
+    setActiveTab("lab");
+  };
+  const consumePendingWorkbench = () => setPendingWorkbench(null);
   // closing the discovery modal is the moment to surface a pending atom pick
   const closeMolecule = () => {
     setModal(null);
@@ -312,6 +381,54 @@ export function GameProvider({ children }) {
     setDailyState((d) => ({ ...d, hintUsed: true }));
     SFX.click();
   };
+
+  /* Solve today's puzzle when the player re-builds a molecule they've
+     already discovered. The standard discover() flow handles the case
+     of a brand-new find that happens to match today's target; this is
+     the analogue for the already-known branch in Lab.combine, which
+     would otherwise leave the puzzle unsolved forever if the target
+     is something the player has already caught.
+
+     Awards DAILY_XP, fires the same SFX/confetti/toast as the inline
+     discover() path, and re-checks for a level-up so the puzzle XP
+     can still bump the player up a tier.                              */
+  const claimDailyIfMatching = (m) => {
+    if (!m || dailyState.moleculeId !== m.id || dailyState.solvedAt) return false;
+    const beforeLevel = currentLevelIndex(totalXP);
+    const afterLevel = currentLevelIndex(totalXP + DAILY_XP);
+    setDailyState((d) => ({ ...d, solvedAt: new Date().toISOString() }));
+    setTotalXP(totalXP + DAILY_XP);
+    SFX.mission();
+    confettiBurst(false);
+    toast("🧩", t("dailySolvedToast") + "  +" + DAILY_XP + " XP");
+    if (afterLevel > beforeLevel) {
+      SFX.levelUp();
+      confettiBurst(true);
+      toast("⬆️", t("levelUp") + " " + L(LEVELS[afterLevel]));
+    }
+    return true;
+  };
+
+  /* Defensive revalidation: if the currently-stored daily target
+     requires atoms the player no longer has (account reset, cloud
+     pull from a slimmer device, catalog edit), pick a new one for
+     today so the puzzle is always actually solvable in the Lab.    */
+  useEffect(() => {
+    if (!dailyState.moleculeId) return;
+    const mol = molecules.find((x) => x.id === dailyState.moleculeId);
+    const stillBuildable =
+      mol && Object.keys(mol.atoms).every((s) => unlockedAtoms.includes(s));
+    if (stillBuildable) return;
+    const today = todayStr();
+    const fresh = pickDailyPuzzle(today, discoveries, unlockedAtoms, molecules);
+    setDailyState({
+      date: today,
+      moleculeId: fresh ? fresh.id : null,
+      solvedAt: null,
+      hintUsed: false,
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [unlockedAtoms, molecules, dailyState.moleculeId]);
 
   /* ============================================================
      DISCOVERY — the full reward flow, run from the Lab's Combine
@@ -830,6 +947,11 @@ export function GameProvider({ children }) {
     dailyState,
     setDailyState,
     useDailyHint,
+    claimDailyIfMatching,
+    goToMolecule,
+    loadWorkbenchRecipe,
+    pendingWorkbench,
+    consumePendingWorkbench,
     unlockedAtoms,
     setUnlockedAtoms,
     discoveredCount,

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { countAtoms, countsEqual, hillFormula } from "../../game/rules.js";
 import { SFX } from "../../game/sfx.js";
 import { mascotLine } from "../../game/content.js";
@@ -16,11 +16,30 @@ import Formula from "../Formula.jsx";
 export default function Lab() {
   const {
     t, lang, molField, discoveries, discover, isAtomUnlocked, mascotSay,
-    combineMolecule, leakAppeared,
+    combineMolecule, leakAppeared, claimDailyIfMatching,
+    pendingWorkbench, consumePendingWorkbench,
   } = useGame();
   const { isGuest } = useAuth();
   const [workbench, setWorkbench] = useState([]);
   const [message, setMessage] = useState({ text: "", kind: "" });
+
+  // Brainstorm #67 — when a "Catch this too" CTA was tapped on a brag
+  // card, GameContext queues the recipe in pendingWorkbench. We pull
+  // it in here, filter to atoms the player has unlocked (a recipient
+  // who lacks an exotic atom shouldn't get a half-loaded bench), and
+  // surface a heads-up if anything was skipped.
+  useEffect(() => {
+    if (!pendingWorkbench || pendingWorkbench.length === 0) return;
+    const usable = pendingWorkbench.filter((sym) => isAtomUnlocked(sym));
+    setWorkbench(usable);
+    if (usable.length < pendingWorkbench.length) {
+      setMessage({ text: t("catchTooLocked"), kind: "info" });
+    } else {
+      setMessage({ text: t("catchTooReady"), kind: "ok" });
+    }
+    consumePendingWorkbench();
+    SFX.pop();
+  }, [pendingWorkbench, isAtomUnlocked, consumePendingWorkbench, t]);
 
   // Guest onboarding (brainstorm #29 / #50) — show a one-line coach
   // hint while there are no discoveries yet, and pulse the Combine
@@ -89,8 +108,17 @@ export default function Lab() {
         kind: "ok",
       });
     } else {
-      SFX.click();
-      setMessage({ text: t("alreadyKnown", molField(match, "commonName")), kind: "ok" });
+      // Already discovered — but it might still be today's daily target.
+      // claimDailyIfMatching() awards the puzzle XP + confetti when it
+      // matches, otherwise this branch behaves as before.
+      const solvedDaily = claimDailyIfMatching(match);
+      if (!solvedDaily) SFX.click();
+      setMessage({
+        text: solvedDaily
+          ? t("dailySolvedToast") + " · " + molField(match, "commonName")
+          : t("alreadyKnown", molField(match, "commonName")),
+        kind: "ok",
+      });
     }
     setWorkbench([]);
   };

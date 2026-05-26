@@ -18,7 +18,10 @@ const QUICK_REACTS = ["👍", "❤️", "😂", "🤯", "🔥", "🎉"];
    - if it was sent BY a friend (receivedFrom set), the Share-image and
      Send-to-friends buttons are hidden — you can only React or Close. */
 export default function BragCard() {
-  const { bragCard: m, closeBragCard, t, term, molField, discoveries } = useGame();
+  const {
+    bragCard: m, closeBragCard, t, term, molField, discoveries,
+    loadWorkbenchRecipe, isAtomUnlocked,
+  } = useGame();
   const { atoms } = useCatalog();
   const { user, isAuthed } = useAuth();
   const { reactToMessage } = useFriends();
@@ -193,6 +196,25 @@ export default function BragCard() {
               📩 {t("shareSendToFriends")}
             </button>
           )}
+          {/* Brainstorm #67 — "Catch this too" closes the social loop:
+              the recipient hops into the Lab with the workbench pre-seeded
+              with the molecule's recipe and just hits Combine. Hidden on
+              cards that aren't shared (you can already build your own
+              discoveries) and disabled if any required atom is locked. */}
+          {receivedFrom && !invented && m.atoms && (() => {
+            const allUnlocked = Object.keys(m.atoms).every((s) => isAtomUnlocked(s));
+            return (
+              <button
+                className="btn btn-primary"
+                onClick={() => loadWorkbenchRecipe(m)}
+                disabled={!allUnlocked}
+                title={allUnlocked ? undefined : t("catchTooLocked")}
+                aria-disabled={!allUnlocked}
+              >
+                {t("catchThisToo")}
+              </button>
+            );
+          })()}
           <button className="btn" onClick={closeBragCard}>
             {t("close")}
           </button>

@@ -278,7 +278,7 @@ main { padding: 30px 26px 60px; max-width: 1180px; margin: 0 auto; }
     font-size: 11px;
   }
 
-  /* Atoms in a single scrollable row */
+  /* Atoms in a single horizontally-scrollable row */
   .palette {
     display: flex;
     grid-template-columns: none;
@@ -884,6 +884,23 @@ main { padding: 30px 26px 60px; max-width: 1180px; margin: 0 auto; }
   box-shadow: 0 30px 80px rgba(0, 0, 0, 0.7);
   animation: rise 320ms var(--ease-spring) both;
   transform-origin: center;
+}
+
+/* Body scroll lock — kill page scroll whenever any overlay is on
+   screen. Modern :has() selector means no JS wiring; every overlay
+   class the app uses is listed here, and each component already
+   unmounts the element when closed so the lock releases for free.   */
+body:has(.modal-overlay),
+body:has(.path-overlay),
+body:has(.lightbox:not([hidden])),
+body:has(.catch-moment),
+body:has(.atom-cine),
+body:has(.breach-cine),
+body:has(.sheet-overlay) {
+  overflow: hidden;
+  /* iOS Safari sometimes still scrolls the html element under fixed
+     overlays — touch-action: none on the body neutralises that. */
+  touch-action: none;
 }
 @keyframes rise {
   from { transform: translateY(16px) scale(0.96); opacity: 0; }
